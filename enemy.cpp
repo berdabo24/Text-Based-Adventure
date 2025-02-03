@@ -96,7 +96,7 @@ class Player : public Character
 
         }
 
-        void resetHealth(){
+        void resetHealth(){ //apply before every battle
             health = maxHealth;
         }
 
@@ -111,7 +111,7 @@ class Enemy : public Character
         int drawingLines;
 
 
-        Enemy(string name, int hp,string*drawing, int drawingLines): Character(name,hp),drawing(drawing),drawingLines(drawingLines) {};
+        Enemy(string name, int hp, string*drawing, int drawingLines): Character(name,hp),drawing(drawing),drawingLines(drawingLines) {};
         void EnemyHealthBar()
         {
 
