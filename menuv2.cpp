@@ -12,6 +12,8 @@ using namespace std;
 #define KEY_RIGHT 77
 #define KEY_ENTER 13
 
+
+// Highlight Function
 void White_HL(string text){
     HANDLE  hConsole;
     hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -20,6 +22,8 @@ void White_HL(string text){
     SetConsoleTextAttribute(hConsole, 15);
 }
 
+
+// Randomizer Function
 static int randomiser (int chance, int min, int max)
 {
     int randomvalue = rand() % (max - min + 1) + min; //generate random no between 0 and (max-min)
@@ -28,6 +32,7 @@ static int randomiser (int chance, int min, int max)
     return min + bias;
 }
 
+// Character class
 class Character {
     public:
         int health, maxHealth;
@@ -52,7 +57,6 @@ class Character {
 
         void SetState(string state){
             this->state = state;
-            cout << name << " is " << state << "!" << endl;
         }
 
         string Attack(){
@@ -69,6 +73,7 @@ class Character {
         }
 };
 
+// Player class with healthbar
 class Player : public Character
 {
     public:
@@ -93,6 +98,8 @@ class Player : public Character
 
 };
 
+
+//Enemy Class with healthbar
 class Enemy : public Character
 {
     public:
@@ -115,6 +122,25 @@ class Enemy : public Character
 
 };
 
+void White_HL(string text);
+static int randomiser (int chance, int min, int max);
+void Battle(Player &Player, Enemy &Enemy, string Action, string FirstMove);
+void WhoFirst(Player &Player, Enemy &Enemy, string PlayerTurn, string EnemyTurn);
+void DrawTopBorder();
+void DrawBottomBorder();
+void DrawOptions(string SLOT[]);
+void DrawDialog(string text , int typeSpeed);
+void printCharacters(string char1[], int char1_size, string char2[], int char2_size);
+void DrawChacters_AND_HealthBar(Player &Player, Enemy &Enemy);
+void DrawMenu(string move,  Player &Player, Enemy &Enemy);
+string MoveSelect(int x, int y, Player &Player);
+void InitiateBattle(string PlayerTurn, Player &Player, Enemy &Enemy);
+void KeySwitch(Player &Player, Enemy &Enemy);
+void PressEnter();
+
+const int MARGIN = 20;
+
+// Battle function
 void Battle(Player &Player, Enemy &Enemy, string Action, string FirstMove){
 
     if (FirstMove == "Player"){
@@ -123,36 +149,66 @@ void Battle(Player &Player, Enemy &Enemy, string Action, string FirstMove){
             if (Enemy.state == "Blocking"){
                 int block_dmg = randomiser(50, 0, attack_dmg);
                 attack_dmg -= block_dmg;
-                cout << Enemy.name << " blocked " << block_dmg << "!" << endl;
+
+                DrawChacters_AND_HealthBar(Player, Enemy);
+                cout << string(MARGIN, ' '); DrawDialog(Enemy.name, 0); cout << endl;
+                cout << string(MARGIN, ' '); DrawDialog(Enemy.name, 1); DrawDialog(" blocked ", 1); cout << block_dmg; DrawDialog("!", 1);
+                PressEnter();
             }
             if (Enemy.state == "Dodging"){
                 int dodge_chance = randomiser(70, 0, 100);
                 if (dodge_chance > 30){
                     attack_dmg = 0;
-                    cout << Enemy.name << " Dodged!" << endl;
+
+                    DrawChacters_AND_HealthBar(Player, Enemy);
+                    cout << string(MARGIN, ' '); DrawDialog(Enemy.name, 0); cout << endl;
+                    cout << string(MARGIN, ' '); DrawDialog(Enemy.name, 1); DrawDialog(" Dodged!", 1); cout << endl;
+                    PressEnter();
                 }
                 else{
                     int boost_dmg = randomiser(20, 0, attack_dmg);
                     attack_dmg += boost_dmg;
-                    cout << Enemy.name << " Got hit!" << endl;
+
+                    DrawChacters_AND_HealthBar(Player, Enemy);
+                    cout << string(MARGIN, ' '); DrawDialog(Enemy.name, 0); cout << endl;
+                    cout << string(MARGIN, ' '); DrawDialog(Enemy.name, 1); DrawDialog(" Got hit!", 1); cout << endl;
+                    PressEnter();
                 }
             }
-            cout << Player.name << " deals " << attack_dmg << "!" << endl;
             Enemy.takeDamage(attack_dmg);
+
+            DrawChacters_AND_HealthBar(Player, Enemy);
+            cout << string(MARGIN, ' '); DrawDialog(Player.name, 0); cout << endl;
+            cout << string(MARGIN, ' '); DrawDialog(Player.name, 1); DrawDialog(" deals ", 1); cout << attack_dmg; DrawDialog("!", 1);
+            PressEnter();
         }
 
         if (Action == "Block"){
             Player.SetState("Blocking");
+
+            DrawChacters_AND_HealthBar(Player, Enemy);
+            cout << string(MARGIN, ' '); DrawDialog(Player.name,0); cout << endl;
+            cout << string(MARGIN, ' '); DrawDialog(Player.name,1); DrawDialog(" is blocking!",1);
+            PressEnter();
         }
 
         if (Action == "Dodge"){
             Player.SetState("Dodging");
+
+            DrawChacters_AND_HealthBar(Player, Enemy);
+            cout << string(MARGIN, ' '); DrawDialog(Player.name,0); cout << endl;
+            cout << string(MARGIN, ' '); DrawDialog(Player.name,1); DrawDialog(" is dodging!",1);
+            PressEnter();
         }
 
         if (Action == "Heal"){
             int Heal_amount = randomiser(50, 10 , Player.health);
             Player.useHeal(Heal_amount);
-            cout << Player.name << " healed " << Heal_amount << "!" << endl;
+
+            DrawChacters_AND_HealthBar(Player, Enemy);
+            cout << string(MARGIN, ' '); DrawDialog(Player.name,0); cout << endl;
+            cout << string(MARGIN, ' '); DrawDialog(Player.name, 1); DrawDialog(" healed ", 1); cout << Heal_amount; DrawDialog("!", 1);
+            PressEnter();
         }
 
     }
@@ -163,41 +219,73 @@ void Battle(Player &Player, Enemy &Enemy, string Action, string FirstMove){
             if (Player.state == "Blocking"){
                 int block_dmg = randomiser(50, 0, attack_dmg);
                 attack_dmg -= block_dmg;
-                cout << Player.name << " blocked " << block_dmg << "!" << endl;
+
+                DrawChacters_AND_HealthBar(Player, Enemy);
+                cout << string(MARGIN, ' '); DrawDialog(Player.name, 0); cout << endl;
+                cout << string(MARGIN, ' '); DrawDialog(Player.name, 1); DrawDialog(" blocked ", 1); cout << block_dmg; DrawDialog("!", 1);
+                PressEnter();
             }
             if (Player.state == "Dodging"){
                 int dodge_chance = randomiser(70, 0, 100);
                 if (dodge_chance > 30){
                     attack_dmg = 0;
-                    cout << Player.name << " Dodged!" << endl;
+                
+                    DrawChacters_AND_HealthBar(Player, Enemy);
+                    cout << string(MARGIN, ' '); DrawDialog(Player.name, 0); cout << endl;
+                    cout << string(MARGIN, ' '); DrawDialog(Player.name, 1); DrawDialog(" Dodged!", 1); cout << endl;
+                    PressEnter();
                 }
                 else{
                     int boost_dmg = randomiser(20, 0, attack_dmg);
                     attack_dmg += boost_dmg;
-                    cout << Player.name << " Got hit!" << endl;
+
+                    DrawChacters_AND_HealthBar(Player, Enemy);
+                    cout << string(MARGIN, ' '); DrawDialog(Player.name, 0); cout << endl;
+                    cout << string(MARGIN, ' '); DrawDialog(Player.name, 1); DrawDialog(" Got hit!", 1); cout << endl;
+                    PressEnter();
                 }
             }
-            cout << Enemy.name << " deals " << attack_dmg << "!" << endl;
             Player.takeDamage(attack_dmg);
+
+            DrawChacters_AND_HealthBar(Player, Enemy);
+            cout << string(MARGIN, ' '); DrawDialog(Enemy.name, 0); cout << endl;
+            cout << string(MARGIN, ' '); DrawDialog(Enemy.name, 1); DrawDialog(" deals ", 1); cout << attack_dmg; DrawDialog("!", 1);
+            PressEnter();
         }
 
         if (Action == "Block"){
             Enemy.SetState("Blocking");
+
+            DrawChacters_AND_HealthBar(Player, Enemy);
+            cout << string(MARGIN, ' '); DrawDialog(Enemy.name,0); cout << endl;
+            cout << string(MARGIN, ' '); DrawDialog(Enemy.name,1); DrawDialog(" is blocking!",1);
+            PressEnter();
         }
 
         if (Action == "Dodge"){
             Enemy.SetState("Dodging");
+
+            DrawChacters_AND_HealthBar(Player, Enemy);
+            cout << string(MARGIN, ' '); DrawDialog(Enemy.name,0); cout << endl;
+            cout << string(MARGIN, ' '); DrawDialog(Enemy.name,1); DrawDialog(" is dodging!",1);
+            PressEnter();
         }
 
         if (Action == "Heal"){
             int Heal_amount = randomiser(50, 10 , Player.health);
             Enemy.useHeal(Heal_amount);
-            cout << Enemy.name << " healed " << Heal_amount << "!" << endl;
+
+            DrawChacters_AND_HealthBar(Player, Enemy);
+            cout << string(MARGIN, ' '); DrawDialog(Enemy.name,0); cout << endl;
+            cout << string(MARGIN, ' '); DrawDialog(Enemy.name, 1); DrawDialog(" healed ", 1); cout << Heal_amount; DrawDialog("!", 1);
+            PressEnter();
         }
 
     }
+
 }
 
+// Decides whether player or enemy goes first, Dodge and Block first, attack second, heal last
 void WhoFirst(Player &Player, Enemy &Enemy, string PlayerTurn, string EnemyTurn){
 
     int Player_priority = 0;
@@ -236,8 +324,11 @@ void WhoFirst(Player &Player, Enemy &Enemy, string PlayerTurn, string EnemyTurn)
         Battle(Player,Enemy,EnemyTurn,"Enemy");
     }
 
+    Player.SetState("Neutral");
+    Enemy.SetState("Neutral");
 }
 
+// Border initializations
 const int BORDER_WIDTH = 105; // Adjustable size of border, affects every draw function.
 const int NUM_SLOT = 4;
 string SLOT[NUM_SLOT];
@@ -257,7 +348,7 @@ void DrawBottomBorder() {
     cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
 }
 
-
+// Draws the options
 void DrawOptions(string SLOT[]){
 
     int n = 0;
@@ -297,21 +388,24 @@ void DrawOptions(string SLOT[]){
 
 }
 
-void DrawDialog(string text){
+// Draws the dialog
+void DrawDialog(string text , int typeSpeed){
 
-    // Max 86 characters per line
-    int length = text.length();
-    int maxlength = BORDER_WIDTH - length - 1;
+    for (int i = 0; i < text.length(); i++){
+        cout << text[i] << flush;
+        Sleep(typeSpeed);
+    }
 
-    cout << "| "; cout << text;
-    cout << string(maxlength, ' ') << "|" << endl;
-
+    //cout << string(maxlength, ' ') << " " << endl;
 }
 
+
+// Character art initialization
 const int CHARACTERS_BORDER = 105;
 const int LEFT_CHAR_POS = 0;
 const int RIGHT_CHAR_POS = 85;
 
+// Draws the characters
 void printCharacters(string char1[], int char1_size, string char2[], int char2_size){
 
     int n = 0;
@@ -411,12 +505,22 @@ string DrawEnemy[DrawEnemy_Lines]= { // array size is number of lines in the dra
 "   .....//||||...."
 };
 
+void DrawChacters_AND_HealthBar(Player &Player, Enemy &Enemy){
+    system("cls");
+    printCharacters(DrawPlayer,DrawPlayer_Lines,DrawEnemy,DrawEnemy_Lines);
+    cout << Player.name << " " << Player.health << "/" << Player.maxHealth; cout << string(85, ' '); cout << Enemy.health << "/" << Enemy.maxHealth << " " << Enemy.name << endl;
+    Player.PlayerHealthBar(); cout << "   "; Enemy.EnemyHealthBar(); cout << endl;
+
+    cout << endl;
+    cout << endl;
+}
+
+
 void DrawMenu(string move,  Player &Player, Enemy &Enemy){
 
-    system("cls");
 
     SLOT[0] = " Attack";
-    SLOT[1] = " Guard";
+    SLOT[1] = " Block";
     SLOT[2] = " Dodge";
     SLOT[3] = " Heal";
 
@@ -439,7 +543,7 @@ void DrawMenu(string move,  Player &Player, Enemy &Enemy){
         SLOT[0] = ">Attack";
     }
     if (x == 1 && y == 1){
-        SLOT[1] = ">Guard";
+        SLOT[1] = ">Block";
     }
     if(x == 0 && y == 0){
         SLOT[2] = ">Dodge";
@@ -448,25 +552,60 @@ void DrawMenu(string move,  Player &Player, Enemy &Enemy){
         SLOT[3] = ">Heal";
     }
 
-    printCharacters(DrawPlayer,DrawPlayer_Lines,DrawEnemy,DrawEnemy_Lines);
-    cout << Player.name << " " << Player.health << "/" << Player.maxHealth << "                                                                                     " << Enemy.health << "/" << Enemy.maxHealth << " " << Enemy.name << endl;
-    Player.PlayerHealthBar(); cout << "   "; Enemy.EnemyHealthBar(); cout << endl;
+    DrawChacters_AND_HealthBar(Player, Enemy);
     DrawTopBorder();
     DrawOptions(SLOT);
     DrawBottomBorder();
 
-    DrawTopBorder();
-    DrawDialog("Test");
-    DrawDialog("awdawdoawidnaowdinawodinaowidnaowdonaowdnawo");
-    DrawDialog("awdawdoawidnaowdinawodinaowidnaowdonaowdnawo");
-    DrawBottomBorder();
+}
+
+string MoveSelect(int x, int y, Player &Player){
+
+    string move;
+
+    if (x == 0 && y == 1){
+       move = Player.Attack();
+    }
+    if (x == 1 && y == 1){
+       move = Player.Block();
+    }
+    if(x == 0 && y == 0){
+       move = Player.Dodge();
+    }
+    if(x == 1 && y == 0){
+       move = Player.Heal();
+    }
+
+    return move;
+}
+
+void InitiateBattle(string PlayerTurn, Player &Player, Enemy &Enemy){
+
+    int EnemyAI = randomiser(100, 1, 4);
+    string EnemyTurn;
+    if (EnemyAI == 1){
+        EnemyTurn = Enemy.Attack();
+    }
+    if (EnemyAI == 2){
+        EnemyTurn = Enemy.Block();
+    }
+    if (EnemyAI == 3){
+        EnemyTurn = Enemy.Dodge();
+    }
+    if (EnemyAI == 4){
+        EnemyTurn = Enemy.Heal();
+    }
+
+    WhoFirst(Player, Enemy, PlayerTurn, EnemyTurn);
 }
 
 void KeySwitch(Player &Player, Enemy &Enemy){
+    
+    bool loop = true;
 
     DrawMenu(" ", Player, Enemy);
 
-    while(true){
+    while(loop){
 
         switch(getch()){
         case KEY_UP:
@@ -481,6 +620,11 @@ void KeySwitch(Player &Player, Enemy &Enemy){
         case KEY_RIGHT:
             DrawMenu("RIGHT", Player, Enemy);
             break;
+        case KEY_ENTER:
+            DrawChacters_AND_HealthBar(Player, Enemy);
+            InitiateBattle(MoveSelect(x,y,Player), Player, Enemy);
+            loop = false;
+            break;
         default:
             break;
         }
@@ -488,16 +632,33 @@ void KeySwitch(Player &Player, Enemy &Enemy){
 
 }
 
+
+
+
+void PressEnter(){
+    cout << endl;
+    cout << endl;
+    cout << endl;
+
+    bool loop = true;
+    cout << "Press ENTER to continue...";
+    while(loop){
+        if (getch() == KEY_ENTER){
+            loop = false;
+        }
+    }
+}
+
 int main(){
 
     srand(time(0));
 
-    Player p1("Jul",100);
-    Enemy e1("Jewl",100);
+    Player p1("Player",100);
+    Enemy e1("Enemy",100);
 
+    while (true){
     KeySwitch(p1,e1);
-
-    cin.get();
+    }
 
     return 0;
 }
