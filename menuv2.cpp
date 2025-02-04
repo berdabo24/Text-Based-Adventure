@@ -560,16 +560,16 @@ const int DrawEnemy1_Lines = 11; // array size is number of lines in the drawing
 string DrawEnemy1[DrawEnemy1_Lines] = {
  //Centaur
 "  <=======]}=====",
-"   --.   /|",
-"   _\"/_.'/",
+"     --.   /|",
+"   _\\''/_.'/",
 " .'._._,.'",
 " :/ \\{}/",
 "(L  /--',----._",
-"    |          \\",
+"    |          \\\\",
 "   : /-\\ .'-'\\ / |",
-"    \\, ||    \\|",
+"    \\\\, ||    \\|",
 "     \\/ ||    ||",
-"       zz    zz"
+"        zz    zz"
 };
 //e3
 const int DrawEnemy2_Lines = 7;
@@ -644,7 +644,7 @@ string happyCream[CreamLines] = {
 "   /  /\\   |   /",
 "  /   \\/ ,  \\_/",
 " /| ,---'    |",
-"/ |/ ,--~    \\ "
+"/ |/ ,--~    \\ ",
 "\\//\\/      .- \\ ",
 " /        /    \\ "
 };
@@ -906,8 +906,8 @@ string Dragon_head[DragonLines] = {
 "             '       ("
 };
 
-const int PieLines = 6;
-string Pie[PieLines] = {
+const int FoodLines = 6;
+string Food[FoodLines] = {
 "      +  (      + ",
 " +        )  + ",
 "    +__..---..__   + ",
@@ -949,6 +949,11 @@ string Mirror[MirrorLines] = {
 " \\\\  |   |     |    |   |  // ",
 "  \\\\______________________// ",
 "   \\______________________/ "
+};
+
+const int EmptyLines = 11;
+string Empty[EmptyLines] = {
+" "
 };
 
 
@@ -1242,64 +1247,94 @@ string optionselect(string text, string array[], int arraysize, string *characte
 
 void Bedroom(Player &Player){
 
-    DrawDialog("You wake up in an unfamiliar room. It's filled with a lot of cute furniture and decorations. "
-               "The bed you're on feels very soft and comfortable as if made of fluff. ", 1);
-    DrawDialog("\n\nYou could not remember what happened, or how you even got here. The only thing you're certain of is that your head hurts A LOT. ", 1);
+    DrawDialog("You wake up in an unfamiliar room. \nIt's filled with a lot of cute furniture and decorations. "
+               "\nThe bed you're on feels very soft and comfortable as if made of fluff. ", 1);
+    DrawDialog("\n\nYou could not remember what happened, or how you even got here. \nThe only thing you're certain of is that your head hurts A LOT. ", 1);
     DrawDialog("\n\nIn your state of confusion, a soft-looking bunny comes into the room. \n\n", 1);
     system("pause");
 
     system("cls");
     printMidCharacter(happyCream,CreamLines);
-    cout << string(50, ' '); cout << "???" << endl;
-    DrawDialog_Margin(" 'Oh! You're finally awake! '\n\n", 2);
+    cout << string(50, ' '); cout << "???" << endl << endl;
+    DrawDialog_Margin("'Oh! You're finally awake! '\n\n", 2);
     DrawDialog_Margin("The bunny said, hopping excitedly towards you.\n\n", 1);
+    cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
     system("pause");
 
     system("cls");
     printMidCharacter(neutralCream,CreamLines);
-    cout << string(50, ' '); cout << "???" << endl;
-    DrawDialog_Margin("'My husband and I found you sleeping on the ground at the Berry Garden.' \n", 2);
-    DrawDialog_Margin("Thank goodness no wild Prunicus got to you before we did.\n", 2);
-    DrawDialog_Margin("'What's your name, child?'\n", 2);
+    cout << string(50, ' '); cout << "???" << endl << endl;
+    DrawDialog_Margin("'My husband and I found you sleeping on the ground at the Berry Garden. \n", 2);
+    DrawDialog_Margin("Thank goodness no wild Prunicus got to you before we did.\n\n", 2);
+    cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+    system("pause");
+
+    system("cls");
+    printMidCharacter(neutralCream,CreamLines);
+    cout << string(50, ' '); cout << " " << endl << endl;
+    DrawDialog_Margin("What's your name, child?'\n\n", 2);
     DrawDialog_Margin("Your name: ", 2);
     getline (cin, Player.name);
 
     system("cls");
     printMidCharacter(happyCream,CreamLines);
-    cout << string(50, ' '); cout << "???" << endl;
-    DrawDialog_Margin("???: ", 1); cout << Player.name; DrawDialog("! What a lovely name!'\n\n", 2);
+    cout << string(50, ' '); cout << "???" << endl << endl;
+    DrawDialog_Margin("'", 1); cout << Player.name; DrawDialog("! What a lovely name!'\n\n", 2);
     DrawDialog_Margin("The bunny jumps in joy.\n\n", 1);
+    cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
     system("pause");
 
     system("cls");
     printMidCharacter(neutralCream,CreamLines);
     cout << string(50, ' '); cout << "Cream" << endl;
-
     cout << endl;
-    DrawDialog_Margin("Cream: 'I'm Cream! My husband is downstairs having lunch. You should join us when you're ready.' \n\n", 2 );
-    DrawDialog_Margin("The bunny hops out of the room.\n\n", 1);
+    DrawDialog_Margin("'I'm Cream! My husband is downstairs having lunch. You should join us when you're ready.' \n\n", 2 );
+    DrawDialog_Margin("The bunny hops out of the room.", 1);
     cout << endl << endl;
+    cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
     system("pause");
 
     system("cls");
 
+    string choice;
+    do{
     string option1[4] = {"Go back to sleep","Check the mirror", "Use the bathroom", "Go downstairs"};
-    string choice = optionselect("What would you like to do?", option1, 4, Door, DoorLines);
+    choice = optionselect("What would you like to do?", option1, 4, Door, DoorLines);
 
     if (choice == "Go back to sleep"){
-        DrawDialog("You decided to lie down for a few more minutes. ", 1);
+        system("cls");
+        printMidCharacter(Empty,EmptyLines);
+        cout << endl << endl;
+        DrawDialog_Margin("You decided to lie down for a few more minutes. \n\n", 1);
+        cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
     }
     else if (choice == "Check the mirror"){
-        DrawDialog("You look like your normal self, just a bit more well-rested than usual. Perhaps you needed that sleep more than anything.", 1);
+        system("cls");
+        printMidCharacter(Mirror,MirrorLines);
+        cout << endl << endl;
+        DrawDialog_Margin("You look like your normal self, just a bit more well-rested than usual.\n", 1);
+        DrawDialog_Margin("Perhaps you needed that sleep more than anything.\n\n", 1);
+        cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
     }
     else if (choice == "Use the bathroom"){
-        DrawDialog("You feel refreshed.", 1);
+        system("cls");
+        printMidCharacter(Empty,EmptyLines);
+        cout << endl << endl;
+        DrawDialog_Margin("You feel refreshed.\n\n", 1);
+        cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
     }
     else if (choice == "Go downstairs"){
-        DrawDialog("You got off the bed and exited the room. ", 1);
-        DrawDialog("\nAs you walked downstairs, you noticed a few portraits of a happy family. One of the portraits was of Cream, a bear, and a bear cub. ", 1);
+        system("cls");
+        printMidCharacter(Empty,EmptyLines);
+        cout << endl << endl;
+        DrawDialog_Margin("You got off the bed and exited the room. \n", 1);
+        DrawDialog_Margin("As you walked downstairs, you noticed a few portraits of a happy family. \n", 1);
+        DrawDialog_Margin("One of the portraits was of Cream, a bear, and a bear cub. \n\n", 1);
+        cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
     }
     PressEnter();
+    }while (choice != "Go downstairs");
+
     //DiningRoom(Player);
 }
 
