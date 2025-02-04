@@ -152,6 +152,12 @@ string MoveSelect(int x, int y, Player &Player);
 void InitiateBattle(string PlayerTurn, Player &Player, Enemy &Enemy);
 void KeySwitch(Player &Player, Enemy &Enemy);
 void PressEnter();
+void House(Player &Player);
+void TrainingQuest(Player &Player);
+void TrainingGrounds(Player &Player);
+void MarketQuest(Player &Player);
+void Market(Player &Player);
+void BerryQuest(Player &Player);
 
 
 
@@ -1369,273 +1375,6 @@ void Bedroom(Player &Player){
 
 }
 
-void House(Player &Player){
-    //What do you want to do in the house?
-    do{
-    string option1[4] = {"Talk to Teddy","Talk to Cream", "Upstairs", "Leave the house"};
-    choice = optionselect("What would you like to do?", option1, 4, Empty, EmptyLines);
-
-    //Talk to Teddy
-    if (choice == "Talk to Teddy"){
-        system("cls");
-        printMidCharacter(Empty,EmptyLines);
-        cout << endl;
-        DrawDialog_Margin("You go to the living room to talk to Teddy. \n\n", 1);
-        cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-        system("pause");
-
-        system("cls");
-        printMidCharacter(Empty,EmptyLines);
-        cout << endl;
-        DrawDialog_Margin("The living room has three comfortable-looking couches,\n\n", 1);
-        DrawDialog_Margin("one longer couch facing the television,\n\n", 1);
-        DrawDialog_Margin("while the other two face each other.  \n\n", 1);
-        cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-        system("pause");
-
-        system("cls");
-        printMidCharacter(Empty,EmptyLines);
-        cout << endl;
-        DrawDialog_Margin("The wall behind the long couch has a couple of watercolor paintings.\n\n", 1);
-        DrawDialog_Margin("There are drawers on each side of the long couch, \n\n", 1);
-        DrawDialog_Margin("both with small portraits of happy family photos on them.  \n\n", 1);
-        cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-        system("pause");
-
-        system("cls");
-        printMidCharacter(Empty,EmptyLines);
-        cout << endl;
-        DrawDialog_Margin("You see Teddy attentively watching the kingdom news on the television.\n\n", 1);
-        cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-        system("pause");
-        
-        system("cls");
-        printMidCharacter(happyTeddy,TeddyLines);
-        cout << string(50, ' '); cout << "Teddy" << endl << endl;
-        DrawDialog_Margin("Hey kiddo! Back already? The kingdom is pretty big.\n\n", 2);
-        DrawDialog_Margin("I'm sure you have a lot of places to wander around!  \n\n", 2);
-        cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-        system("pause");
-
-        //What do you want to talk about with Teddy?
-        do{
-        system("cls");
-        string option2[4] = {"Kingdom affairs","Watercolor paintings", "Family photo", "Goodbye!"};
-        choice = optionselect("", option2, 4, neutralTeddy, TeddyLines);
-        cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-
-        if (choice == "Kingdom affairs"){
-            system("cls");
-            printMidCharacter(neutralTeddy,TeddyLines);
-            cout << string(50, ' '); cout << "Teddy" << endl << endl;
-            DrawDialog_Margin("Seems like the prices for berries have increased again. \n\n", 2);
-            DrawDialog_Margin("It's better to just pick the berries off the bushes ourselves! \n\n", 2);
-            cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-            system("pause");
-
-            system("cls");
-            printMidCharacter(happyTeddy,TeddyLines);
-            cout << string(50, ' '); cout << "Teddy" << endl << endl;
-            DrawDialog_Margin("HARHARHAR! \n\n", 2);
-            cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-        }
-        else if (choice == "Watercolor paintings"){
-            system("cls");
-            printMidCharacter(neutralTeddy,TeddyLines);
-            cout << string(50, ' '); cout << "Teddy" << endl << endl;
-            DrawDialog_Margin("Oh those watercolor paintings? The frog triplets made those. \n\n", 2);
-            DrawDialog_Margin("Talented bunch, that's for sure! \n\n", 2);
-            DrawDialog_Margin("If only I could tell the difference between the three... \n\n", 2);
-            cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-        }
-        else if (choice == "Family photo"){
-            system("cls");
-            printMidCharacter(happyTeddy,TeddyLines);
-            cout << string(50, ' '); cout << "Teddy" << endl << endl;
-            DrawDialog_Margin("Ah~ Those were the days when our little cub was... well, little! \n\n", 2);
-            DrawDialog_Margin("He's all grown up now, living on his own and such!  \n\n", 2);
-            DrawDialog_Margin("It's enough to make a grown bear cry! \n\n", 2);
-            cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-        }
-        else if (choice == "Goodbye!"){
-            system("cls");
-            printMidCharacter(happyTeddy,TeddyLines);
-            cout << string(50, ' '); cout << "Teddy" << endl << endl;
-            DrawDialog_Margin("See ya later, kiddo! \n\n", 2);
-            cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-        }
-        system("pause");
-        }while (choice != "Goodbye!");
-    }
-
-    //Talk to Cream
-    else if (choice == "Talk to Cream"){
-        system("cls");
-        printMidCharacter(Empty,EmptyLines);
-        cout << endl;
-        DrawDialog_Margin("You go to the kitchen to talk to Cream. \n\n", 1);
-        cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-        system("pause");
-
-        system("cls");
-        printMidCharacter(Empty,EmptyLines);
-        cout << endl;
-        DrawDialog_Margin("The kitchen is clean and tidy. \n\n", 1);
-        DrawDialog_Margin("It seems like Cream has already cleaned up after baking the delicious blueberry pie.\n\n", 1);
-        DrawDialog_Margin("You see various utensils and cutleries around, \n\n", 1);
-        DrawDialog_Margin("all meant to prepare specific dishes and desserts. \n\n", 1);
-        cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-        system("pause");
-
-        system("cls");
-        printMidCharacter(Empty,EmptyLines);
-        cout << endl;
-        DrawDialog_Margin("There is a drawing on the fridge, \n\n", 1);
-        DrawDialog_Margin("nicely placed with cute berry-shaped magnets holding them up. \n\n", 1);
-        cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-        system("pause");
-
-        system("cls");
-        printMidCharacter(Empty,EmptyLines);
-        cout << endl;
-        DrawDialog_Margin("Cream is munching on a carrot next to the fridge. \n\n", 1);
-        cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-        system("pause");
-        
-        system("cls");
-        printMidCharacter(happyCream,CreamLines);
-        cout << string(50, ' '); cout << "Cream" << endl << endl;
-        DrawDialog_Margin("Is there anything you need? \n\n", 2);
-        cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-        system("pause");
-
-        //What do you want to talk about with Cream?
-        do{
-        system("cls");
-        string option2[4] = {"What's for dinner?","The drawing", "The magnets", "Goodbye!"};
-        choice = optionselect("", option2, 4, neutralCream, CreamLines);
-
-        if (choice == "What's for dinner?"){
-            system("cls");
-            printMidCharacter(neutralCream,CreamLines);
-            cout << string(50, ' '); cout << "Cream" << endl << endl;
-            DrawDialog_Margin("Hungry for dinner already?  \n\n", 2);
-            DrawDialog_Margin("We're having berry salad for dinner!  \n\n", 2);
-            cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-            system("pause");
-
-            system("cls");
-            printMidCharacter(happyCream,CreamLines);
-            cout << string(50, ' '); cout << "Cream" << endl << endl;
-            DrawDialog_Margin("A wide variety of berries with some green! \n\n", 2);
-            cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-        }
-        else if (choice == "The drawing"){
-            system("cls");
-            printMidCharacter(happyCream,CreamLines);
-            cout << string(50, ' '); cout << "Cream" << endl << endl;
-            DrawDialog_Margin("My dear son made it when he was a little cub. \n\n", 2);
-            DrawDialog_Margin("It was so cute, I just had to hang it up! \n\n", 2);
-            DrawDialog_Margin("It's been up there ever since. \n\n", 2);
-            cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-        }
-        else if (choice == "The magnets"){
-            system("cls");
-            printMidCharacter(happyCream,CreamLines);
-            cout << string(50, ' '); cout << "Cream" << endl << endl;
-            DrawDialog_Margin("Aren't they cute? \n\n", 2);
-            DrawDialog_Margin("They're all different types of berries, \n\n", 2);
-            DrawDialog_Margin("all our favorite kinds! \n\n", 2);
-            cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-        }
-        else if (choice == "Goodbye!"){
-            system("cls");
-            printMidCharacter(happyCream,CreamLines);
-            cout << string(50, ' '); cout << "Cream" << endl << endl;
-            DrawDialog_Margin("You're always welcome here. \n\n", 2);
-            cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-        }
-        system("pause");
-        }while (choice != "Goodbye!");
-    }
-
-    //Upstairs
-    else if (choice == "Upstairs"){
-        system("cls");
-        printMidCharacter(Empty,EmptyLines);
-        cout << endl;
-        DrawDialog_Margin("You go upstairs. \n\n", 1);
-        cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-        system("pause");
-
-        system("cls");
-        printMidCharacter(Empty,EmptyLines);
-        cout << endl;
-        DrawDialog_Margin("The room is filled with a lot of cute furniture and decorations. \n\n", 1);
-        DrawDialog_Margin("The bed is very soft and comfortable as if made of fluff. \n\n", 1);
-        DrawDialog_Margin("The dresser has a mirror big enough to see your entire upper body, clean and shiny.  \n\n", 1);
-        cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-        system("pause");
-
-        system("cls");
-        printMidCharacter(Empty,EmptyLines);
-        cout << endl;
-        DrawDialog_Margin("The bathroom is attached to the room, \n\n", 1);
-        DrawDialog_Margin("making it convenient when you really need to go handle business. \n\n", 1);
-        cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-        system("pause");
-
-        //What do you want to talk about with Cream?
-        do{
-        system("cls");
-        string option1[4] = {"Take a nap", "Check the mirror", "Use the bathroom", "Go downstairs"};
-        choice = optionselect("What would you like to do?", option1, 4, Door, DoorLines);
-
-        if (choice == "Take a nap"){
-            system("cls");
-            printMidCharacter(Empty,EmptyLines);
-            cout << endl;
-            DrawDialog_Margin("You laid down on the comfortable bed and took a nap. \n\n", 1);
-            cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-        }
-        else if (choice == "Check the mirror"){
-            system("cls");
-            printMidCharacter(Mirror,MirrorLines);
-            cout << endl;
-            DrawDialog_Margin("You look like your normal self.\n\n", 1);
-            cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-        }
-        else if (choice == "Use the bathroom"){
-            system("cls");
-            printMidCharacter(Empty,EmptyLines);
-            cout << endl;
-            DrawDialog_Margin("You feel refreshed.\n\n", 1);
-            cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-        }
-        else if (choice == "Go downstairs"){
-            system("cls");
-            printMidCharacter(Empty,EmptyLines);
-            cout << endl;
-            DrawDialog_Margin("You exited the room. \n\n", 1);
-            cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-        }
-        system("pause");
-        }while (choice != "Go downstairs");
-    }
-
-    }while (choice != "Leave the house");
-
-    //Leave the house
-    system("cls");
-    printMidCharacter(Empty,EmptyLines);
-    cout << endl;
-    DrawDialog_Margin("You leave the humbe abode.\n\n", 1);
-    DrawDialog_Margin("Teddy and Cream wave at you goodbye.\n\n", 1);
-    cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-    system("pause");
-
-}
-
 void DiningRoom(Player &Player){
     
     system("cls");
@@ -1919,6 +1658,12 @@ void DiningRoom(Player &Player){
     choice = optionselect(" ", option5, 2, neutralCream, CreamLines);
 
     if (choice == "Stay here a bit longer"){
+        system("cls");
+        printMidCharacter(Empty,EmptyLines);
+        cout << endl;
+        DrawDialog_Margin("You look around Cream and Teddy's house a little longer.\n\n", 2);
+        cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+        system("pause");
         House(Player);
     }
     else if (choice == "Leave the house"){
@@ -1934,6 +1679,272 @@ void DiningRoom(Player &Player){
 }
 
 
+void House(Player &Player){
+    //What do you want to do in the house?
+    do{
+    string option1[4] = {"Talk to Teddy","Talk to Cream", "Upstairs", "Leave the house"};
+    choice = optionselect("What would you like to do?", option1, 4, Empty, EmptyLines);
+
+    //Talk to Teddy
+    if (choice == "Talk to Teddy"){
+        system("cls");
+        printMidCharacter(Empty,EmptyLines);
+        cout << endl;
+        DrawDialog_Margin("You go to the living room to talk to Teddy. \n\n", 1);
+        cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+        system("pause");
+
+        system("cls");
+        printMidCharacter(Empty,EmptyLines);
+        cout << endl;
+        DrawDialog_Margin("The living room has three comfortable-looking couches,\n\n", 1);
+        DrawDialog_Margin("one longer couch facing the television,\n\n", 1);
+        DrawDialog_Margin("while the other two face each other.  \n\n", 1);
+        cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+        system("pause");
+
+        system("cls");
+        printMidCharacter(Empty,EmptyLines);
+        cout << endl;
+        DrawDialog_Margin("The wall behind the long couch has a couple of watercolor paintings.\n\n", 1);
+        DrawDialog_Margin("There are drawers on each side of the long couch, \n\n", 1);
+        DrawDialog_Margin("both with small portraits of happy family photos on them.  \n\n", 1);
+        cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+        system("pause");
+
+        system("cls");
+        printMidCharacter(Empty,EmptyLines);
+        cout << endl;
+        DrawDialog_Margin("You see Teddy attentively watching the kingdom news on the television.\n\n", 1);
+        cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+        system("pause");
+        
+        system("cls");
+        printMidCharacter(happyTeddy,TeddyLines);
+        cout << string(50, ' '); cout << "Teddy" << endl << endl;
+        DrawDialog_Margin("Hey kiddo! Back already? The kingdom is pretty big.\n\n", 2);
+        DrawDialog_Margin("I'm sure you have a lot of places to wander around!  \n\n", 2);
+        cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+        system("pause");
+
+        //What do you want to talk about with Teddy?
+        do{
+        system("cls");
+        string option2[4] = {"Kingdom affairs","Watercolor paintings", "Family photo", "Goodbye!"};
+        choice = optionselect("", option2, 4, neutralTeddy, TeddyLines);
+        cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+
+        if (choice == "Kingdom affairs"){
+            system("cls");
+            printMidCharacter(neutralTeddy,TeddyLines);
+            cout << string(50, ' '); cout << "Teddy" << endl << endl;
+            DrawDialog_Margin("Seems like the prices for berries have increased again. \n\n", 2);
+            DrawDialog_Margin("It's better to just pick the berries off the bushes ourselves! \n\n", 2);
+            cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+            system("pause");
+
+            system("cls");
+            printMidCharacter(happyTeddy,TeddyLines);
+            cout << string(50, ' '); cout << "Teddy" << endl << endl;
+            DrawDialog_Margin("HARHARHAR! \n\n", 2);
+            cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+        }
+        else if (choice == "Watercolor paintings"){
+            system("cls");
+            printMidCharacter(neutralTeddy,TeddyLines);
+            cout << string(50, ' '); cout << "Teddy" << endl << endl;
+            DrawDialog_Margin("Oh those watercolor paintings? The frog triplets made those. \n\n", 2);
+            DrawDialog_Margin("Talented bunch, that's for sure! \n\n", 2);
+            DrawDialog_Margin("If only I could tell the difference between the three... \n\n", 2);
+            cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+        }
+        else if (choice == "Family photo"){
+            system("cls");
+            printMidCharacter(happyTeddy,TeddyLines);
+            cout << string(50, ' '); cout << "Teddy" << endl << endl;
+            DrawDialog_Margin("Ah~ Those were the days when our little cub was... well, little! \n\n", 2);
+            DrawDialog_Margin("He's all grown up now, living on his own and such!  \n\n", 2);
+            DrawDialog_Margin("It's enough to make a grown bear cry! \n\n", 2);
+            cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+        }
+        else if (choice == "Goodbye!"){
+            system("cls");
+            printMidCharacter(happyTeddy,TeddyLines);
+            cout << string(50, ' '); cout << "Teddy" << endl << endl;
+            DrawDialog_Margin("See ya later, kiddo! \n\n", 2);
+            cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+        }
+        system("pause");
+        }while (choice != "Goodbye!");
+    }
+
+    //Talk to Cream
+    else if (choice == "Talk to Cream"){
+        system("cls");
+        printMidCharacter(Empty,EmptyLines);
+        cout << endl;
+        DrawDialog_Margin("You go to the kitchen to talk to Cream. \n\n", 1);
+        cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+        system("pause");
+
+        system("cls");
+        printMidCharacter(Empty,EmptyLines);
+        cout << endl;
+        DrawDialog_Margin("The kitchen is clean and tidy. \n\n", 1);
+        DrawDialog_Margin("It seems like Cream has already cleaned up after baking the delicious blueberry pie.\n\n", 1);
+        DrawDialog_Margin("You see various utensils and cutleries around, \n\n", 1);
+        DrawDialog_Margin("all meant to prepare specific dishes and desserts. \n\n", 1);
+        cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+        system("pause");
+
+        system("cls");
+        printMidCharacter(Empty,EmptyLines);
+        cout << endl;
+        DrawDialog_Margin("There is a drawing on the fridge, \n\n", 1);
+        DrawDialog_Margin("nicely placed with cute berry-shaped magnets holding them up. \n\n", 1);
+        cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+        system("pause");
+
+        system("cls");
+        printMidCharacter(Empty,EmptyLines);
+        cout << endl;
+        DrawDialog_Margin("Cream is munching on a carrot next to the fridge. \n\n", 1);
+        cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+        system("pause");
+        
+        system("cls");
+        printMidCharacter(happyCream,CreamLines);
+        cout << string(50, ' '); cout << "Cream" << endl << endl;
+        DrawDialog_Margin("Is there anything you need? \n\n", 2);
+        cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+        system("pause");
+
+        //What do you want to talk about with Cream?
+        do{
+        system("cls");
+        string option2[4] = {"What's for dinner?","The drawing", "The magnets", "Goodbye!"};
+        choice = optionselect("", option2, 4, neutralCream, CreamLines);
+
+        if (choice == "What's for dinner?"){
+            system("cls");
+            printMidCharacter(neutralCream,CreamLines);
+            cout << string(50, ' '); cout << "Cream" << endl << endl;
+            DrawDialog_Margin("Hungry for dinner already?  \n\n", 2);
+            DrawDialog_Margin("We're having berry salad for dinner!  \n\n", 2);
+            cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+            system("pause");
+
+            system("cls");
+            printMidCharacter(happyCream,CreamLines);
+            cout << string(50, ' '); cout << "Cream" << endl << endl;
+            DrawDialog_Margin("A wide variety of berries with some green! \n\n", 2);
+            cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+        }
+        else if (choice == "The drawing"){
+            system("cls");
+            printMidCharacter(happyCream,CreamLines);
+            cout << string(50, ' '); cout << "Cream" << endl << endl;
+            DrawDialog_Margin("My dear son made it when he was a little cub. \n\n", 2);
+            DrawDialog_Margin("It was so cute, I just had to hang it up! \n\n", 2);
+            DrawDialog_Margin("It's been up there ever since. \n\n", 2);
+            cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+        }
+        else if (choice == "The magnets"){
+            system("cls");
+            printMidCharacter(happyCream,CreamLines);
+            cout << string(50, ' '); cout << "Cream" << endl << endl;
+            DrawDialog_Margin("Aren't they cute? \n\n", 2);
+            DrawDialog_Margin("They're all different types of berries, \n\n", 2);
+            DrawDialog_Margin("all our favorite kinds! \n\n", 2);
+            cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+        }
+        else if (choice == "Goodbye!"){
+            system("cls");
+            printMidCharacter(happyCream,CreamLines);
+            cout << string(50, ' '); cout << "Cream" << endl << endl;
+            DrawDialog_Margin("You're always welcome here. \n\n", 2);
+            cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+        }
+        system("pause");
+        }while (choice != "Goodbye!");
+    }
+
+    //Upstairs
+    else if (choice == "Upstairs"){
+        system("cls");
+        printMidCharacter(Empty,EmptyLines);
+        cout << endl;
+        DrawDialog_Margin("You go upstairs. \n\n", 1);
+        cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+        system("pause");
+
+        system("cls");
+        printMidCharacter(Empty,EmptyLines);
+        cout << endl;
+        DrawDialog_Margin("The room is filled with a lot of cute furniture and decorations. \n\n", 1);
+        DrawDialog_Margin("The bed is very soft and comfortable as if made of fluff. \n\n", 1);
+        DrawDialog_Margin("The dresser has a mirror big enough to see your entire upper body, clean and shiny.  \n\n", 1);
+        cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+        system("pause");
+
+        system("cls");
+        printMidCharacter(Empty,EmptyLines);
+        cout << endl;
+        DrawDialog_Margin("The bathroom is attached to the room, \n\n", 1);
+        DrawDialog_Margin("making it convenient when you really need to go handle business. \n\n", 1);
+        cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+        system("pause");
+
+        //What do you want to talk about with Cream?
+        do{
+        system("cls");
+        string option1[4] = {"Take a nap", "Check the mirror", "Use the bathroom", "Go downstairs"};
+        choice = optionselect("What would you like to do?", option1, 4, Door, DoorLines);
+
+        if (choice == "Take a nap"){
+            system("cls");
+            printMidCharacter(Empty,EmptyLines);
+            cout << endl;
+            DrawDialog_Margin("You laid down on the comfortable bed and took a nap. \n\n", 1);
+            cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+        }
+        else if (choice == "Check the mirror"){
+            system("cls");
+            printMidCharacter(Mirror,MirrorLines);
+            cout << endl;
+            DrawDialog_Margin("You look like your normal self.\n\n", 1);
+            cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+        }
+        else if (choice == "Use the bathroom"){
+            system("cls");
+            printMidCharacter(Empty,EmptyLines);
+            cout << endl;
+            DrawDialog_Margin("You feel refreshed.\n\n", 1);
+            cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+        }
+        else if (choice == "Go downstairs"){
+            system("cls");
+            printMidCharacter(Empty,EmptyLines);
+            cout << endl;
+            DrawDialog_Margin("You exited the room. \n\n", 1);
+            cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+        }
+        system("pause");
+        }while (choice != "Go downstairs");
+    }
+
+    }while (choice != "Leave the house");
+
+    //Leave the house
+    system("cls");
+    printMidCharacter(Empty,EmptyLines);
+    cout << endl;
+    DrawDialog_Margin("You leave the humbe abode.\n\n", 1);
+    DrawDialog_Margin("Teddy and Cream wave at you goodbye.\n\n", 1);
+    cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+    system("pause");
+
+}
 
 void Outside(Player &Player){
     system("cls");
@@ -1996,15 +2007,138 @@ void Outside(Player &Player){
 
 }
 
+void TrainingGrounds(Player &Player){
+    do{
+    string option1[3] = {"Talk to Commander Yahoo","Check on the fainted Papadum Soldier", "Leave the Training Grounds"};
+    choice = optionselect("What would you like to do?", option1, 3, Empty, EmptyLines);
+
+        if (choice == "Talk to Commander Yahoo"){
+        //What do you want to talk about with Yahoo?
+        do{
+        system("cls");
+        string option2[4] = {"The Papadum Army","Training", "Teleporter", "Goodbye!"};
+        choice = optionselect("Need anything, "+ Player.name +"?", option2, 4, neutralYahoo, YahooLines);
+
+        if (choice == "The Papadum Army"){
+            system("cls");
+            printMidCharacter(neutralYahoo,YahooLines);
+            cout << string(50, ' '); cout << "Commander Yahoo" << endl << endl;
+            DrawDialog_Margin("The Papadum Army serves to protect the Potato Kingdom. \n\n", 2);
+            DrawDialog_Margin("We never had the chance to actually fight a war \n\n", 2);
+            DrawDialog_Margin("since the Potato Kingdom has always been peaceful. \n\n", 2);
+            cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+            system("pause");
+
+            system("cls");
+            printMidCharacter(neutralYahoo,YahooLines);
+            cout << string(50, ' '); cout << "Commander Yahoo" << endl << endl;
+            DrawDialog_Margin("We mostly goof around and make jokes. \n\n", 2);
+            DrawDialog_Margin("Training is serious though. \n\n", 2);
+            cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+        }
+        else if (choice == "Training"){
+            system("cls");
+            printMidCharacter(neutralYahoo,YahooLines);
+            cout << string(50, ' '); cout << "Commander Yahoo" << endl << endl;
+            DrawDialog_Margin("We train whenever we can. \n\n", 2);
+            DrawDialog_Margin("The public likes to join us whenever we train so we prefer training here.\n\n", 2);
+            DrawDialog_Margin("Plus, maybe we could recruit potential soldiers from the civilians. \n\n", 2);
+            cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+            system("pause");
+
+            system("cls");
+            printMidCharacter(neutralYahoo,YahooLines);
+            cout << string(50, ' '); cout << "Commander Yahoo" << endl << endl;
+            DrawDialog_Margin("The soldiers being beaten by regular civilians is pretty humbling too,\n\n", 2);
+            DrawDialog_Margin("it becomes great motivation for them to train harder. \n\n", 2);
+            cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+            system("pause");
+
+            system("cls");
+            printMidCharacter(neutralYahoo,YahooLines);
+            cout << string(50, ' '); cout << "Commander Yahoo" << endl << endl;
+            DrawDialog_Margin("Pride and ego could be great motivators if you know how to use them right. \n\n", 2);
+            cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+        }
+        else if (choice == "Teleporter"){
+            system("cls");
+            printMidCharacter(neutralYahoo,YahooLines);
+            cout << string(50, ' '); cout << "Commander Yahoo" << endl << endl;
+            DrawDialog_Margin("The Potato Queen likes to teleport from place to place in the kingdom. \n\n", 2);
+            cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+            system("pause");
+
+            system("cls");
+            printMidCharacter(neutralYahoo,YahooLines);
+            cout << string(50, ' '); cout << "Commander Yahoo" << endl << endl;
+            DrawDialog_Margin("She could walk, \n\n", 2);
+            DrawDialog_Margin("but 'a potato can only walk so far' she says. \n\n", 2);
+            cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+            system("pause");
+
+            system("cls");
+            printMidCharacter(neutralYahoo,YahooLines);
+            cout << string(50, ' '); cout << "Commander Yahoo" << endl << endl;
+            DrawDialog_Margin("She's probably just lazy. \n\n", 2);
+            cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+        }
+        else if (choice == "Goodbye!"){
+            system("cls");
+            printMidCharacter(neutralYahoo,YahooLines);
+            cout << string(50, ' '); cout << "Commander Yahoo" << endl << endl;
+            DrawDialog_Margin("Good luck finding your way. \n\n", 2);
+            cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+        }
+        system("pause");
+        }while (choice != "Goodbye!");
+        }
+
+        else if (choice == "Check on the fainted Papadum Soldier"){
+            system("cls");
+            printMidCharacter(Empty,EmptyLines);
+            cout << endl;
+            DrawDialog_Margin("You walk over to the fainted Papadum Soldier. \n\n", 1);
+            cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+            system("pause");
+
+            system("cls");
+            printMidCharacter(Empty,EmptyLines);
+            cout << endl;
+            DrawDialog_Margin("A few of the other Papadum Soldiers surround the Papadum Soldier you defeated, \n\n", 1);
+            DrawDialog_Margin("who is now fainted on the ground. \n\n", 1);
+            cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+            system("pause");
+
+            system("cls");
+            printMidCharacter(Empty,EmptyLines);
+            cout << endl;
+            DrawDialog_Margin("Surely, he's fine. \n\n", 1);
+            cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+            system("pause");
+        }
+    }while (choice != "Leave the Training Grounds");
+
+    //Leave the Training Grounds
+    system("cls");
+    printMidCharacter(neutralYahoo,YahooLines);
+    cout << endl;
+    DrawDialog_Margin("Yahoo nods his head in respect as you leave.\n\n", 1);
+    cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+    system("pause");
+}
+
+
+
 int main(){
 
     srand(time(0));
 
     Player p1("Player",100,DrawPlayer,DrawPlayer_Lines);
     //Bedroom(p1);
-    DiningRoom(p1);
+    //DiningRoom(p1);
     //House(p1);
     //Outside(p1);
+    TrainingGrounds(p1);
 
     //int enemyIndex = 1;
 
