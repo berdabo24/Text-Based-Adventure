@@ -1150,31 +1150,43 @@ int const MID_MARGIN = 40;
 
 void menuselectionbox(string slot[], int slotsize){
 
-    int menuMargin = 17;
+    int menuMargin = 5;
+    int max = 0;
+    int borderLength;
+
+    for (int i = 0; i < slotsize; i++) {
+        int len = slot[i].length();
+        if (slot[i][0] == '>') {
+            len--;  
+        }
+        if (len > max) {
+            max = len;
+        }
+    }   
+    borderLength = max + menuMargin * 2; 
+
 
     // Draw the menu
 
-    int n = 0;
-    cout << string(MID_MARGIN, ' ') << "+-------------------------+" << endl;
+    cout << string(MID_MARGIN, ' ') << "+" << string(borderLength, '-') << "+" << endl;
 
     for (int i = 0; i < slotsize; i++ ){
-        int rmg_space = static_cast<int>(menuMargin - slot[n].length());
+        int rmg_space = static_cast<int>(borderLength - menuMargin - slot[i].length() - 1);
 
-        cout << string(MID_MARGIN, ' ') << "|    ";
-        if (slot[n].find('>') < 1){
-            White_HL(slot[n]);
+        cout << string(MID_MARGIN, ' ') << "|" << string(menuMargin, ' ');
+        if (slot[i].find('>') < 1){
+            White_HL(slot[i]);
         }
         else{
-            cout << slot[n];
+            cout << slot[i];
         }
         if (rmg_space > 0){
-            cout << string(rmg_space, ' ');
+            cout << string(rmg_space + 1, ' ');
         }
-        cout << "    |" << endl;
-        n++;
+        cout << "|" << endl;
     }
 
-    cout << string(MID_MARGIN, ' ') << "+-------------------------+" << endl;
+    cout << string(MID_MARGIN, ' ') << "+" << string(borderLength, '-') << "+" << endl;
 
 }
 
@@ -1408,7 +1420,7 @@ void House(Player &Player){
         //What do you want to talk about with Teddy?
         do{
         system("cls");
-        string option2[4] = {"Kingdom affairs","Paintings", "Family photo", "Goodbye!"};
+        string option2[4] = {"Kingdom affairs","Watercolor paintings", "Family photo", "Goodbye!"};
         choice = optionselect("", option2, 4, neutralTeddy, TeddyLines);
 
         if (choice == "Kingdom affairs"){
@@ -1426,7 +1438,7 @@ void House(Player &Player){
             DrawDialog_Margin("HARHARHAR! \n\n", 2);
             cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
         }
-        else if (choice == "Paintings"){
+        else if (choice == "Watercolor paintings"){
             system("cls");
             printMidCharacter(neutralTeddy,TeddyLines);
             cout << string(50, ' '); cout << "Teddy" << endl << endl;
@@ -1499,10 +1511,10 @@ void House(Player &Player){
         //What do you want to talk about with Cream?
         do{
         system("cls");
-        string option2[4] = {"Dinner?","The drawing", "The magnets", "Goodbye!"};
+        string option2[4] = {"What's for dinner?","The drawing", "The magnets", "Goodbye!"};
         choice = optionselect("", option2, 4, neutralCream, CreamLines);
 
-        if (choice == "Dinner?"){
+        if (choice == "What's for dinner?"){
             system("cls");
             printMidCharacter(neutralCream,CreamLines);
             cout << string(50, ' '); cout << "Cream" << endl << endl;
@@ -1575,22 +1587,21 @@ void House(Player &Player){
         //What do you want to talk about with Cream?
         do{
         system("cls");
-        string option1[4] = {"Go back to sleep", "Check the mirror", "Use the bathroom", "Go downstairs"};
+        string option1[4] = {"Take a nap", "Check the mirror", "Use the bathroom", "Go downstairs"};
         choice = optionselect("What would you like to do?", option1, 4, Door, DoorLines);
 
-        if (choice == "Go back to sleep"){
+        if (choice == "Take a nap"){
             system("cls");
             printMidCharacter(Empty,EmptyLines);
             cout << endl;
-            DrawDialog_Margin("You decided to lie down for a few more minutes. \n\n", 1);
+            DrawDialog_Margin("You laid down on the comfortable bed and took a nap. \n\n", 1);
             cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
         }
         else if (choice == "Check the mirror"){
             system("cls");
             printMidCharacter(Mirror,MirrorLines);
             cout << endl;
-            DrawDialog_Margin("You look like your normal self, just a bit more well-rested than usual.\n\n", 1);
-            DrawDialog_Margin("Perhaps you needed that sleep more than anything.\n\n", 1);
+            DrawDialog_Margin("You look like your normal self.\n\n", 1);
             cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
         }
         else if (choice == "Use the bathroom"){
@@ -1604,34 +1615,23 @@ void House(Player &Player){
             system("cls");
             printMidCharacter(Empty,EmptyLines);
             cout << endl;
-            DrawDialog_Margin("You got off the bed and exited the room. \n\n", 1);
-            DrawDialog_Margin("As you walked downstairs, you noticed a few portraits of a happy family. \n\n", 1);
-            DrawDialog_Margin("One of the portraits was of Cream, a bear, and a bear cub. \n\n", 1);
+            DrawDialog_Margin("You exited the room. \n\n", 1);
             cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
         }
         PressEnter();
         }while (choice != "Go downstairs");
     }
 
-    //Leave the house
-    else if (choice == "Leave the house"){
-        system("cls");
-        printMidCharacter(Empty,EmptyLines);
-        cout << endl << endl;
-        DrawDialog_Margin("You leave the humbe abode.\n", 1);
-        DrawDialog_Margin("Teddy and Cream wave at you goodbye.\n\n", 1);
-        cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-    }
-
     }while (choice != "Leave the house");
 
+    //Leave the house
     system("cls");
     printMidCharacter(Empty,EmptyLines);
-    cout << endl << endl;
-    DrawDialog_Margin("You leave the humbe abode.\n", 1);
+    cout << endl;
+    DrawDialog_Margin("You leave the humbe abode.\n\n", 1);
     DrawDialog_Margin("Teddy and Cream wave at you goodbye.\n\n", 1);
     cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-
+    PressEnter();
 
 }
 
