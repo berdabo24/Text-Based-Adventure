@@ -492,17 +492,17 @@ string DrawPlayer[DrawPlayer_Lines] = { // array size is number of lines in the 
 
 const int DrawEnemy_Lines = 11;
 string DrawEnemy[DrawEnemy_Lines]= { // array size is number of lines in the drawing
-"       ccee88oo",
-"  C8O8O8Q8PoOb o8oo",
-" dOB69QO8PdUOpugoO9bD",
-"CgggbU8OU qOp qOdoUOdcb",
-"    6OuU  /p u gcoUodpP",
-"      \\//  /douUP",
-"        \\////",
-"         |||/ " ,
-"         |||/" ,
-"         |||||" ,
-"   .....//||||...."
+"    cceeoo",
+"  C8O8 Q8PoOb",
+" dO;69QO8P /7  o8oo",
+"Cg(#)bU OU_/OpqO;oUOdb",
+"  dT|6uU /pT ug(_)odP",
+"     \\//   /do;UP",
+"      ;\\ ////(#)",
+"     (#)\\x|x//" ,
+"        /|0|/" ,
+"        ||||\\" ,
+"   ....//||||\\...."
 };
 
 void DrawChacters_AND_HealthBar(Player &Player, Enemy &Enemy){
