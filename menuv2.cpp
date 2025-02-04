@@ -490,7 +490,7 @@ const int DrawEnemy_Lines = 11;
 string DrawEnemy[DrawEnemy_Lines]= { // array size is number of lines in the drawing
 "    cceeoo",
 "  C8O8 Q8PoOb",
-" dO;69QO8P/v7  o8oo",
+" dO;69QO8P /7  o8oo",
 "Cg(#)bU OU_/OpqO;oUOdb",
 "  dT|6uU /pT ug(_)odP",
 "     \\\\//   /do;UP",
