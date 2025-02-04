@@ -130,6 +130,8 @@ void DrawTopBorder();
 void DrawBottomBorder();
 void DrawOptions(string SLOT[]);
 void DrawDialog(string text , int typeSpeed);
+void PlaceDialog(Player &Player, Enemy &Enemy, string character, string text);
+void PlaceDialog(Player &Player, Enemy &Enemy, string character, string text, int variable, string text2);
 void printCharacters(string char1[], int char1_size, string char2[], int char2_size);
 void DrawChacters_AND_HealthBar(Player &Player, Enemy &Enemy);
 void DrawMenu(string move,  Player &Player, Enemy &Enemy);
@@ -150,65 +152,45 @@ void Battle(Player &Player, Enemy &Enemy, string Action, string FirstMove){
                 int block_dmg = randomiser(50, 0, attack_dmg);
                 attack_dmg -= block_dmg;
 
-                DrawChacters_AND_HealthBar(Player, Enemy);
-                cout << string(MARGIN, ' '); DrawDialog(Enemy.name, 0); cout << endl;
-                cout << string(MARGIN, ' '); DrawDialog(Enemy.name, 1); DrawDialog(" blocked ", 1); cout << block_dmg; DrawDialog("!", 1);
-                PressEnter();
+                PlaceDialog(Player, Enemy, "Enemy", " blocked ", block_dmg, "!");
             }
             if (Enemy.state == "Dodging"){
                 int dodge_chance = randomiser(70, 0, 100);
                 if (dodge_chance > 30){
                     attack_dmg = 0;
 
-                    DrawChacters_AND_HealthBar(Player, Enemy);
-                    cout << string(MARGIN, ' '); DrawDialog(Enemy.name, 0); cout << endl;
-                    cout << string(MARGIN, ' '); DrawDialog(Enemy.name, 1); DrawDialog(" Dodged!", 1); cout << endl;
-                    PressEnter();
+                    PlaceDialog(Player, Enemy, "Enemy", " Dodged!");
                 }
                 else{
                     int boost_dmg = randomiser(20, 0, attack_dmg);
                     attack_dmg += boost_dmg;
 
-                    DrawChacters_AND_HealthBar(Player, Enemy);
-                    cout << string(MARGIN, ' '); DrawDialog(Enemy.name, 0); cout << endl;
-                    cout << string(MARGIN, ' '); DrawDialog(Enemy.name, 1); DrawDialog(" Got hit!", 1); cout << endl;
-                    PressEnter();
+                    PlaceDialog(Player, Enemy, "Enemy", " Got hit!");
                 }
             }
             Enemy.takeDamage(attack_dmg);
 
-            DrawChacters_AND_HealthBar(Player, Enemy);
-            cout << string(MARGIN, ' '); DrawDialog(Player.name, 0); cout << endl;
-            cout << string(MARGIN, ' '); DrawDialog(Player.name, 1); DrawDialog(" deals ", 1); cout << attack_dmg; DrawDialog("!", 1);
-            PressEnter();
+            PlaceDialog(Player, Enemy, "Player", " deals ", attack_dmg, "!");
         }
 
         if (Action == "Block"){
             Player.SetState("Blocking");
 
-            DrawChacters_AND_HealthBar(Player, Enemy);
-            cout << string(MARGIN, ' '); DrawDialog(Player.name,0); cout << endl;
-            cout << string(MARGIN, ' '); DrawDialog(Player.name,1); DrawDialog(" is blocking!",1);
-            PressEnter();
+            PlaceDialog(Player, Enemy, "Player", " is blocking!");
         }
 
         if (Action == "Dodge"){
             Player.SetState("Dodging");
 
-            DrawChacters_AND_HealthBar(Player, Enemy);
-            cout << string(MARGIN, ' '); DrawDialog(Player.name,0); cout << endl;
-            cout << string(MARGIN, ' '); DrawDialog(Player.name,1); DrawDialog(" is dodging!",1);
-            PressEnter();
+            PlaceDialog(Player, Enemy, "Player", " is dodging!");
         }
 
         if (Action == "Heal"){
             int Heal_amount = randomiser(50, 10 , Player.health);
-            Player.useHeal(Heal_amount);
-
-            DrawChacters_AND_HealthBar(Player, Enemy);
-            cout << string(MARGIN, ' '); DrawDialog(Player.name,0); cout << endl;
-            cout << string(MARGIN, ' '); DrawDialog(Player.name, 1); DrawDialog(" healed ", 1); cout << Heal_amount; DrawDialog("!", 1);
-            PressEnter();
+            if (Player.health > 0){
+                Player.useHeal(Heal_amount);
+                PlaceDialog(Player, Enemy, "Player", " healed ", Heal_amount, "!");
+            }
         }
 
     }
@@ -220,65 +202,45 @@ void Battle(Player &Player, Enemy &Enemy, string Action, string FirstMove){
                 int block_dmg = randomiser(50, 0, attack_dmg);
                 attack_dmg -= block_dmg;
 
-                DrawChacters_AND_HealthBar(Player, Enemy);
-                cout << string(MARGIN, ' '); DrawDialog(Player.name, 0); cout << endl;
-                cout << string(MARGIN, ' '); DrawDialog(Player.name, 1); DrawDialog(" blocked ", 1); cout << block_dmg; DrawDialog("!", 1);
-                PressEnter();
+                PlaceDialog(Player, Enemy, "Player", " blocked ", block_dmg, "!");
             }
             if (Player.state == "Dodging"){
                 int dodge_chance = randomiser(70, 0, 100);
                 if (dodge_chance > 30){
                     attack_dmg = 0;
-                
-                    DrawChacters_AND_HealthBar(Player, Enemy);
-                    cout << string(MARGIN, ' '); DrawDialog(Player.name, 0); cout << endl;
-                    cout << string(MARGIN, ' '); DrawDialog(Player.name, 1); DrawDialog(" Dodged!", 1); cout << endl;
-                    PressEnter();
+
+                    PlaceDialog(Player, Enemy, "Player", " Dodged!");
                 }
                 else{
                     int boost_dmg = randomiser(20, 0, attack_dmg);
                     attack_dmg += boost_dmg;
 
-                    DrawChacters_AND_HealthBar(Player, Enemy);
-                    cout << string(MARGIN, ' '); DrawDialog(Player.name, 0); cout << endl;
-                    cout << string(MARGIN, ' '); DrawDialog(Player.name, 1); DrawDialog(" Got hit!", 1); cout << endl;
-                    PressEnter();
+                    PlaceDialog(Player, Enemy, "Player", " Got hit!");
                 }
             }
             Player.takeDamage(attack_dmg);
 
-            DrawChacters_AND_HealthBar(Player, Enemy);
-            cout << string(MARGIN, ' '); DrawDialog(Enemy.name, 0); cout << endl;
-            cout << string(MARGIN, ' '); DrawDialog(Enemy.name, 1); DrawDialog(" deals ", 1); cout << attack_dmg; DrawDialog("!", 1);
-            PressEnter();
+            PlaceDialog(Player, Enemy, "Enemy", " deals ", attack_dmg, "!");
         }
 
         if (Action == "Block"){
             Enemy.SetState("Blocking");
 
-            DrawChacters_AND_HealthBar(Player, Enemy);
-            cout << string(MARGIN, ' '); DrawDialog(Enemy.name,0); cout << endl;
-            cout << string(MARGIN, ' '); DrawDialog(Enemy.name,1); DrawDialog(" is blocking!",1);
-            PressEnter();
+            PlaceDialog(Player, Enemy, "Enemy", " is blocking!");
         }
 
         if (Action == "Dodge"){
             Enemy.SetState("Dodging");
 
-            DrawChacters_AND_HealthBar(Player, Enemy);
-            cout << string(MARGIN, ' '); DrawDialog(Enemy.name,0); cout << endl;
-            cout << string(MARGIN, ' '); DrawDialog(Enemy.name,1); DrawDialog(" is dodging!",1);
-            PressEnter();
+            PlaceDialog(Player, Enemy, "Enemy", " is dodging!");
         }
 
         if (Action == "Heal"){
             int Heal_amount = randomiser(50, 10 , Player.health);
-            Enemy.useHeal(Heal_amount);
-
-            DrawChacters_AND_HealthBar(Player, Enemy);
-            cout << string(MARGIN, ' '); DrawDialog(Enemy.name,0); cout << endl;
-            cout << string(MARGIN, ' '); DrawDialog(Enemy.name, 1); DrawDialog(" healed ", 1); cout << Heal_amount; DrawDialog("!", 1);
-            PressEnter();
+            if (Enemy.health > 0){
+                Enemy.useHeal(Heal_amount);
+                PlaceDialog(Player, Enemy, "Enemy", " healed ", Heal_amount, "!");
+            }
         }
 
     }
@@ -317,11 +279,15 @@ void WhoFirst(Player &Player, Enemy &Enemy, string PlayerTurn, string EnemyTurn)
   
     if (Enemy_priority < Player_priority){
         Battle(Player,Enemy,EnemyTurn,"Enemy");
-        Battle(Player,Enemy,PlayerTurn,"Player");
+        if (Player.health >= 0){
+            Battle(Player,Enemy,PlayerTurn,"Player");
+        }
     }
-    else{
+    else {
         Battle(Player,Enemy,PlayerTurn,"Player");
-        Battle(Player,Enemy,EnemyTurn,"Enemy");
+        if (Enemy.health >= 0) {
+            Battle(Player,Enemy,EnemyTurn,"Enemy");
+        }
     }
 
     Player.SetState("Neutral");
@@ -399,6 +365,36 @@ void DrawDialog(string text , int typeSpeed){
     //cout << string(maxlength, ' ') << " " << endl;
 }
 
+//Easier function to place text in dialog
+void PlaceDialog(Player &Player, Enemy &Enemy, string character, string text){
+    DrawChacters_AND_HealthBar(Player, Enemy);
+
+    if (character == "Player"){
+        cout << string(MARGIN, ' '); DrawDialog(Player.name, 0); cout << ":"<< endl;
+        cout << string(MARGIN, ' '); DrawDialog(Player.name, 1); DrawDialog(text, 1);
+        PressEnter();
+    }
+    if (character == "Enemy"){
+        cout << string(MARGIN, ' '); DrawDialog(Enemy.name, 0); cout << ":"<< endl;
+        cout << string(MARGIN, ' '); DrawDialog(Enemy.name, 1); DrawDialog(text, 1);
+        PressEnter();
+    }
+}
+// overloaded function of ^ , use this if you want to place variable within text
+void PlaceDialog(Player &Player, Enemy &Enemy, string character, string text, int variable, string text2){
+    DrawChacters_AND_HealthBar(Player, Enemy);
+
+    if (character == "Player"){
+        cout << string(MARGIN, ' '); DrawDialog(Player.name, 0); cout << ":"<< endl;
+        cout << string(MARGIN, ' '); DrawDialog(Player.name, 1); DrawDialog(text, 1); cout << variable; DrawDialog(text2, 1);
+        PressEnter();
+    }
+    if (character == "Enemy"){
+        cout << string(MARGIN, ' '); DrawDialog(Enemy.name, 0); cout << ":"<< endl;
+        cout << string(MARGIN, ' '); DrawDialog(Enemy.name, 1); DrawDialog(text, 1); cout << variable; DrawDialog(text2, 1);
+        PressEnter();
+    }
+}
 
 // Character art initialization
 const int CHARACTERS_BORDER = 105;
@@ -656,8 +652,18 @@ int main(){
     Player p1("Player",100);
     Enemy e1("Enemy",100);
 
-    while (true){
+    bool gameloop = true;
+
+    while (gameloop){
     KeySwitch(p1,e1);
+        if (p1.health <= 0){
+            PlaceDialog(p1, e1, "Player", " lost!");
+            gameloop = false;
+        }
+        if (e1.health <= 0){
+            PlaceDialog(p1, e1, "Enemy", " lost!");
+            gameloop = false;
+        }
     }
 
     return 0;
