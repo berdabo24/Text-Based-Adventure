@@ -17,6 +17,8 @@ using namespace std;
 
 using namespace std;
 
+int err = 0;//to show no. of errors
+
 void autocreateFile(const string& filename, const string& content) //for new encounters
 {
     ofstream file(filename, ios::trunc);//open
@@ -24,14 +26,15 @@ void autocreateFile(const string& filename, const string& content) //for new enc
     {
         file << content;
         file.close();
-        cout << "New progress! '" << filename << "' added. \n";
+        cout << "\nNew progress! '" << filename << "' added into encyclopedia. \n";
     }
 
 
     else //file.fail()
     {
-        cout << "Error. Unable to add '" << filename << "'! Exiting...\n";
-        exit(1);
+        cout << "\nError. Unable to add '" << filename << "' into encyclopedia!\n";
+        err++;
+        return;
     }
 }
 
@@ -46,8 +49,9 @@ void createEmptyFile(const string& filename){
 
     else //file.fail()
     {
-        cout << "Error. Unable to add '" << filename << "'! Exiting...\n";
-        exit(1);
+        cout << "Error. Unable to add '" << filename << "' into encyclopedia!\n";
+        err++;
+        return;
     }
 }
 
@@ -58,7 +62,8 @@ void autoappendFile(const string& filename, const string& content)//for create/u
     if (file.fail())
     {
         cout << "Error. Unable to append file '" << filename << "'! Exiting...\n" << endl;
-        exit(1);
+        err++;
+        return;
     }
 
     cout << "Successfully open '" << filename << "'!\n";
@@ -86,7 +91,8 @@ void readFile(const string& filename)
     fstream file(filename); //declare read/write file
     if (file.fail())
     {
-        cout << "Error. File not found! \n";
+        cout << "\nError. File not found! \n";
+        err++;
         return;
     }
     cout << "\nContents of '" << filename << "': \n";
@@ -115,6 +121,7 @@ void searchinFile (const string& filename, const string& searchLine)
     {
         cout << "\nError. File '" << filename << "' does not exist! Exiting...\n";
         system("pause");
+        err++;
         return;
     }
 
@@ -156,8 +163,9 @@ bool bool_searchinFile (const string& filename, const string& searchLine)
 
     if (file.fail())
     {
-        cout << "Error. File '" << filename << "' does not exist! Exiting...\n";
-        exit(1);
+        cout << "\nError. File '" << filename << "' does not exist! Exiting...\n";
+        err++;
+        return false;
     }
 
     string tmpOri;
@@ -209,15 +217,19 @@ void deleteFile(const string& filename)
         file.close(); //prevent unwanted errors
         if (remove(filename.c_str()) == 0)
         {
-            cout << "File '" << filename << "' successfully deleted! \n";
+            cout << "\nFile '" << filename << "' successfully deleted! \n";
         }
         else
         {
+            cout << "\nError. File '" << filename << "' failed to delete. \n";
+            err++;
             return;
         }
     }
     else
     {
+        cout << "\nError. Unable to open file '" << filename << "'! Check if file exists or not.\n";
+        err++;
         return;
     }
 
@@ -507,6 +519,7 @@ void encyclopedia(){
             else
             {
                 cout << "Error. File not found. Please defeat at least one enemy first.\n";
+                err++;
                 system("pause");
             }
             encyclopedia();
@@ -521,6 +534,7 @@ void encyclopedia(){
             }
             else {
                 cout << "Error. File not found. Please play the game first.\n";
+                err++;
                 system("pause");
             }
             encyclopedia();
@@ -575,7 +589,7 @@ void MainMenu(){
             encyclopedia();
         }
         if (menuchoice == "Exit"){
-            exit(0);
+            exit(err); //exit program and show no. of errors
         }
     }while(loop == true);
 
@@ -594,5 +608,6 @@ int main()
 
     MainMenu();
 
-    return 0;
+    return err; //show number of errors
 }
+
