@@ -717,8 +717,8 @@ string neutralBrownie[BrownieLines] = {
 string frustBrownie[BrownieLines] = {
 "  __         __",
 " / )`------./ )\\ ",
-" \\ / -   -   \\ / ",
-"  |  O   O    | ",
+" \\ / \\   /   \\ / ",
+"  |  =   =    | ",
 "  \\ .-----.   / ",
 "   '\\_*___/ -' ",
 "   | '---'    \\ ",
@@ -947,6 +947,27 @@ string Stick[StickLines] = {
 "    / /",
 "  +/ /   +",
 "  /_/ "
+};
+
+const int BasketLines = 8;
+string Basket[BasketLines] = {
+"     ..",
+"     |\\\\",
+".====^^\\\\==.",
+"|\\     ||   \\ ",
+":\"====^^===='",
+" \\|---------|",
+"  '''''''''''"
+};
+
+string BasketBerries[BasketLines] = {
+"     ..",
+"     |\\\\",
+".====^^\\\\==.",
+"|\\oO0o8||O8o\\ ",
+":\"====^^===='",
+" \\|---------|",
+"  '''''''''''"
 };
 
 const int MirrorLines = 19;
@@ -2674,6 +2695,410 @@ void Market(){
     system("pause");
 }
 
+bool BG_Complete=false;
+void BerryGarden(Player &Player, Enemy &Enemy){
+
+    DrawDialog("The garden is lush and vibrant with all the berries there could ever exist grown."
+               "\nThe berry bushes and trees are stretched far, their colors naturally beautifying the garden. "
+               "\n\nThe air is filled with a sweet aroma, ", 1);
+    DrawDialog("\nits scent changing depending on which section of berries you'd wander into. ", 1);
+    DrawDialog("\n\nYou could probably get lost in this garden, but maybe that wouldn't be such a bad thing.\n\n", 1);
+    system("pause");
+
+    system("cls");
+    string option1[2] = {"Pick berries","Leave the Berry Garden"};
+    choice = optionselect(" ", option1, 2, Empty, EmptyLines);
+
+    if (choice == "Pick berries"){
+    system("cls");
+    printMidCharacter(Basket,BasketLines);
+    cout << endl;
+    DrawDialog_Margin("You find a basket on the ground, perfect to put the berries in.\n\n", 1);
+    cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+    system("pause");
+
+    if (choice == "Pick berries"){
+    system("cls");
+    printMidCharacter(Basket,BasketLines);
+    cout << endl;
+    DrawDialog_Margin("You walk around the garden, plucking the berries that you know are safe and edible. \n\n", 1);
+    DrawDialog_Margin("There are some berries you can't identify, \n\n", 1);
+    DrawDialog_Margin("so you decide to leave them as you don't know what could or couldn't be eaten in this world. \n\n", 1);
+    cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+    system("pause");
+
+    system("cls");
+    printMidCharacter(BasketBerries,BasketLines);
+    cout << endl;
+    DrawDialog_Margin("Obtained [Basket full of berries]!\n\n", 1);
+    cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+    system("pause");
+
+    system("cls");
+    printMidCharacter(BasketBerries,BasketLines);
+    cout << endl;
+    DrawDialog_Margin("A basket full should be enough for Cream to prepare dinner with.\n\n", 1);
+    cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+    system("pause");
+
+    system("cls");
+    printMidCharacter(Empty,EmptyLines);
+    cout << endl;
+    DrawDialog_Margin("As you were about to leave the garden, you hear loud rustling from a distance.\n\n", 1);
+    cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+    system("pause");
+
+    system("cls");
+    printMidCharacter(Empty,EmptyLines);
+    cout << endl;
+    DrawDialog_Margin("You find it suspicious, maybe it's a wild Prunicus that Cream mentioned? \n\n", 1);
+    cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+    system("pause");
+
+    system("cls");
+    printMidCharacter(Empty,EmptyLines);
+    cout << endl;
+    DrawDialog_Margin("You probably shouldn't stay to find out. You're pretty deep into the garden, \n\n", 1);
+    DrawDialog_Margin("so you should start speed-walking in the other direction. \n\n", 1);
+    cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+    system("pause");
+
+    system("cls");
+    printMidCharacter(Empty,EmptyLines);
+    cout << endl;
+    DrawDialog_Margin("You try to retrace your steps back to the entrance of the garden, \n\n", 1);
+    DrawDialog_Margin("but it seems you've forgotten where you came from.\n\n", 1);
+    cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+    system("pause");
+
+    system("cls");
+    printMidCharacter(Empty,EmptyLines);
+    cout << endl;
+    DrawDialog_Margin("There's no one else in the garden to help you. \n\n", 1);
+    cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+    system("pause");
+
+    system("cls");
+    printMidCharacter(Empty,EmptyLines);
+    cout << endl;
+    DrawDialog_Margin("You hear louder rustling... and a deep whisper, \n\n", 1);
+    DrawDialog_Margin("as if it's right behind you. \n\n", 1);
+    cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+    system("pause");
+
+    system("cls");
+    printMidCharacter(DrawEnemy3,DrawEnemy3_Lines);
+    cout << endl;
+    DrawDialog_Margin("You turn around and see a decaying tree towering over you. \n\n", 1);
+    DrawDialog_Margin("It bears plum fruit, but even the fruit it holds have gone bad. \n\n", 1);
+    cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+    system("pause");
+
+    system("cls");
+    printMidCharacter(DrawEnemy3,DrawEnemy3_Lines);
+    cout << endl;
+    DrawDialog_Margin("It tries to swing at you with its branch, but you duck just in the nick of time. \n\n", 1);
+    DrawDialog_Margin("You must fight to leave. \n\n", 1);
+    cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+    system("pause");
+
+    //Battle happens here
+    system("cls");
+    bool gameloop = true;
+    while (gameloop){
+    KeySwitch(Player,Enemy);
+        if (Player.health <= 0){
+            DrawChacters_AND_HealthBar(Player, Enemy);
+            PlaceDialog(Player, Enemy, "Player", " lost!");
+            gameloop = false;
+        }
+        if (Enemy.health <= 0){
+            DrawChacters_AND_HealthBar(Player, Enemy);
+            PlaceDialog(Player, Enemy, "Enemy", " lost!");
+            gameloop = false;
+            BG_Complete = true;
+        }
+    }
+    //Story continues after wnning the battle
+    if (BG_Complete == true){
+        system("cls");
+        printMidCharacter(Empty,EmptyLines);
+        cout << endl;
+        DrawDialog_Margin("Wild Prunicus has been defeated\n\n", 1);
+        cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+        system("pause");
+
+        system("cls");
+        printMidCharacter(neutralBrownie,BrownieLines);
+        cout << string(50, ' '); cout << "???" << endl << endl;
+        DrawDialog_Margin("Woah, you did a number on that Prunicus.\n\n", 2);
+        cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+        system("pause");
+
+        system("cls");
+        printMidCharacter(neutralBrownie,BrownieLines);
+        cout << endl;
+        DrawDialog_Margin("A bear stands behind you, he looks oddly familiar.\n\n", 1);
+        cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+        system("pause");
+
+        system("cls");
+        string option1[3] = {"How long were you standing there?","Why didn't you help me?", "Were you just watching me fight the whole time?!"};
+        choice = optionselect(" ", option1, 3, neutralBrownie, BrownieLines);
+
+        if (choice == "How long were you standing there?"){
+            system("cls");
+            printMidCharacter(neutralBrownie,BrownieLines);
+            cout << string(50, ' '); cout << "???" << endl << endl;
+            DrawDialog_Margin("Around 3 minutes.\n\n", 2);
+            cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+            system("pause");
+        }
+        else if (choice == "Why didn't you help me?"){
+            system("cls");
+            printMidCharacter(neutralBrownie,BrownieLines);
+            cout << string(50, ' '); cout << "???" << endl << endl;
+            DrawDialog_Margin("Eh, you looked like you had it covered. \n\n", 2);
+            cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+            system("pause");
+        }
+        else if (choice == "Were you just watching me fight the whole time?!"){
+            system("cls");
+            printMidCharacter(neutralBrownie,BrownieLines);
+            cout << string(50, ' '); cout << "???" << endl << endl;
+            DrawDialog_Margin("Yeah, it looked fun to spectate instead of fighting the Prunicus for once. \n\n", 2);
+            cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+            system("pause");
+        }
+
+        system("cls");
+        printMidCharacter(neutralBrownie,BrownieLines);
+        cout << string(50, ' '); cout << "Brownie" << endl << endl;
+        DrawDialog_Margin("I'm Brownie. Thanks for dealing with this Prunicus for me. \n\n", 2);
+        cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+        system("pause");
+
+        system("cls");
+        printMidCharacter(neutralBrownie,BrownieLines);
+        cout << endl;
+        DrawDialog_Margin("Brownie walks over to the Prunicus and kneels to take something from it. \n\n", 1);
+        DrawDialog_Margin("He rummages the leaves and branches and pulls out a plum. \n\n", 1);
+        DrawDialog_Margin("It doesn't look rotten at all. It might actually be edible.\n\n", 1);
+        cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+        system("pause");
+
+        system("cls");
+        printMidCharacter(frustBrownie,BrownieLines);
+        cout << string(50, ' '); cout << "Brownie" << endl << endl;
+        DrawDialog_Margin("Some people really can't hold their tongue from talking smack about the plum trees. \n\n", 2);
+        DrawDialog_Margin("Don't they know that plants have feelings too?\n\n", 2);
+        cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+        system("pause");
+
+        system("cls");
+        printMidCharacter(neutralBrownie,BrownieLines);
+        cout << endl;
+        DrawDialog_Margin("Brownie walks over to a vacant area of soil and opens the plum fruit. \n\n", 1);
+        DrawDialog_Margin("He extracts the pit and places it in the soil. \n\n", 1);
+        cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+        system("pause");
+
+        system("cls");
+        printMidCharacter(frustBrownie,BrownieLines);
+        cout << string(50, ' '); cout << "Brownie" << endl << endl;
+        DrawDialog_Margin("Every time someone insults a plum tree; \n\n", 2);
+        DrawDialog_Margin("it turns into a Prunicus and eats the other berries.\n\n", 2);
+        cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+        system("pause");
+
+        system("cls");
+        printMidCharacter(frustBrownie,BrownieLines);
+        cout << string(50, ' '); cout << "Brownie" << endl << endl;
+        DrawDialog_Margin("And every time a plum tree turns into a Prunicus, \n\n", 2);
+        DrawDialog_Margin("someone else has to deal with it. \n\n", 2);
+        cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+        system("pause");
+
+        system("cls");
+        printMidCharacter(frustBrownie,BrownieLines);
+        cout << string(50, ' '); cout << "Brownie" << endl << endl;
+        DrawDialog_Margin("They're lucky I'm around to keep them in check once in a while. \n\n", 2);
+        cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+        system("pause");
+
+        system("cls");
+        printMidCharacter(frustBrownie,BrownieLines);
+        cout << string(50, ' '); cout << "Brownie" << endl << endl;
+        DrawDialog_Margin("My parents frequently pluck berries from this garden,\n\n", 2);
+        DrawDialog_Margin("so I can't help but worry that a plum tree turns again. \n\n", 2);
+        cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+        system("pause");
+
+        system("cls");
+        printMidCharacter(frustBrownie,BrownieLines);
+        cout << string(50, ' '); cout << "Brownie" << endl << endl;
+        DrawDialog_Margin("Why do people want to badmouth these plants anyway? \n\n", 2);
+        cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+        system("pause");
+
+        system("cls");
+        printMidCharacter(frustBrownie,BrownieLines);
+        cout << string(50, ' '); cout << "Brownie" << endl << endl;
+        DrawDialog_Margin("It would be much better if they complimented them instead, \n\n", 2);
+        DrawDialog_Margin("then the plants would grow faster. \n\n", 2);
+        cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+        system("pause");
+
+        system("cls");
+        printMidCharacter(frustBrownie,BrownieLines);
+        cout << string(50, ' '); cout << "Brownie" << endl << endl;
+        DrawDialog_Margin("They could have at least kept their mouth shut if they didn't have anything nice to say.\n\n", 2);
+        cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+        system("pause");
+
+        system("cls");
+        printMidCharacter(frustBrownie,BrownieLines);
+        cout << string(50, ' '); cout << "Brownie" << endl << endl;
+        DrawDialog_Margin("Hey. Are you still listening?\n\n", 2);
+        cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+        system("pause");
+
+        system("cls");
+        string option2[4] = {"Yes.","No.", "Sorry, what were you saying?","(snore)"};
+        choice = optionselect("Hey. Are you still listening?", option2, 4, frustBrownie, BrownieLines);
+
+        system("cls");
+        printMidCharacter(neutralBrownie,BrownieLines);
+        cout << string(50, ' '); cout << "Brownie" << endl << endl;
+        DrawDialog_Margin("(sigh) Anyway, are you picking berries here? \n\n", 2);
+        DrawDialog_Margin("You have a whole basket full of berries. \n\n", 2);
+        DrawDialog_Margin("Are you making a feast or something? \n\n", 2);
+        cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+        system("pause");
+
+        system("cls");
+        string option3[1] = {"Cream's favor"};
+        choice = optionselect("Are you making a feast or something?", option3, 1, neutralBrownie, BrownieLines);
+
+        system("cls");
+        printMidCharacter(neutralBrownie,BrownieLines);
+        cout << string(50, ' '); cout << "Brownie" << endl << endl;
+        DrawDialog_Margin("She asked you to get more berries? \n\n", 2);
+        DrawDialog_Margin("Looks like we're eating good tonight.\n\n", 2);
+        cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+        system("pause");
+
+        system("cls");
+        printMidCharacter(neutralBrownie,BrownieLines);
+        cout << endl;
+        DrawDialog_Margin("Brownie's eyes light up.\n\n", 2);
+        cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+        system("pause");
+
+        system("cls");
+        printMidCharacter(neutralBrownie,BrownieLines);
+        cout << string(50, ' '); cout << "Brownie" << endl << endl;
+        DrawDialog_Margin("What are you doing after this?\n\n", 2);
+        cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+        system("pause");
+
+        system("cls");
+        string option4[1] = {"I need to get home."};
+        choice = optionselect("What are you doing after this?", option4, 1, neutralBrownie, BrownieLines);
+
+        system("cls");
+        printMidCharacter(neutralBrownie,BrownieLines);
+        cout << string(50, ' '); cout << "Brownie" << endl << endl;
+        DrawDialog_Margin("Oh, I see. I'll deliver these berries for you. \n\n", 2);
+        DrawDialog_Margin("You can be on your way home now. \n\n", 2);
+        DrawDialog_Margin("Thanks for helping my mama with the errand. \n\n", 2);
+        cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+        system("pause");
+
+        system("cls");
+        printMidCharacter(BasketBerries,BasketLines);
+        cout << endl;
+        DrawDialog_Margin("You gave Brownie [basket full of berries]. \n\n", 1);
+        cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+        system("pause");
+
+        system("cls");
+        string option5[2] = {"I'm not from here.","I don't know how to get home."};
+        choice = optionselect("", option5, 2, neutralBrownie, BrownieLines);
+
+        system("cls");
+        printMidCharacter(neutralBrownie,BrownieLines);
+        cout << string(50, ' '); cout << "Brownie" << endl << endl;
+        DrawDialog_Margin("You don't? Hmm... \n\n", 2);
+        cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+        system("pause");
+
+        system("cls");
+        printMidCharacter(neutralBrownie,BrownieLines);
+        cout << endl;
+        DrawDialog_Margin("Brownie ponders for a moment, looking at you up at down. \n\n", 1);
+        cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+        system("pause");
+
+        system("cls");
+        printMidCharacter(neutralBrownie,BrownieLines);
+        cout << string(50, ' '); cout << "Brownie" << endl << endl;
+        DrawDialog_Margin("I guess you don't look like you're from anywhere here.\n\n", 2);
+        cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+        system("pause");
+
+        system("cls");
+        printMidCharacter(neutralBrownie,BrownieLines);
+        cout << string(50, ' '); cout << "Brownie" << endl << endl;
+        DrawDialog_Margin("You'll need this.\n\n", 2);
+        cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+        system("pause");
+
+        system("cls");
+        printMidCharacter(neutralBeary,BearyLines);
+        cout << endl;
+        DrawDialog_Margin("Obtained [Beary]!\n\n", 1);
+        cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+        system("pause");
+
+        system("cls");
+        printMidCharacter(neutralBrownie,BrownieLines);
+        cout << string(50, ' '); cout << "Brownie" << endl << endl;
+        DrawDialog_Margin("I'll guide you out of the garden. \n\n", 2);
+        DrawDialog_Margin("Don't worry about the Prunicus, it'll sort itself out.\n\n", 2);
+        cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+        system("pause");
+
+        system("cls");
+        printMidCharacter(Empty,EmptyLines);
+        cout << endl;
+        DrawDialog_Margin("Brownie guides you through the maze of berries. \n\n", 1);
+        DrawDialog_Margin("You realize you were pretty close to the exit had you just made another right turn.\n\n", 1);
+        cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+        system("pause");
+
+        system("cls");
+        printMidCharacter(neutralBrownie,BrownieLines);
+        cout << string(50, ' '); cout << "Brownie" << endl << endl;
+        DrawDialog_Margin("Alright, this is where we part ways. \n\n", 2);
+        DrawDialog_Margin("Don't worry about the Prunicus, it'll sort itself out.\n\n", 2);
+        cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+        system("pause");
+
+        system("cls");
+        printMidCharacter(Empty,EmptyLines);
+        cout << endl;
+        DrawDialog_Margin("Brownie walks away. \n\n", 2);
+        DrawDialog_Margin("You never want to go back into that berry maze.\n\n", 2);
+        cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+        system("pause");
+    }
+    }
+    }
+
+}
+
+
 
 
 int main(){
@@ -2681,6 +3106,7 @@ int main(){
     srand(time(0));
 
     Player p1("Player",100,DrawPlayer,DrawPlayer_Lines);
+    Player p2("Beary",1000,DrawBeary,DrawBeary_Lines);
     //Bedroom(p1);
     //DiningRoom(p1);
     //House();
@@ -2691,9 +3117,12 @@ int main(){
     //int enemyIndex = 1;
 
     Enemy e1("Soldier",200,DrawEnemy1, DrawEnemy1_Lines);
-    Enemy e2("Thief",75,DrawEnemy2, DrawEnemy2_Lines);
+    Enemy e2("Thief",100,DrawEnemy2, DrawEnemy2_Lines);
+    Enemy e3("Prunicus",400,DrawEnemy3, DrawEnemy3_Lines);
+    Enemy e4("Dragon",999,DrawEnemy4, DrawEnemy4_Lines);
     //TrainingGroundsQuest(p1,e1);
-    MarketQuest(p1,e2);
+    //MarketQuest(p1,e2);
+    BerryGarden(p1,e3);
 
 
     bool gameloop = true;
