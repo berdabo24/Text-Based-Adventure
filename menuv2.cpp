@@ -152,11 +152,11 @@ string MoveSelect(int x, int y, Player &Player);
 void InitiateBattle(string PlayerTurn, Player &Player, Enemy &Enemy);
 void KeySwitch(Player &Player, Enemy &Enemy);
 void PressEnter();
-void House(Player &Player);
+void House();
 void TrainingQuest(Player &Player);
 void TrainingGrounds(Player &Player);
 void MarketQuest(Player &Player);
-void Market(Player &Player);
+void Market();
 void BerryQuest(Player &Player);
 
 
@@ -934,6 +934,21 @@ string Milk[MilkLines] = {
 "|_/___|,' "
 };
 
+const int StickLines = 11;
+string Stick[StickLines] = {
+"            _+",
+"     +     / 7  +",
+"          / /",
+"         / / +",
+"      + / /",
+"       / /     +",
+" +    / /",
+"     / /   +",
+"    / /",
+"  +/ /   +",
+"  /_/ "
+};
+
 const int MirrorLines = 19;
 string Mirror[MirrorLines] = {
 "     ____________________ ",
@@ -1664,7 +1679,7 @@ void DiningRoom(Player &Player){
         DrawDialog_Margin("You look around Cream and Teddy's house a little longer.\n\n", 2);
         cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
         system("pause");
-        House(Player);
+        House();
     }
     else if (choice == "Leave the house"){
         system("cls");
@@ -1679,7 +1694,7 @@ void DiningRoom(Player &Player){
 }
 
 
-void House(Player &Player){
+void House(){
     //What do you want to do in the house?
     do{
     string option1[4] = {"Talk to Teddy","Talk to Cream", "Upstairs", "Leave the house"};
@@ -2007,7 +2022,7 @@ void Outside(Player &Player){
 
 }
 
-bool TGQ_Complete = false;
+bool TGQ_Complete = true;
 int TGQ_Counter = 0;
 void TrainingGroundsQuest(Player &Player){
     if (TGQ_Counter == 0){
@@ -2019,9 +2034,11 @@ void TrainingGroundsQuest(Player &Player){
 
         system("pause");
 
+        system("cls");
         string option1[1] = {"Excuse me."};
         choice = optionselect("...", option1, 1, neutralYahoo, YahooLines);
 
+        system("cls");
         string option2[3] = {"My name is " + Player.name + ".","I'd rather not say.","You don't need to know."};
         choice = optionselect("Hm? Who might you be?", option2, 3, neutralYahoo, YahooLines);
 
@@ -2051,6 +2068,7 @@ void TrainingGroundsQuest(Player &Player){
         cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
         system("pause");
 
+        system("cls");
         string option3[1] = {"Do you know how I can get home?"};
         choice = optionselect("", option3, 1, neutralYahoo, YahooLines);
 
@@ -2076,6 +2094,7 @@ void TrainingGroundsQuest(Player &Player){
         cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
         system("pause");
 
+        system("cls");
         string option4[2] = {"Sure! I'll fight them right now!","I'll think about it."};
         choice = optionselect("", option4, 2, neutralYahoo, YahooLines);
 
@@ -2109,6 +2128,7 @@ void TrainingGroundsQuest(Player &Player){
         choice = optionselect("What do you want to do?", option6, 2, Empty, EmptyLines);
 
         if (choice == "Talk to Commander Yahoo"){
+            system("cls");
             string option5[2] = {"Sure! I'll fight them right now!","I'll think about it."};
             choice = optionselect("Wanna spar with my soldiers?", option5, 2, neutralYahoo, YahooLines);
 
@@ -2124,7 +2144,60 @@ void TrainingGroundsQuest(Player &Player){
     
             //Battle happens here
 
+            
+            //Battle ends
+            system("cls");
+            printMidCharacter(Empty,EmptyLines);
+            cout << endl;
+            DrawDialog_Margin("Papadum Soldier has been defeated.\n\n", 2);
+            cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+            system("pause");
+
+            system("cls");
+            printMidCharacter(neutralYahoo,YahooLines);
+            cout << string(50, ' '); cout << "Commander Yahoo" << endl << endl;
+            DrawDialog_Margin("Well, you're a far better fighter than I thought! \n\n", 2);
+            DrawDialog_Margin("Now I can bring this moment up whenever they start slacking off.\n\n", 2);
+            DrawDialog_Margin("Have you ever considered joining the Papadum Army?\n\n", 2);
+            cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+            system("pause");
+
+            system("cls");
+            printMidCharacter(neutralYahoo,YahooLines);
+            cout << string(50, ' '); cout << "Commander Yahoo" << endl << endl;
+            DrawDialog_Margin("Oh wait, you were looking for a way home, right? \n\n", 2);
+            cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+            system("pause");
+
+            system("cls");
+            string option7[3] = {"It's not in this world.","I don't know.","Not here."};
+            choice = optionselect("Where is your home?", option7, 3, neutralYahoo, YahooLines);
             }
+
+            system("cls");
+            printMidCharacter(neutralYahoo,YahooLines);
+            cout << string(50, ' '); cout << "Commander Yahoo" << endl << endl;
+            DrawDialog_Margin("Gee, I can't give you directions without an address. \n\n", 2);
+            DrawDialog_Margin("Maybe this could help you out instead. \n\n", 2);
+            cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+            system("pause");
+
+            system("cls");
+            printMidCharacter(Stick,StickLines);
+            cout << endl;
+            DrawDialog_Margin("Obtained [Cool Stick]! \n\n", 2);
+            cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+            system("pause");
+
+            system("cls");
+            printMidCharacter(neutralYahoo,YahooLines);
+            cout << string(50, ' '); cout << "Commander Yahoo" << endl << endl;
+            DrawDialog_Margin("That's all the help I can give you. \n\n", 2);
+            DrawDialog_Margin("Maybe you could use the teleporter at the Potato Palace. \n\n", 2);
+            DrawDialog_Margin("Not sure if it works for otherworldly destinations though. \n\n", 2);
+            cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+            system("pause");
+
             if (choice == "I'll think about it."){
                 system("cls");
                 printMidCharacter(neutralYahoo,YahooLines);
@@ -2281,7 +2354,12 @@ void TrainingGrounds(Player &Player){
     system("pause");
 }
 
-void Market(Player &Player){
+bool MQ_Complete = false; 
+void MarketQuest(Player &Player){
+
+}
+
+void Market(){
     do{
     string option1[3] = {"Talk to Pinkery","Check on the thief", "Leave the Market"};
     choice = optionselect("What would you like to do?", option1, 3, Empty, EmptyLines);
@@ -2409,11 +2487,11 @@ int main(){
     Player p1("Player",100,DrawPlayer,DrawPlayer_Lines);
     //Bedroom(p1);
     //DiningRoom(p1);
-    //House(p1);
+    //House();
     //Outside(p1);
     TrainingGroundsQuest(p1);
     //TrainingGrounds(p1);
-    //Market(p1);
+    //Market();
 
     //int enemyIndex = 1;
 
