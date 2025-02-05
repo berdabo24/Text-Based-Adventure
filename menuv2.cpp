@@ -153,11 +153,11 @@ void InitiateBattle(string PlayerTurn, Player &Player, Enemy &Enemy);
 void KeySwitch(Player &Player, Enemy &Enemy);
 void PressEnter();
 void House();
-void TrainingQuest(Player &Player);
+void TrainingQuest(Player &Player, Enemy &Enemy);
 void TrainingGrounds(Player &Player);
-void MarketQuest(Player &Player);
+void MarketQuest(Player &Player, Enemy &Enemy);
 void Market();
-void BerryQuest(Player &Player);
+void BerryQuest(Player &Player, Enemy &Enemy);
 
 
 
@@ -582,7 +582,7 @@ const int DrawEnemy2_Lines = 7;
 string DrawEnemy2[DrawEnemy2_Lines] = {
 "        .-'-.",
 "      _/.~.~.\\_",
-"     ( ( o o ) )",
+"     ( ( o o ) )  _",
 "      |/  `  \\|   ;;",
 "       \\. ^ ./   ((",
 "       /`~~~`\\'   ))",
@@ -1256,7 +1256,7 @@ void DrawStoryMenu(string move, string array[], int arraysize, string *character
 
 string optionselect(string text, string array[], int arraysize, string *character, int charsize){
 
-    
+    int n;
     printMidCharacter(character,charsize);
     cout << string(MID_MARGIN, ' ') << text << endl;
     DrawStoryMenu(" ", array, arraysize, character, charsize, text);
@@ -1270,7 +1270,9 @@ string optionselect(string text, string array[], int arraysize, string *characte
             DrawStoryMenu("DOWN", array, arraysize, character, charsize, text);
             break;
         case KEY_ENTER:
-            return array[z];
+            n = z;
+            z = 0;
+            return array[n];
             break;
         default:
             break;
@@ -2022,15 +2024,16 @@ void Outside(Player &Player){
 
 }
 
-bool TGQ_Complete = true;
+bool TGQ_Complete = false;
 int TGQ_Counter = 0;
-void TrainingGroundsQuest(Player &Player){
+void TrainingGroundsQuest(Player &Player, Enemy &Enemy){
     if (TGQ_Counter == 0){
         DrawDialog("The training ground is a wide, open area. \nArchery targets and climbing scaffolds are set up on one side. "
                    "\nTraining weapons and equipment are provided on their respective racks, waiting to be used. ", 1);
         DrawDialog("\n\nThis place seems to have more people than the gymnasium at home. \nSome are training together while some are training amongst themselves.", 1);
         DrawDialog("\n\nA lemur overseeing the bunch who are together stands out to you.", 1);
         DrawDialog("\nYou decide to approach the lemur.\n\n", 1);
+        TGQ_Counter++;
 
         system("pause");
 
@@ -2109,6 +2112,21 @@ void TrainingGroundsQuest(Player &Player){
             system("pause");
     
         //Battle happens here
+        bool gameloop = true;
+        while (gameloop){
+        KeySwitch(Player,Enemy);
+        if (Player.health <= 0){
+            DrawChacters_AND_HealthBar(Player,Enemy);
+            PlaceDialog(Player, Enemy, "Player", " lost!");
+            gameloop = false;
+        }
+        if (Enemy.health <= 0){
+            DrawChacters_AND_HealthBar(Player,Enemy);
+            PlaceDialog(Player, Enemy, "Enemy", " lost!");
+            gameloop = false;
+            TGQ_Complete = true;
+        }
+        }
 
         }
         if (choice == "I'll think about it."){
@@ -2118,7 +2136,6 @@ void TrainingGroundsQuest(Player &Player){
             DrawDialog_Margin("Coward.\n\n", 2);
             cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
             system("pause");
-            TGQ_Counter++;
         }
     }
 
@@ -2143,16 +2160,31 @@ void TrainingGroundsQuest(Player &Player){
                 system("pause");
     
             //Battle happens here
+            bool gameloop = true;
+            while (gameloop){
+            KeySwitch(Player,Enemy);
+            if (Player.health <= 0){
+                DrawChacters_AND_HealthBar(Player,Enemy);
+                PlaceDialog(Player, Enemy, "Player", " lost!");
+                gameloop = false;
+            }
+            if (Enemy.health <= 0){
+                DrawChacters_AND_HealthBar(Player,Enemy);
+                PlaceDialog(Player, Enemy, "Enemy", " lost!");
+                gameloop = false;
+                TGQ_Complete = true;
 
+                system("cls");
+                printMidCharacter(Empty,EmptyLines);
+                cout << endl;
+                DrawDialog_Margin("Papadum Soldier has been defeated.\n\n", 2);
+                cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+                system("pause");
+            }
+            }
             
             //Battle ends
-            system("cls");
-            printMidCharacter(Empty,EmptyLines);
-            cout << endl;
-            DrawDialog_Margin("Papadum Soldier has been defeated.\n\n", 2);
-            cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-            system("pause");
-
+            //if (TGQ_Complete == true){
             system("cls");
             printMidCharacter(neutralYahoo,YahooLines);
             cout << string(50, ' '); cout << "Commander Yahoo" << endl << endl;
@@ -2172,7 +2204,6 @@ void TrainingGroundsQuest(Player &Player){
             system("cls");
             string option7[3] = {"It's not in this world.","I don't know.","Not here."};
             choice = optionselect("Where is your home?", option7, 3, neutralYahoo, YahooLines);
-            }
 
             system("cls");
             printMidCharacter(neutralYahoo,YahooLines);
@@ -2197,6 +2228,7 @@ void TrainingGroundsQuest(Player &Player){
             DrawDialog_Margin("Not sure if it works for otherworldly destinations though. \n\n", 2);
             cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
             system("pause");
+            //}
 
             if (choice == "I'll think about it."){
                 system("cls");
@@ -2205,14 +2237,14 @@ void TrainingGroundsQuest(Player &Player){
                 DrawDialog_Margin("Coward.\n\n", 2);
                 cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
                 system("pause");
-                TGQ_Counter++;
             }
         }
-        }while (choice != "Leave the training grounds" || TGQ_Complete == true);
+        }
+        }while (choice != "Leave the training grounds" && TGQ_Complete != true);
 
 
         //Leave the Training Grounds
-        if  (TGQ_Complete == false && TGQ_Counter > 0){
+        if  (choice == "Leave the training grounds" && TGQ_Complete == false && TGQ_Counter > 0){
             system("cls");
             printMidCharacter(Empty,EmptyLines);
             cout << endl;
@@ -2220,7 +2252,7 @@ void TrainingGroundsQuest(Player &Player){
             cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
             system("pause");
         }
-        if  (TGQ_Complete == true){
+        if  (choice == "Leave the training grounds" && TGQ_Complete == true){
             system("cls");
             printMidCharacter(neutralYahoo,YahooLines);
             cout << endl;
@@ -2355,8 +2387,172 @@ void TrainingGrounds(Player &Player){
 }
 
 bool MQ_Complete = false; 
-void MarketQuest(Player &Player){
+void MarketQuest(Player &Player, Enemy &Enemy){
+    DrawDialog("The market is bustling with people. \nMany stalls sell a variety of products. "
+                "\nSome are selling clothing, some are selling food, some are selling items, \nand some others are selling nick-nacks that might not make any sense to you.", 1);
+    DrawDialog("\n\nIt seems they are of use to the people of this world, \nso you probably shouldn't ponder on it too much.", 1);
+    DrawDialog("\n\nJust as you were walking around, suddenly a shout was heard from afar.\n\n", 1);
+    system("pause");
 
+    system("cls");
+    printMidCharacter(panicPinkery,PinkeryLines);
+    cout << string(50, ' '); cout << "???" << endl << endl;
+    DrawDialog_Margin("THIEF! SOMEONE STOP THAT THIEF! \n\n", 2);
+    cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+    system("pause");
+
+    system("cls");
+    printMidCharacter(panicPinkery,PinkeryLines);
+    cout << endl;
+    DrawDialog_Margin("A pink cow is shouting for someone to catch the thief they're chasing. \n\n", 1);
+    DrawDialog_Margin("The thief is running in your direction. \n\n", 1);
+    cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+    system("pause");
+
+    system("cls");
+    printMidCharacter(panicPinkery,PinkeryLines);
+    cout << endl;
+    DrawDialog_Margin("You can't help but feel obligated to help catch this thief, \n\n", 1);
+    DrawDialog_Margin("even if it means spending energy on fighting them.\n\n", 1);
+    cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+    system("pause");
+
+    //Battle happens here
+    system("cls");
+    bool gameloop = true;
+    while (gameloop){
+    KeySwitch(Player,Enemy);
+        if (Player.health <= 0){
+            DrawChacters_AND_HealthBar(Player,Enemy);
+            PlaceDialog(Player, Enemy, "Player", " lost!");
+            gameloop = false;
+        }
+        if (Enemy.health <= 0){
+            DrawChacters_AND_HealthBar(Player,Enemy);
+            PlaceDialog(Player, Enemy, "Enemy", " lost!");
+            gameloop = false;
+            MQ_Complete = true;
+            
+        }
+    }
+   //End of battle
+
+    if (MQ_Complete == true){
+    system("cls");
+    printMidCharacter(panicPinkery,PinkeryLines);
+    cout << string(50, ' '); cout << "???" << endl << endl;
+    DrawDialog_Margin("Thank you! Thank you so much!\n\n", 2);
+    cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+    system("pause");
+
+    system("cls");
+    printMidCharacter(panicPinkery,PinkeryLines);
+    cout << endl;
+    DrawDialog_Margin("The pink cow rummages through the thief's belongings and pulls out...\n\n", 1);
+    cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+    system("pause");
+
+    system("cls");
+    printMidCharacter(joyPinkery,PinkeryLines);
+    cout << string(50, ' '); cout << "???" << endl << endl;
+    DrawDialog_Margin("MY HOAGIE!!!\n\n", 2);
+    cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+    system("pause");
+
+    system("cls");
+    printMidCharacter(joyPinkery,PinkeryLines);
+    cout << endl;
+    DrawDialog_Margin("... A hoagie? \n\n", 2);
+    DrawDialog_Margin("THAT'S what the thief stole??? \n\n", 1);
+    cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+    system("pause");
+
+    system("cls");
+    printMidCharacter(neutralPinkery,PinkeryLines);
+    cout << string(50, ' '); cout << "???" << endl << endl;
+    DrawDialog_Margin("Now I can enjoy eating my hoagie! \n\n", 2);
+    DrawDialog_Margin("That thief stole it from me when I put it on the table. \n\n", 2);
+    cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+    system("pause");
+
+    system("cls");
+    printMidCharacter(joyPinkery,PinkeryLines);
+    cout << string(50, ' '); cout << "Pinkery" << endl << endl;
+    DrawDialog_Margin("I owe you one! \n\n", 2);
+    DrawDialog_Margin("My name is Pinkery, I sell milk at that stall! \n\n", 2);
+    cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+    system("pause");
+
+    system("cls");
+    printMidCharacter(neutralPinkery,PinkeryLines);
+    cout << endl;
+    DrawDialog_Margin("Pinkery points to her stall. \n\n", 2);
+    cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+    system("pause");
+
+    system("cls");
+    string option1[1] = {"I'm " + Player.name + "."};
+    choice = optionselect("May I know your name?", option1, 1, neutralPinkery, PinkeryLines);
+
+    system("cls");
+    printMidCharacter(joyPinkery,PinkeryLines);
+    cout << string(50, ' '); cout << "Pinkery" << endl << endl;
+    DrawDialog_Margin(Player.name + "! If you ever need a discount from any of the stalls in the market,\n\n", 2);
+    DrawDialog_Margin("just come to me! I know everyone here, \n\n", 2);
+    DrawDialog_Margin("so I can get you the highest quality products for the lowest prices! \n\n", 2);
+    cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+    system("pause");
+
+    system("cls");
+    string option2[1] = {"Do you know how I can get home?"};
+    choice = optionselect("", option2, 1, neutralPinkery, PinkeryLines);
+
+    system("cls");
+    printMidCharacter(joyPinkery,PinkeryLines);
+    cout << string(50, ' '); cout << "Pinkery" << endl << endl;
+    DrawDialog_Margin("Home? You're going to need to be more specific than that. \n\n", 2);
+    DrawDialog_Margin("I don't think I can give you directions, but this will definitely help! \n\n", 2);
+    cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+    system("pause");
+
+    system("cls");
+    printMidCharacter(Milk,MilkLines);
+    cout << endl;
+    DrawDialog_Margin("Obtained [Special Strawberry Milk]! \n\n", 1);
+    cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+    system("pause");
+
+    system("cls");
+    printMidCharacter(joyPinkery,PinkeryLines);
+    cout << string(50, ' '); cout << "Pinkery" << endl << endl;
+    DrawDialog_Margin("It's special strawberry milk! \n\n", 1);
+    cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+    system("pause");
+
+    system("cls");
+    printMidCharacter(neutralPinkery,PinkeryLines);
+    cout << endl;
+    DrawDialog_Margin("Pinkery leans in as if to tell you a secret. \n\n", 1);
+    cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+    system("pause");
+
+    system("cls");
+    printMidCharacter(neutralPinkery,PinkeryLines);
+    cout << string(50, ' '); cout << "Pinkery" << endl << endl;
+    DrawDialog_Margin("It's special because it helps you grow. \n\n", 1);
+    DrawDialog_Margin("You'll probably get home faster.\n\n", 1);
+    cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+    system("pause");
+
+    system("cls");
+    printMidCharacter(joyPinkery,PinkeryLines);
+    cout << string(50, ' '); cout << "Pinkery" << endl << endl;
+    DrawDialog_Margin("Anyway, I'm going back to my stall. Stop by anytime! \n\n", 1);
+    cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+    system("pause");
+
+    Market();
+    }
 }
 
 void Market(){
@@ -2489,13 +2685,16 @@ int main(){
     //DiningRoom(p1);
     //House();
     //Outside(p1);
-    TrainingGroundsQuest(p1);
     //TrainingGrounds(p1);
     //Market();
 
     //int enemyIndex = 1;
 
-    Enemy e1("Soldier",100,DrawEnemy1, DrawEnemy1_Lines);
+    Enemy e1("Soldier",200,DrawEnemy1, DrawEnemy1_Lines);
+    Enemy e2("Thief",75,DrawEnemy2, DrawEnemy2_Lines);
+    //TrainingGroundsQuest(p1,e1);
+    MarketQuest(p1,e2);
+
 
     bool gameloop = true;
 
