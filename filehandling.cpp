@@ -540,6 +540,8 @@ void encyclopedia(){
             encyclopedia();
         }
         else if (choice == "Search in file"){
+            readFile("enemy.txt"); //display available files for users to search
+            readFile("character.txt");
             searchinFilewithUserInput();
             encyclopedia();
         }
