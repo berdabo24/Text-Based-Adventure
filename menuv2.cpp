@@ -1221,6 +1221,13 @@ string BerrySalad[SaladLines] = {
 "       `-.____________.-'"
 };
 
+const int ThankLines = 9;
+string ThankYou[ThankLines] = {
+"___                     __       /",
+" ||__| /\\ |\\ ||__/  \\ //  \\|  | /", 
+" ||  |/~~\\| \\||  \\   | \\__/\\__/."
+  };
+
 const int MirrorLines = 19;
 string Mirror[MirrorLines] = {
 "     ____________________ ",
@@ -3888,6 +3895,9 @@ void Home(){
     
     for (int i = 0; i < SaladLines; i++){
         cout << string(MID_CHAR_POS, ' ') << BerrySalad[i] << endl;
+    }
+    for (int i = 0; i < ThankLines; i++){
+        cout << string(MID_CHAR_POS, ' ') << ThankYou[i] << endl;
     }
 }
 
