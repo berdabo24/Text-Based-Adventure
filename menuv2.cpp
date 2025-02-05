@@ -184,11 +184,12 @@ string optionselect(string text, string array[], int arraysize, string *characte
 // Story functions
 void Bedroom(Player &Player);
 void House();
-void TrainingQuest(Player &Player, Enemy &Enemy);
+void TrainingGroundsQuest(Player &Player, Enemy &Enemy);
 void TrainingGrounds(Player &Player);
 void MarketQuest(Player &Player, Enemy &Enemy);
 void Market();
-void BerryQuest(Player &Player, Enemy &Enemy);
+void BerryGarden(Player &Player, Enemy &Enemy);
+void PotatoPalace(Player &Player, Enemy &Enemy);
 
 // Misc
 void MainGameLoop(int startAt);
@@ -821,7 +822,7 @@ string DrawEnemy2[DrawEnemy2_Lines] = {
 "      _/.~.~.\\_",
 "     ( ( o o ) )  _",
 "      |/  `  \\|   ;;",
-"       \. ^ ./'   ((",
+"       \\. ^ ./'   ((",
 "       /`~~~`\\'   ))",
 "      /       \\  //"
 };
@@ -2303,8 +2304,14 @@ void House(){
 
 }
 
-void Outside(Player &Player){
+int outside_counter = 0;
+bool TGQ_Complete = false;
+bool MQ_Complete = false;
+bool BG_Complete=false;
+void Outside(Player &Player, Enemy &Enemy){
     system("cls");
+
+    if (outside_counter == 0){
     printMidCharacter(Empty,EmptyLines);
     cout << endl;
     DrawDialog_Margin("You step outside and are met with a wave of cool, clean air.  \n\n", 1);
@@ -2361,16 +2368,44 @@ void Outside(Player &Player){
     DrawDialog_Margin("Cream hops back into her humble home. \n\n", 2);
     cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
     PressEnter();
+    }
+
+    system("cls");
+    string option2[4] = {"Training Ground","Market","Berry Garden","Cream and Teddy's House"};
+    choice = optionselect("Where would you like to go?", option2, 4, Empty, EmptyLines);
+    if (choice == "Training Ground"){
+        if (TGQ_Complete == false){
+            TrainingGroundsQuest(Player,Enemy);
+        }else{
+            DrawDialog("The training ground is a wide, open area. \nArchery targets and climbing scaffolds are set up on one side. "
+                       "\nTraining weapons and equipment are provided on their respective racks, waiting to be used. ", 1);
+            DrawDialog("\n\nThis place seems to have more people than the gymnasium at home. \nSome are training together while some are training amongst themselves.", 1);
+            TrainingGrounds(Player);
+        }
+    }
+    else if (choice == "Market"){
+        if (MQ_Complete == false){
+            MarketQuest(Player,Enemy);
+        }
+        else
+        Market();
+    }
+    else if (choice == "Berry Garden"){
+        BerryGarden(Player,Enemy);
+    }
+    else if (choice == "Cream and Teddy's House"){
+        House();
+    }
 
 }
 
-bool TGQ_Complete = false;
 int TGQ_Counter = 0;
 void TrainingGroundsQuest(Player &Player, Enemy &Enemy){
-    if (TGQ_Counter == 0){
         DrawDialog("The training ground is a wide, open area. \nArchery targets and climbing scaffolds are set up on one side. "
                    "\nTraining weapons and equipment are provided on their respective racks, waiting to be used. ", 1);
         DrawDialog("\n\nThis place seems to have more people than the gymnasium at home. \nSome are training together while some are training amongst themselves.", 1);
+    
+    if (TGQ_Counter == 0){
         DrawDialog("\n\nA lemur overseeing the bunch who are together stands out to you.", 1);
         DrawDialog("\nYou decide to approach the lemur.\n\n", 1);
         TGQ_Counter++;
@@ -2726,7 +2761,6 @@ void TrainingGrounds(Player &Player){
     PressEnter();
 }
 
-bool MQ_Complete = false; 
 void MarketQuest(Player &Player, Enemy &Enemy){
     DrawDialog("The market is bustling with people. \nMany stalls sell a variety of products. "
                 "\nSome are selling clothing, some are selling food, some are selling items, \nand some others are selling nick-nacks that might not make any sense to you.", 1);
@@ -3014,7 +3048,6 @@ void Market(){
     PressEnter();
 }
 
-bool BG_Complete=false;
 void BerryGarden(Player &Player, Enemy &Enemy){
 
     DrawDialog("The garden is lush and vibrant with all the berries there could ever exist grown."
@@ -3428,7 +3461,7 @@ void MainGameLoop(int startAt){
             DiningRoom(p1);
             House();
         case 2:
-            Outside(p1);
+            Outside(p1,e1);
             TrainingGroundsQuest(p1,e1);
             TrainingGrounds(p1);
             break;
@@ -3439,6 +3472,41 @@ void MainGameLoop(int startAt){
             break;
     }
 }
+
+
+void PotatoPalace(Player &Player, Enemy &Enemy){
+    system("cls");
+    DrawDialog("You arrive at the Potato Palace. Surprisingly, no one tried to stop you from entering the palace. \n\n", 1);
+    DrawDialog("You'd think a royal palace would be more heavily guarded than simply letting a stranger enter \n\n", 1);
+    DrawDialog("the palace without authorization.",1);
+    PressEnter();
+
+    system("cls");
+    DrawDialog("The ivory walls of the Potato Palace are adorned with gold décor accents, complimenting the \n\n", 1);
+    DrawDialog("color and architecture of the palace.  There aren't any statues of people in the palace, just \n\n", 1);
+    DrawDialog("sculptures of shapes and interactive art that serves its own functionalities and interesting \n\n",1);
+    DrawDialog("twist to its symbolism. It seems like this palace was built off hopes and dreams, albeit \n\n",1);
+    DrawDialog("modest and humble for a palace. There isn't much extravagance, yet you feel that it is \n\n",1);
+    DrawDialog("perfectly furnished where not a single piece of furniture is wasted or unused without a \n\n",1);
+    DrawDialog("purpose. Everything serves a purpose, like it belongs here.\n\n",1);
+    PressEnter();
+
+    system("cls");
+    DrawDialog("As you aimlessly walk down the halls, you hear echoes of your own footsteps following you. \n\n", 1);
+    DrawDialog("Or perhaps those aren't your footsteps.  \n\n", 1);
+    DrawDialog("You hear a voice from behind you.",1);
+    PressEnter();
+
+    system("cls");
+    printMidCharacter(Empty,EmptyLines);
+    cout << string(50, ' '); cout << "Pinkery" << endl << endl;
+    DrawDialog_Margin("Hey hey! What are you looking for? :D \n\n", 1);
+    cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+    PressEnter();
+
+}
+
+
 
 
 int main(){
@@ -3468,7 +3536,7 @@ int main(){
     //MarketQuest(p1,e2);
     BerryGarden(p1,e3);
 
-
+/*
     bool gameloop = true;
 
     while (gameloop){
@@ -3484,6 +3552,6 @@ int main(){
             gameloop = false;
         }
     }
-
+*/
     return 0;
 }
