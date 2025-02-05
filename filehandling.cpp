@@ -595,6 +595,8 @@ void MainMenu(){
 
     if (menuchoice == "New Game"){
         deleteFile("savefile");
+        deleteFIle("enemy.txt"); //prevent user from seeing previous game records as new game progress
+        deleteFile("character.txt"; //same as above
         autocreateFile("savefile", "outside");
         maingameloop(1);
     }
