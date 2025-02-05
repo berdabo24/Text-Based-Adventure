@@ -2127,6 +2127,125 @@ void TrainingGrounds(Player &Player){
     system("pause");
 }
 
+void Market(Player &Player){
+    do{
+    string option1[3] = {"Talk to Pinkery","Check on the thief", "Leave the Market"};
+    choice = optionselect("What would you like to do?", option1, 3, Empty, EmptyLines);
+
+        if (choice == "Talk to Pinkery"){
+        //What do you want to talk about with Pinkery?
+        do{
+        system("cls");
+        string option2[4] = {"Milk flavors","Source of milk", "Open hours", "Goodbye!"};
+        choice = optionselect("Welcome to my stall!", option2, 4, neutralPinkery, PinkeryLines);
+
+        if (choice == "Milk flavors"){
+            system("cls");
+            printMidCharacter(joyPinkery,PinkeryLines);
+            cout << string(50, ' '); cout << "Pinkery" << endl << endl;
+            DrawDialog_Margin("I sell all types of milk flavors! \n\n", 2);
+            DrawDialog_Margin("I have strawberry milk, banana milk, grape milk, mango milk, coconut milk, and many more! \n\n", 2);
+            cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+            system("pause");
+
+            system("cls");
+            printMidCharacter(neutralPinkery,PinkeryLines);
+            cout << string(50, ' '); cout << "Pinkery" << endl << endl;
+            DrawDialog_Margin("Oh, but the milk I gave you is special. \n\n", 2);
+            DrawDialog_Margin("These milks don't give you special effects like the one I gave you.\n\n", 2);
+            cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+        }
+        else if (choice == "Source of milk"){
+            system("cls");
+            printMidCharacter(neutralPinkery,PinkeryLines);
+            cout << string(50, ' '); cout << "Pinkery" << endl << endl;
+            DrawDialog_Margin("Where do I get these milks? Well, how else? \n\n", 2);
+            DrawDialog_Margin("I get it based on what flavor it is of course! \n\n", 2);
+            cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+            system("pause");
+
+            system("cls");
+            printMidCharacter(joyPinkery,PinkeryLines);
+            cout << string(50, ' '); cout << "Pinkery" << endl << endl;
+            DrawDialog_Margin("I get strawberry milk from strawberries, banana milk from bananas, mango milk from mangoes, \n\n", 2);
+            DrawDialog_Margin("grape milk from grapes, coconut milk from coconut, you get the idea. \n\n", 2);
+            cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+        }
+        else if (choice == "Open hours"){
+            system("cls");
+            printMidCharacter(neutralPinkery,PinkeryLines);
+            cout << string(50, ' '); cout << "Pinkery" << endl << endl;
+            DrawDialog_Margin("I'm here from noon to evening!\n\n", 2);
+            DrawDialog_Margin("I come here every day.\n\n", 2);
+            cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+            system("pause");
+
+            system("cls");
+            printMidCharacter(joyPinkery,PinkeryLines);
+            cout << string(50, ' '); cout << "Pinkery" << endl << endl;
+            DrawDialog_Margin("These milks aren't going to sell themselves after all!\n\n", 2);
+            cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+        }
+        else if (choice == "Goodbye!"){
+            system("cls");
+            printMidCharacter(joyPinkery,PinkeryLines);
+            cout << string(50, ' '); cout << "Pinkery" << endl << endl;
+            DrawDialog_Margin("Pleasure doing business with moo! \n\n", 2);
+            cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+        }
+        system("pause");
+        }while (choice != "Goodbye!");
+        }
+
+        else if (choice == "Check on the thief"){
+            system("cls");
+            printMidCharacter(Empty,EmptyLines);
+            cout << endl;
+            DrawDialog_Margin("You check on the fainted thief. \n\n", 1);
+            cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+            system("pause");
+
+            system("cls");
+            printMidCharacter(Empty,EmptyLines);
+            cout << endl;
+            DrawDialog_Margin("He doesn't seem to be moving. \n\n", 1);
+            DrawDialog_Margin("You try poking him. \n\n", 1);
+            cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+            system("pause");
+
+            system("cls");
+            printMidCharacter(Empty,EmptyLines);
+            cout << endl;
+            DrawDialog_Margin("No response. \n\n", 1);
+            cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+            system("pause");
+
+            system("cls");
+            printMidCharacter(Empty,EmptyLines);
+            cout << endl;
+            DrawDialog_Margin("He should've thought twice before stealing someone else's lunch. \n\n", 1);
+            DrawDialog_Margin("He'll live. \n\n", 1);
+            cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+            system("pause");
+
+            system("cls");
+            printMidCharacter(Empty,EmptyLines);
+            cout << endl;
+            DrawDialog_Margin("Probably.\n\n", 1);
+            cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+            system("pause");
+        }
+    }while (choice != "Leave the Market");
+
+    //Leave the Market
+    system("cls");
+    printMidCharacter(joyPinkery,PinkeryLines);
+    cout << endl;
+    DrawDialog_Margin("Pinkery moos at you, it seems like that's her way of saying goodbye.\n\n", 1);
+    cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+    system("pause");
+}
+
 
 
 int main(){
@@ -2138,7 +2257,8 @@ int main(){
     //DiningRoom(p1);
     //House(p1);
     //Outside(p1);
-    TrainingGrounds(p1);
+    //TrainingGrounds(p1);
+    Market(p1);
 
     //int enemyIndex = 1;
 
