@@ -19,7 +19,7 @@ using namespace std;
 
 int err = 0;//to show no. of errors
 
-void autocreateFile(const string& filename, const string& content) //for new encounters
+void autocreateFile(const string& filename, const string& content) //for new encounters/progress
 {
     ofstream file(filename, ios::trunc);//open
     if (file)
@@ -49,13 +49,13 @@ void createEmptyFile(const string& filename){
 
     else //file.fail()
     {
-        cout << "Error. Unable to add '" << filename << "' into encyclopedia!\n";
+        cout << "Error. Unable to add '" << filename << "'!\n";
         err++;
         return;
     }
 }
 
-void autoappendFile(const string& filename, const string& content)//for create/update defeated_enemies.txt
+void autoappendFile(const string& filename, const string& content)//for create/update enemies.txt & character.txt
 {
     cout << "Opening file '" << filename << "' for appending..." << endl;
     ofstream file(filename, ios::app); //declare and open output file
@@ -69,14 +69,14 @@ void autoappendFile(const string& filename, const string& content)//for create/u
     cout << "Successfully open '" << filename << "'!\n";
         file << "\n" << content;
         file.close();
-        cout << "End of appending '" << filename << "'!\n";
+        cout << "End of appending file '" << filename << "'!\n";
 
 }
 
 void manualcreateFile()
 {
     string filename, content;
-    cout << "\nEnter new filename: ";
+    cout << "\nEnter filename for new file: ";
     getline (cin, filename);
 
     cout << "Enter content: ";
