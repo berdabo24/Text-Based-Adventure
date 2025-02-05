@@ -564,10 +564,10 @@ void MainMenu(){
                 system("cls");
                 y_n = optionselect("This will overwrite the save file, Are you sure?", confirm, 2);
                 if (y_n == "Yes"){
-                    loop = false; //continue game
+                    loop = false; //proceed to new game
                 }
                 else{
-                    break; //exit do-while loop, not proceeding game
+                    break; //exit do-while loop, proceed with saved progress
                 }
             }
             else{
@@ -576,7 +576,7 @@ void MainMenu(){
         }
         if (menuchoice == "Load Game"){
             if (FileExists("savefile")){
-                loop = false;
+                loop = false;//proceed with saved progress
             }
             else{
                 system("cls");
