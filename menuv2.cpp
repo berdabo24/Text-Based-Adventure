@@ -1,10 +1,15 @@
 #include <iostream>
+#include <fstream>
 #include <conio.h>
 #include <windows.h>
 #include <stdlib.h>
 #include <cstdlib> 
 #include <ctime>
 #include <string>
+#include <cctype> //tolower
+#include <algorithm> //transform
+#include <cstdio>
+
 using namespace std;
 
 #define KEY_UP 72
@@ -12,6 +17,7 @@ using namespace std;
 #define KEY_LEFT 75
 #define KEY_RIGHT 77
 #define KEY_ENTER 13
+#define KEY_ESCAPE 27
 
 
 // Highlight Function
@@ -134,24 +140,49 @@ class Enemy : public Character
 
 };
 
-void White_HL(string text);
+//File functions
+void autocreateFile(const string& filename, const string& content);
+void createEmptyFile(const string& filename);
+void autoappendFile(const string& filename, const string& content);
+void readFile(const string& filename);
+void viewwithUserInput();
+void searchinFile (const string& filename, const string& searchLine);
+bool bool_searchinFile (const string& filename, const string& searchLine);
+void searchwithUserInput();
+void deleteFile(const string& filename);
+bool FileExists(const string& filename);
+int loadsave(const string& filename);
+
+// Battle functions
 static int randomiser (int chance, int min, int max);
 void Battle(Player &Player, Enemy &Enemy, string Action, string FirstMove);
 void WhoFirst(Player &Player, Enemy &Enemy, string PlayerTurn, string EnemyTurn);
+void PlaceDialog(Player &Player, Enemy &Enemy, string character, string text);
+void PlaceDialog(Player &Player, Enemy &Enemy, string character, string text, int variable, string text2);
+void DrawChacters_AND_HealthBar(Player &Player, Enemy &Enemy);
+void DrawChacters_AND_HealthBar(Player &Player, Enemy &Enemy, int int_damagetext_P, int int_damagetext_E, string sign);
+string MoveSelect(int x, int y, Player &Player);
+void InitiateBattle(string PlayerTurn, Player &Player, Enemy &Enemy);
+void KeySwitch(Player &Player, Enemy &Enemy);
+
+//Drawing functions
 void DrawTopBorder();
 void DrawBottomBorder();
 void DrawOptions(string SLOT[]);
 void DrawDialog(string text , int typeSpeed);
-void PlaceDialog(Player &Player, Enemy &Enemy, string character, string text);
-void PlaceDialog(Player &Player, Enemy &Enemy, string character, string text, int variable, string text2);
+void DrawDialog_Margin(string text , int typeSpeed);
 void printCharacters(string char1[], int char1_size, string char2[], int char2_size);
-void DrawChacters_AND_HealthBar(Player &Player, Enemy &Enemy);
-void DrawChacters_AND_HealthBar(Player &Player, Enemy &Enemy, int int_damagetext_P, int int_damagetext_E, string sign);
+void printMidCharacter(string char1[], int char1_size);
 void DrawMenu(string move, Player &Player, Enemy &Enemy);
-string MoveSelect(int x, int y, Player &Player);
-void InitiateBattle(string PlayerTurn, Player &Player, Enemy &Enemy);
-void KeySwitch(Player &Player, Enemy &Enemy);
-void PressEnter();
+
+// Story Menu functions
+void menuselectionbox(string slot[], int slotsize);
+bool PressEnter();
+void DrawStoryMenu(string move, string array[], int arraysize, string *character, int charsize, string text);
+string optionselect(string text, string array[], int arraysize, string *character, int charsize);
+
+// Story functions
+void Bedroom(Player &Player);
 void House();
 void TrainingQuest(Player &Player, Enemy &Enemy);
 void TrainingGrounds(Player &Player);
@@ -159,7 +190,213 @@ void MarketQuest(Player &Player, Enemy &Enemy);
 void Market();
 void BerryQuest(Player &Player, Enemy &Enemy);
 
+// Misc
+void MainGameLoop(int startAt);
+void MainMenu();
 
+void autocreateFile(const string& filename, const string& content) //for new encounters
+{
+    ofstream file(filename, ios::trunc);//open
+    if (file)
+    {
+        file << content;
+        file.close();
+    }
+
+
+    else //file.fail()
+    {
+        cout << "Error. Unable to add '" << filename << "'! Exiting...\n";
+        exit(1);
+    }
+}
+
+void createEmptyFile(const string& filename){
+    
+    ofstream file(filename, ios::trunc);//open
+    if (file)
+    {
+        file.close();
+    }
+
+    else //file.fail()
+    {
+        cout << "Error. Unable to add '" << filename << "'! Exiting...\n";
+        exit(1);
+    }
+}
+
+void autoappendFile(const string& filename, const string& content)//for create/update defeated_enemies.txt
+{
+    ofstream file(filename, ios::app); //declare and open output file
+    if (file.fail())
+    {
+        cout << "Error. Unable to append file '" << filename << "'! Exiting...\n" << endl;
+        exit(1);
+    }
+
+    file << "\n" << content;
+    file.close();
+}
+
+void manualcreateFile()
+{
+    string filename, content;
+    cout << "\nEnter new filename: ";
+    getline (cin, filename);
+
+    cout << "Enter content: ";
+    getline (cin, content);
+
+    autocreateFile(filename, content);
+}
+
+void readFile(const string& filename)
+{
+    string tmp;
+    fstream file(filename); //declare read/write file
+    if (file.fail())
+    {
+        cout << "Error. File not found! \n";
+        exit(1);
+    }
+    cout << "\nContents of '" << filename << "': \n";
+    while (getline(file, tmp))
+    {
+        cout << tmp << endl;
+    }
+    file.close();
+}
+
+void viewwithUserInput()
+{
+    string filename;
+    cout << "\nEnter file name to view: ";
+    getline (cin, filename);
+
+    readFile(filename);
+}
+
+void searchinFile (const string& filename, const string& searchLine)
+{
+
+    ifstream file(filename); //open input file
+
+    if (file.fail())
+    {
+        cout << "Error. File '" << filename << "' does not exist! Exiting...\n";
+        exit(1);
+    }
+
+    string tmpOri;
+    int tmpLine = 0;
+    bool found = true;
+
+    //Convert searchLine to lowercase
+    string searchLineLower = searchLine;
+    transform(searchLineLower.begin(), searchLineLower.end(), searchLineLower.begin(), ::tolower);
+
+    cout << "\nSearching for '" <<searchLine << "' in " << filename << ": ";
+
+    while (getline(file,tmpOri))
+    {
+        tmpLine ++;
+
+        //Convert current line to lower case
+        string tmpLower = tmpOri;
+        transform(tmpLower.begin(), tmpLower.end(), tmpLower.begin(), ::tolower);
+
+        if (tmpLower.find(searchLineLower) != string::npos)
+        {
+            cout << "\nLine " << tmpLine << ": " << tmpOri << " found!";
+            found = true;
+        }
+    }
+    if (!found)
+    {
+        cout << "\n" << searchLine << " not found in " << filename << ".\n";
+    }
+
+}
+
+bool bool_searchinFile (const string& filename, const string& searchLine)
+{
+
+    ifstream file(filename); //open input file
+
+    if (file.fail())
+    {
+        cout << "Error. File '" << filename << "' does not exist! Exiting...\n";
+        exit(1);
+    }
+
+    string tmpOri;
+    int tmpLine = 0;
+
+    //Convert searchLine to lowercase
+    string searchLineLower = searchLine;
+    transform(searchLineLower.begin(), searchLineLower.end(), searchLineLower.begin(), ::tolower);
+
+    while (getline(file,tmpOri))
+    {
+        tmpLine ++;
+
+        //Convert current line to lower case
+        string tmpLower = tmpOri;
+        transform(tmpLower.begin(), tmpLower.end(), tmpLower.begin(), ::tolower);
+
+        if (tmpLower.find(searchLineLower) != string::npos)
+        {
+            return true;
+        }
+    }
+
+    return false;
+
+}
+
+void searchwithUserInput()
+{
+    string filename, searchLine;
+    cout << "\nEnter the file name to search: ";
+    cin >> filename;
+    cout << "Enter the text to search for: ";
+    cin >> searchLine;
+
+    // Call the searchinFile function with user input
+    searchinFile(filename, searchLine);
+}
+
+void deleteFile(const string& filename)
+{
+
+    //check existence
+    ifstream file (filename);
+    if (file)
+    {
+        file.close(); //prevent unwanted errors
+        if (remove(filename.c_str()) == 0)
+        {
+           return;
+        }
+    }
+    return;
+}
+
+bool FileExists(const string& filename)
+{
+    // opening the file
+    fstream file(filename); //declare read/write file
+
+    if (file)
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
 
 // Battle function
 void Battle(Player &Player, Enemy &Enemy, string Action, string FirstMove){
@@ -999,9 +1236,6 @@ string Empty[EmptyLines] = {
 };
 
 
-
-
-
 void DrawChacters_AND_HealthBar(Player &Player, Enemy &Enemy){
     system("cls");
     printCharacters(Player.drawing,Player.drawingLines,Enemy.drawing,Enemy.drawingLines);
@@ -1173,18 +1407,29 @@ void KeySwitch(Player &Player, Enemy &Enemy){
 
 }
 
-void PressEnter(){
+bool PressEnter(){
     cout << endl;
     cout << endl;
     cout << endl;
 
-    bool loop = true;
-    cout << "Press ENTER to continue...";
-    while(loop){
-        if (getch() == KEY_ENTER){
-            loop = false;
-        }
+    string option1[3] = {"Resume","Load Game","Return to Menu"};
+    string choice;
+
+    cout << "Press ENTER to continue or ESC to pause...";
+    switch(getch()){
+        case KEY_ENTER:
+            return false;
+            break;
+        case KEY_ESCAPE:
+            choice = optionselect("Game Paused", option1, 3, Empty, EmptyLines);
+            break;
     }
+    
+    if (choice == "Resume") return true;
+    if (choice == "Load Game") MainGameLoop(loadsave("savefile"));
+    if (choice == "Return to Menu") MainMenu();
+    
+    return true;
 }
 
 
@@ -1195,6 +1440,7 @@ void menuselectionbox(string slot[], int slotsize){
     int menuMargin = 5;
     int max = 0;
     int borderLength;
+    int middlize;
 
     for (int i = 0; i < slotsize; i++) {
         int len = slot[i].length();
@@ -1207,15 +1453,18 @@ void menuselectionbox(string slot[], int slotsize){
     }   
     borderLength = max + menuMargin * 2; 
 
+    middlize = MID_MARGIN - (max/3);
+    
+
 
     // Draw the menu
 
-    cout << string(MID_MARGIN, ' ') << "+" << string(borderLength, '-') << "+" << endl;
+    cout << string(middlize, ' ') << "+" << string(borderLength, '-') << "+" << endl;
 
     for (int i = 0; i < slotsize; i++ ){
         int rmg_space = static_cast<int>(borderLength - menuMargin - slot[i].length() - 1);
 
-        cout << string(MID_MARGIN, ' ') << "|" << string(menuMargin, ' ');
+        cout << string(middlize, ' ') << "|" << string(menuMargin, ' ');
         if (slot[i].find('>') < 1){
             White_HL(slot[i]);
         }
@@ -1228,76 +1477,146 @@ void menuselectionbox(string slot[], int slotsize){
         cout << "|" << endl;
     }
 
-    cout << string(MID_MARGIN, ' ') << "+" << string(borderLength, '-') << "+" << endl;
+    cout << string(middlize, ' ') << "+" << string(borderLength, '-') << "+" << endl;
 
 }
 
 
-void DrawStoryMenu(string move, string array[], int arraysize, string *character, int charsize, string text){
+void DrawStoryMenu(string move, string* options, int optionCount, string *character, int charsize, string text){
 
 
     system("cls");
 
-    string c_array[4];
-
-    for (int i = 0; i < arraysize; i++){
-        c_array[i] = array[i];
+    string* menu = new string[optionCount];
+    for (int i = 0; i < optionCount; i++) {
+        menu[i] = options[i];
     }
 
-    // Increase/decrease z based on input
-    if (move == "DOWN" && z >= 0 && z < arraysize - 1){
+    if (move == "DOWN" && z < optionCount - 1){
         z++;
     }
-    if (move == "UP" && z > 0 && z <= arraysize - 1){
-        z--;
+
+    if (move == "UP" && z > 0){
+        z--;   
     }
 
-    switch(z){
-        case 0:
-            c_array[0] = ">" + array[0];
-            break;
-        case 1:
-            c_array[1] = ">" + array[1];
-            break;
-        case 2:
-            c_array[2] = ">" + array[2];
-            break;
-        case 3:
-            c_array[3] = ">" + array[3];
-            break;
-        default:
-            break;
-    }
+    menu[z] = ">" + options[z];
 
     printMidCharacter(character,charsize);
-    cout << string(MID_MARGIN, ' ') << text << endl;
-    menuselectionbox(c_array, arraysize);
+    cout << string(MID_MARGIN - (text.length() / 3), ' ') << text << endl;
+    menuselectionbox(menu, optionCount);
+
+    delete[] menu;
 }
 
 
-string optionselect(string text, string array[], int arraysize, string *character, int charsize){
+string optionselect(string text, string* options, int optionCount, string *character, int charsize){
 
-    int n;
     printMidCharacter(character,charsize);
-    cout << string(MID_MARGIN, ' ') << text << endl;
-    DrawStoryMenu(" ", array, arraysize, character, charsize, text);
+    cout << string(MID_MARGIN - (text.length() / 3), ' ') << text << endl;
+    DrawStoryMenu(" ", options, optionCount, character, charsize, text);
+
+    int selected;
+
+    while (true) {
+        switch (getch()) {
+            case KEY_UP:
+                DrawStoryMenu("UP", options, optionCount, character, charsize, text);
+                break;
+            case KEY_DOWN:
+                DrawStoryMenu("DOWN", options, optionCount, character, charsize, text);
+                break;
+            case KEY_ENTER:
+                selected = z;
+                z = 0;
+                return options[selected]; 
+            default:
+                break;
+        }
+    }
+}
+
+const int numofsaves = 5;
+
+int loadsave(const string& filename){
+    int n = 0;
+    string saves[numofsaves];
+    string areaName;
+    string tmp;
+    fstream file(filename); //declare read/write file
+
+    while (getline(file, tmp))
+    {
+        saves[n++] = tmp;
+    }
+
+    while (n < numofsaves){
+        saves[n++] = " ";
+    }
+
+    file.close();
 
     while(true){
-        switch(getch()){
-        case KEY_UP:
-            DrawStoryMenu("UP", array, arraysize, character, charsize, text);
-            break;
-        case KEY_DOWN:
-            DrawStoryMenu("DOWN", array, arraysize, character, charsize, text);
-            break;
-        case KEY_ENTER:
-            n = z;
-            z = 0;
-            return array[n];
-            break;
-        default:
-            break;
+        areaName = optionselect("Load Save", saves, numofsaves, Empty, EmptyLines);
+        if (areaName == "Bedroom") return 1;
+        if (areaName == "Outside") return 2;
+        if (areaName == "Market") return 3;
+        if (areaName == "Berry Garden") return 4;
+        if (areaName == "Potato Palace") return 5;
+    }
+
+
+}
+
+
+void MainMenu(){
+    
+    string mainmenu[4] = {"New Game", "Load Game", "Encyclopedia", "Exit"};
+    string confirm[2] = {"Yes", "No"};
+    string menuchoice;
+    string y_n;
+
+    bool loop = true;
+    do{
+        menuchoice = optionselect("Main Menu", mainmenu, 4, Empty, EmptyLines);
+        if (menuchoice == "New Game"){
+            if (FileExists("savefile")){
+                system("cls");
+                y_n = optionselect("This will overwrite the save file, Are you sure?", confirm, 2, Empty, EmptyLines);
+                if (y_n == "Yes"){
+                    loop = false;
+                }
+                else{
+                    break;
+                }
+            }
+            else{
+                loop = false;
+            }
         }
+        if (menuchoice == "Load Game"){
+            if (FileExists("savefile")){
+                loop = false;
+            }
+            else{
+                system("cls");
+                cout << "No existing save file!" << endl;
+                system("pause");
+            }
+        }
+        if (menuchoice == "Exit"){
+            exit(1);
+        }
+    }while(loop == true);
+
+    if (menuchoice == "New Game"){
+        system("cls");
+        deleteFile("savefile");
+        autocreateFile("savefile","Bedroom");
+        MainGameLoop(1);
+    }
+    if (menuchoice == "Load Game"){
+        MainGameLoop(loadsave("savefile"));
     }
 }
 
@@ -1309,21 +1628,21 @@ void Bedroom(Player &Player){
                "\nThe bed you're on feels very soft and comfortable as if made of fluff. ", 1);
     DrawDialog("\n\nYou could not remember what happened, or how you even got here. \nThe only thing you're certain of is that your head hurts A LOT. ", 1);
     DrawDialog("\n\nIn your state of confusion, a soft-looking bunny comes into the room. \n\n", 1);
-    system("pause");
+    PressEnter();
 
     system("cls");
     printMidCharacter(happyCream,CreamLines);
     cout << string(50, ' '); cout << "???" << endl << endl;
     DrawDialog_Margin("Oh! You're finally awake! \n\n", 2);
     cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-    system("pause");
+    PressEnter();
 
         system("cls");
     printMidCharacter(happyCream,CreamLines);
     cout << endl;
     DrawDialog_Margin("The bunny said, hopping excitedly towards you.\n\n", 1);
     cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-    system("pause");
+    PressEnter();
 
     system("cls");
     printMidCharacter(neutralCream,CreamLines);
@@ -1331,7 +1650,7 @@ void Bedroom(Player &Player){
     DrawDialog_Margin("My husband and I found you sleeping on the ground at the Berry Garden. \n\n", 2);
     DrawDialog_Margin("Thank goodness no wild Prunicus got to you before we did.\n\n", 2);
     cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-    system("pause");
+    PressEnter();
 
     system("cls");
     printMidCharacter(neutralCream,CreamLines);
@@ -1345,7 +1664,7 @@ void Bedroom(Player &Player){
     cout << endl;
     DrawDialog_Margin("", 1); cout << Player.name; DrawDialog("! What a lovely name!\n\n", 2);
     cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-    system("pause");
+    PressEnter();
 
     system("cls");
     printMidCharacter(happyCream,CreamLines);
@@ -1353,7 +1672,7 @@ void Bedroom(Player &Player){
     DrawDialog_Margin("The bunny jumps in joy.", 1);
     cout << endl << endl;
     cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-    system("pause");
+    PressEnter();
 
     system("cls");
     printMidCharacter(neutralCream,CreamLines);
@@ -1361,7 +1680,7 @@ void Bedroom(Player &Player){
     cout << endl;
     DrawDialog_Margin("I'm Cream! My husband is downstairs having lunch. You should join us when you're ready. \n\n", 2 );
     cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-    system("pause");
+    PressEnter();
 
     system("cls");
     printMidCharacter(Empty,EmptyLines);
@@ -1369,7 +1688,7 @@ void Bedroom(Player &Player){
     DrawDialog_Margin("The bunny hops out of the room.", 1);
     cout << endl << endl;
     cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-    system("pause");
+    PressEnter();
 
 
     do{
@@ -1408,7 +1727,7 @@ void Bedroom(Player &Player){
         DrawDialog_Margin("One of the portraits was of Cream, a bear, and a bear cub. \n\n", 1);
         cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
     }
-    system("pause");
+    PressEnter();
     }while (choice != "Go downstairs");
 
 }
@@ -1422,7 +1741,7 @@ void DiningRoom(Player &Player){
     DrawDialog_Margin("dining table.", 1);
     cout << endl << endl;
     cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-    system("pause");
+    PressEnter();
 
     system("cls");
     printMidCharacter(happyTeddy,TeddyLines);
@@ -1432,7 +1751,7 @@ void DiningRoom(Player &Player){
     DrawDialog_Margin("The bear laughs heartily at his own remark.", 1 );
     cout << endl << endl;
     cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-    system("pause");
+    PressEnter();
 
     system("cls");
     printMidCharacter(happyTeddy,TeddyLines);
@@ -1443,7 +1762,7 @@ void DiningRoom(Player &Player){
     DrawDialog_Margin("You must be starving after sleeping for so long." , 2);
     cout << endl << endl;
     cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-    system("pause");
+    PressEnter();
 
     system("cls");
     printMidCharacter(neutralTeddy,TeddyLines);
@@ -1452,7 +1771,7 @@ void DiningRoom(Player &Player){
     DrawDialog_Margin("The table was sturdy and perfect for hosting family gatherings.",1);
     cout << endl << endl;
     cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-    system("pause");
+    PressEnter();
 
     system("cls");
     printMidCharacter(Food,FoodLines);
@@ -1461,7 +1780,7 @@ void DiningRoom(Player &Player){
     DrawDialog_Margin("She puts the blueberry pie on the table.",1);
     cout << endl << endl;
     cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-    system("pause");
+    PressEnter();
 
     system("cls");
     printMidCharacter(Food,FoodLines);
@@ -1470,7 +1789,7 @@ void DiningRoom(Player &Player){
     DrawDialog_Margin("Eat up, ", 2); cout << Player.name; DrawDialog("! My wife makes the BEST pies!", 2);
     cout << endl << endl;
     cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-    system("pause");
+    PressEnter();
 
     system("cls");
     printMidCharacter(Food,FoodLines);
@@ -1478,7 +1797,7 @@ void DiningRoom(Player &Player){
     DrawDialog_Margin("Cream takes a seat next to him. ", 1);
     cout << endl << endl;
     cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-    system("pause");
+    PressEnter();
 
     system("cls");
     printMidCharacter(Food,FoodLines);
@@ -1487,7 +1806,7 @@ void DiningRoom(Player &Player){
     DrawDialog_Margin("in your mouth.",1);
     cout << endl << endl;
     cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-    system("pause");
+    PressEnter();
 
     system("cls");
     printMidCharacter(Food,FoodLines);
@@ -1496,7 +1815,7 @@ void DiningRoom(Player &Player){
     DrawDialog_Margin("the perfect moment.", 1);
     cout << endl << endl;
     cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-    system("pause");
+    PressEnter();
     
     system("cls");
     printMidCharacter(Food,FoodLines);    
@@ -1504,7 +1823,7 @@ void DiningRoom(Player &Player){
     DrawDialog_Margin("Just like how mother used to make it.", 2);
     cout << endl << endl;
     cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-    system("pause");
+    PressEnter();
 
     system("cls");
     string option1[3] = {"It's pulchritudinous.","It tastes good!", "Wow... This pie slaps."};
@@ -1517,7 +1836,7 @@ void DiningRoom(Player &Player){
     DrawDialog_Margin("I'm glad you think so!", 2);
     cout << endl << endl;
     cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-    system("pause");
+    PressEnter();
 
     system("cls");
     printMidCharacter(happyCream,CreamLines);
@@ -1525,7 +1844,7 @@ void DiningRoom(Player &Player){
     DrawDialog_Margin("Cream is overjoyed by your response.", 2);
     cout << endl << endl;
     cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-    system("pause");
+    PressEnter();
 
     system("cls");
     printMidCharacter(happyTeddy,TeddyLines);
@@ -1534,7 +1853,7 @@ void DiningRoom(Player &Player){
     DrawDialog_Margin("Teddy wipes the blueberry puree off his face and hands. ", 2);
     cout << endl << endl;
     cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-    system("pause");
+    PressEnter();
 
     system("cls");
     string option2[3] = {"I'm lost.","I actually don't know where I am.", "I live around the corner."};
@@ -1548,7 +1867,7 @@ void DiningRoom(Player &Player){
         DrawDialog_Margin("Lost? So, you don't even know where you are!", 2);
         cout << endl << endl;
         cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-        system("pause");
+        PressEnter();
     }
     else if(choice == "I actually don't know where I am."){
         system("cls");
@@ -1558,7 +1877,7 @@ void DiningRoom(Player &Player){
         DrawDialog_Margin("You don't? So, We basically just kidnapped ya!", 2);
         cout << endl << endl;
         cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-        system("pause");
+        PressEnter();
     }
     else if(choice == "I live around the corner."){
         system("cls");
@@ -1569,7 +1888,7 @@ void DiningRoom(Player &Player){
         DrawDialog_Margin("and I sure haven't seen you around here in all my years...", 2);
         cout << endl << endl;
         cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-        system("pause");
+        PressEnter();
 
         system("cls");
         printMidCharacter(happyTeddy,TeddyLines);
@@ -1578,7 +1897,7 @@ void DiningRoom(Player &Player){
         DrawDialog_Margin("How long have we lived here again?", 2);
         cout << endl << endl;
         cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-        system("pause");
+        PressEnter();
 
         system("cls");
         printMidCharacter(neutralTeddy,TeddyLines);
@@ -1587,7 +1906,7 @@ void DiningRoom(Player &Player){
         DrawDialog_Margin("Teddy scratches his head trying to remember.", 2);
         cout << endl << endl;
         cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-        system("pause");
+        PressEnter();
 
         system("cls");
         printMidCharacter(happyTeddy,TeddyLines);
@@ -1597,7 +1916,7 @@ void DiningRoom(Player &Player){
         DrawDialog_Margin("Teddy says waving his bear paws.", 2);
         cout << endl << endl;
         cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-        system("pause");
+        PressEnter();
     }
 
     system("cls");
@@ -1607,7 +1926,7 @@ void DiningRoom(Player &Player){
     DrawDialog_Margin("Well, you're in the Potato Kingdom!", 2);
     cout << endl << endl;
     cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-    system("pause");
+    PressEnter();
 
     system("cls");
     printMidCharacter(Empty,EmptyLines);
@@ -1616,7 +1935,7 @@ void DiningRoom(Player &Player){
     DrawDialog_Margin("This all seems too unreal, a talking bunny and a bear. \n\n", 2);
     DrawDialog_Margin("Not to mention you're eating blueberry pie with them.  \n\n", 2);
     cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-    system("pause");
+    PressEnter();
 
     system("cls");
     string option3[1] = {"How do I get home?"};
@@ -1629,7 +1948,7 @@ void DiningRoom(Player &Player){
     DrawDialog_Margin("You could try asking around the kingdom, though. \n\n", 2);
     DrawDialog_Margin("I'm sure someone here knows about transportation. \n\n", 2);
     cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-    system("pause");
+    PressEnter();
 
     system("cls");
     printMidCharacter(happyTeddy,TeddyLines);
@@ -1638,7 +1957,7 @@ void DiningRoom(Player &Player){
     DrawDialog_Margin("Teddy and Cream don't seem to know much about where you're from, \n\n", 2);
     DrawDialog_Margin("nor how you ended up in this situation. \n\n", 2);
     cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-    system("pause");
+    PressEnter();
 
     system("cls");
     printMidCharacter(neutralCream,CreamLines);
@@ -1646,7 +1965,7 @@ void DiningRoom(Player &Player){
     DrawDialog_Margin("Are you healthy enough to be going so soon?\n\n", 2);
     DrawDialog_Margin("If you'd like to rest here some more, we don't mind! \n\n", 2);
     cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-    system("pause");
+    PressEnter();
 
     system("cls");
     printMidCharacter(neutralCream,CreamLines);
@@ -1655,7 +1974,7 @@ void DiningRoom(Player &Player){
     DrawDialog_Margin("We prepare the room for him when he returns from time to time \n\n", 2);
     DrawDialog_Margin("we don't think he'll return until next month. \n\n", 2);
     cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-    system("pause");
+    PressEnter();
 
     system("cls");
     printMidCharacter(happyCream,CreamLines);
@@ -1664,7 +1983,7 @@ void DiningRoom(Player &Player){
     DrawDialog_Margin("Perhaps the bear cub from the portrait is their son. \n\n", 2);
     DrawDialog_Margin("He must be old enough to be living on his own now. \n\n", 2);
     cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-    system("pause");
+    PressEnter();
 
     system("cls");
     string option4[1] = {"Thank you for your hospitality. But I should really get home."};
@@ -1675,21 +1994,21 @@ void DiningRoom(Player &Player){
     cout << string(50, ' '); cout << "Cream" << endl << endl;
     DrawDialog_Margin("Alrighty then! Stay safe out there!\n\n", 2);
     cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-    system("pause");
+    PressEnter();
 
     system("cls");
     printMidCharacter(happyTeddy,TeddyLines);
     cout << string(50, ' '); cout << "Teddy" << endl << endl;
     DrawDialog_Margin("Safe travels, kiddo!\n\n", 2);
     cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-    system("pause");
+    PressEnter();
 
     system("cls");
     printMidCharacter(happyTeddy,TeddyLines);
     cout << endl;
     DrawDialog_Margin("Teddy laughs heartily once again.\n\n", 2);
     cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-    system("pause");
+    PressEnter();
 
     system("cls");
     string option5[2] = {"Stay here a bit longer","Leave the house"};
@@ -1701,17 +2020,17 @@ void DiningRoom(Player &Player){
         cout << endl;
         DrawDialog_Margin("You look around Cream and Teddy's house a little longer.\n\n", 2);
         cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-        system("pause");
+        PressEnter();
         House();
     }
     else if (choice == "Leave the house"){
         system("cls");
         printMidCharacter(Empty,EmptyLines);
         cout << endl;
-        DrawDialog_Margin("You leave the humbe abode.\n\n", 1);
+        DrawDialog_Margin("You leave the humble abode.\n\n", 1);
         DrawDialog_Margin("Teddy and Cream wave at you goodbye.\n\n", 1);
         cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-        system("pause");
+        PressEnter();
     }
 
 }
@@ -1730,7 +2049,7 @@ void House(){
         cout << endl;
         DrawDialog_Margin("You go to the living room to talk to Teddy. \n\n", 1);
         cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-        system("pause");
+        PressEnter();
 
         system("cls");
         printMidCharacter(Empty,EmptyLines);
@@ -1739,7 +2058,7 @@ void House(){
         DrawDialog_Margin("one longer couch facing the television,\n\n", 1);
         DrawDialog_Margin("while the other two face each other.  \n\n", 1);
         cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-        system("pause");
+        PressEnter();
 
         system("cls");
         printMidCharacter(Empty,EmptyLines);
@@ -1748,14 +2067,14 @@ void House(){
         DrawDialog_Margin("There are drawers on each side of the long couch, \n\n", 1);
         DrawDialog_Margin("both with small portraits of happy family photos on them.  \n\n", 1);
         cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-        system("pause");
+        PressEnter();
 
         system("cls");
         printMidCharacter(Empty,EmptyLines);
         cout << endl;
         DrawDialog_Margin("You see Teddy attentively watching the kingdom news on the television.\n\n", 1);
         cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-        system("pause");
+        PressEnter();
         
         system("cls");
         printMidCharacter(happyTeddy,TeddyLines);
@@ -1763,7 +2082,7 @@ void House(){
         DrawDialog_Margin("Hey kiddo! Back already? The kingdom is pretty big.\n\n", 2);
         DrawDialog_Margin("I'm sure you have a lot of places to wander around!  \n\n", 2);
         cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-        system("pause");
+        PressEnter();
 
         //What do you want to talk about with Teddy?
         do{
@@ -1779,7 +2098,7 @@ void House(){
             DrawDialog_Margin("Seems like the prices for berries have increased again. \n\n", 2);
             DrawDialog_Margin("It's better to just pick the berries off the bushes ourselves! \n\n", 2);
             cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-            system("pause");
+            PressEnter();
 
             system("cls");
             printMidCharacter(happyTeddy,TeddyLines);
@@ -1812,7 +2131,7 @@ void House(){
             DrawDialog_Margin("See ya later, kiddo! \n\n", 2);
             cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
         }
-        system("pause");
+        PressEnter();
         }while (choice != "Goodbye!");
     }
 
@@ -1823,7 +2142,7 @@ void House(){
         cout << endl;
         DrawDialog_Margin("You go to the kitchen to talk to Cream. \n\n", 1);
         cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-        system("pause");
+        PressEnter();
 
         system("cls");
         printMidCharacter(Empty,EmptyLines);
@@ -1833,7 +2152,7 @@ void House(){
         DrawDialog_Margin("You see various utensils and cutleries around, \n\n", 1);
         DrawDialog_Margin("all meant to prepare specific dishes and desserts. \n\n", 1);
         cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-        system("pause");
+        PressEnter();
 
         system("cls");
         printMidCharacter(Empty,EmptyLines);
@@ -1841,21 +2160,21 @@ void House(){
         DrawDialog_Margin("There is a drawing on the fridge, \n\n", 1);
         DrawDialog_Margin("nicely placed with cute berry-shaped magnets holding them up. \n\n", 1);
         cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-        system("pause");
+        PressEnter();
 
         system("cls");
         printMidCharacter(Empty,EmptyLines);
         cout << endl;
         DrawDialog_Margin("Cream is munching on a carrot next to the fridge. \n\n", 1);
         cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-        system("pause");
+        PressEnter();
         
         system("cls");
         printMidCharacter(happyCream,CreamLines);
         cout << string(50, ' '); cout << "Cream" << endl << endl;
         DrawDialog_Margin("Is there anything you need? \n\n", 2);
         cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-        system("pause");
+        PressEnter();
 
         //What do you want to talk about with Cream?
         do{
@@ -1870,7 +2189,7 @@ void House(){
             DrawDialog_Margin("Hungry for dinner already?  \n\n", 2);
             DrawDialog_Margin("We're having berry salad for dinner!  \n\n", 2);
             cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-            system("pause");
+            PressEnter();
 
             system("cls");
             printMidCharacter(happyCream,CreamLines);
@@ -1903,7 +2222,7 @@ void House(){
             DrawDialog_Margin("You're always welcome here. \n\n", 2);
             cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
         }
-        system("pause");
+        PressEnter();
         }while (choice != "Goodbye!");
     }
 
@@ -1914,7 +2233,7 @@ void House(){
         cout << endl;
         DrawDialog_Margin("You go upstairs. \n\n", 1);
         cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-        system("pause");
+        PressEnter();
 
         system("cls");
         printMidCharacter(Empty,EmptyLines);
@@ -1923,7 +2242,7 @@ void House(){
         DrawDialog_Margin("The bed is very soft and comfortable as if made of fluff. \n\n", 1);
         DrawDialog_Margin("The dresser has a mirror big enough to see your entire upper body, clean and shiny.  \n\n", 1);
         cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-        system("pause");
+        PressEnter();
 
         system("cls");
         printMidCharacter(Empty,EmptyLines);
@@ -1931,7 +2250,7 @@ void House(){
         DrawDialog_Margin("The bathroom is attached to the room, \n\n", 1);
         DrawDialog_Margin("making it convenient when you really need to go handle business. \n\n", 1);
         cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-        system("pause");
+        PressEnter();
 
         //What do you want to talk about with Cream?
         do{
@@ -1967,7 +2286,7 @@ void House(){
             DrawDialog_Margin("You exited the room. \n\n", 1);
             cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
         }
-        system("pause");
+        PressEnter();
         }while (choice != "Go downstairs");
     }
 
@@ -1977,10 +2296,10 @@ void House(){
     system("cls");
     printMidCharacter(Empty,EmptyLines);
     cout << endl;
-    DrawDialog_Margin("You leave the humbe abode.\n\n", 1);
+    DrawDialog_Margin("You leave the humble abode.\n\n", 1);
     DrawDialog_Margin("Teddy and Cream wave at you goodbye.\n\n", 1);
     cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-    system("pause");
+    PressEnter();
 
 }
 
@@ -1992,14 +2311,14 @@ void Outside(Player &Player){
     DrawDialog_Margin("The sun is shining brightly and the birds are chirping in songs. \n\n", 1);
     DrawDialog_Margin("You feel a sense of peace and tranquility. \n\n", 1);
     cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-    system("pause");
+    PressEnter();
 
     system("cls");
     printMidCharacter(neutralCream,CreamLines);
     cout << string(50, ' '); cout << "Cream" << endl << endl;
     DrawDialog_Margin("", 1); cout << Player.name; DrawDialog("! Before you go, could you do me a favor? \n\n", 2);
     cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-    system("pause");
+    PressEnter();
 
     system("cls");
     printMidCharacter(happyCream,CreamLines);
@@ -2008,7 +2327,7 @@ void Outside(Player &Player){
     DrawDialog_Margin("I labeled them for you so that you know where to go. \n\n", 2);
     DrawDialog_Margin("You can get berries at the Berry Garden.  \n\n", 2);
     cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-    system("pause");
+    PressEnter();
 
     system("cls");
     printMidCharacter(neutralCream,CreamLines);
@@ -2016,14 +2335,14 @@ void Outside(Player &Player){
     DrawDialog_Margin("But be careful, wild Prunicus are lurking around there sometimes. \n\n", 2);
     DrawDialog_Margin("You can try asking around the kingdom for any clues on how you can get home.  \n\n", 2);
     cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-    system("pause");
+    PressEnter();
 
     system("cls");
     printMidCharacter(happyCream,CreamLines);
     cout << string(50, ' '); cout << "Cream" << endl << endl;
     DrawDialog_Margin("I marked where our home is too so that you can come back anytime! \n\n", 2);
     cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-    system("pause");
+    PressEnter();
 
     system("cls");
     string option1[1] = {"Thank you."};
@@ -2034,14 +2353,14 @@ void Outside(Player &Player){
     cout << string(50, ' '); cout << "Cream" << endl << endl;
     DrawDialog_Margin("Take care on your journey! \n\n", 2);
     cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-    system("pause");
+    PressEnter();
 
     system("cls");
     printMidCharacter(Empty,EmptyLines);
     cout << endl;
     DrawDialog_Margin("Cream hops back into her humble home. \n\n", 2);
     cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-    system("pause");
+    PressEnter();
 
 }
 
@@ -2056,7 +2375,7 @@ void TrainingGroundsQuest(Player &Player, Enemy &Enemy){
         DrawDialog("\nYou decide to approach the lemur.\n\n", 1);
         TGQ_Counter++;
 
-        system("pause");
+        PressEnter();
 
         system("cls");
         string option1[1] = {"Excuse me."};
@@ -2073,7 +2392,7 @@ void TrainingGroundsQuest(Player &Player, Enemy &Enemy){
             DrawDialog_Margin("Playing mysterious, are you? \n\n", 2);
             DrawDialog_Margin("I'll find out one way or another. \n\n", 2);
             cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-            system("pause");
+            PressEnter();
         }
 
         system("cls");
@@ -2082,7 +2401,7 @@ void TrainingGroundsQuest(Player &Player, Enemy &Enemy){
         DrawDialog_Margin("I'm Commander Yahoo. \n\n", 2);
         DrawDialog_Margin("Me and my soldiers came here to sharpen our skills wherever we lacked. \n\n", 2);
         cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-        system("pause");
+        PressEnter();
 
         system("cls");
         printMidCharacter(neutralYahoo,YahooLines);
@@ -2090,7 +2409,7 @@ void TrainingGroundsQuest(Player &Player, Enemy &Enemy){
         DrawDialog_Margin("Surely, you're here to train too. \n\n", 2);
         DrawDialog_Margin("These training grounds are open to everyone, after all, Papadum Army or not. \n\n", 2);
         cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-        system("pause");
+        PressEnter();
 
         system("cls");
         string option3[1] = {"Do you know how I can get home?"};
@@ -2101,14 +2420,14 @@ void TrainingGroundsQuest(Player &Player, Enemy &Enemy){
         cout << string(50, ' '); cout << "Commander Yahoo" << endl << endl;
         DrawDialog_Margin("A way home? What an odd thing to ask a stranger. \n\n", 2);
         cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-        system("pause");
+        PressEnter();
 
         system("cls");
         printMidCharacter(neutralYahoo,YahooLines);
         cout << string(50, ' '); cout << "Commander Yahoo" << endl << endl;
         DrawDialog_Margin("Hmmm... But I have to keep an eye on my troops to make sure they aren't slacking off.\n\n", 2);
         cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-        system("pause");
+        PressEnter();
 
         system("cls");
         printMidCharacter(neutralYahoo,YahooLines);
@@ -2116,7 +2435,7 @@ void TrainingGroundsQuest(Player &Player, Enemy &Enemy){
         DrawDialog_Margin("Do you know how to fight? How about you go and spar with one of my soldiers \n\n", 2);
         DrawDialog_Margin("and motivate them to train harder?\n\n", 2);
         cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-        system("pause");
+        PressEnter();
 
         system("cls");
         string option4[2] = {"Sure! I'll fight them right now!","I'll think about it."};
@@ -2130,7 +2449,7 @@ void TrainingGroundsQuest(Player &Player, Enemy &Enemy){
             DrawDialog_Margin("Alright everyone! I need someone to spar with. \n\n", 2);
             DrawDialog_Margin("Show me if you can beat this random person.\n\n", 2);
             cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-            system("pause");
+            PressEnter();
     
         //Battle happens here
         bool gameloop = true;
@@ -2156,7 +2475,7 @@ void TrainingGroundsQuest(Player &Player, Enemy &Enemy){
             cout << string(50, ' '); cout << "Commander Yahoo" << endl << endl;
             DrawDialog_Margin("Coward.\n\n", 2);
             cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-            system("pause");
+            PressEnter();
         }
     }
 
@@ -2178,7 +2497,7 @@ void TrainingGroundsQuest(Player &Player, Enemy &Enemy){
                 DrawDialog_Margin("Alright everyone! I need someone to spar with. \n\n", 2);
                 DrawDialog_Margin("Show me if you can beat this random person.\n\n", 2);
                 cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-                system("pause");
+                PressEnter();
     
             //Battle happens here
             bool gameloop = true;
@@ -2200,7 +2519,7 @@ void TrainingGroundsQuest(Player &Player, Enemy &Enemy){
                 cout << endl;
                 DrawDialog_Margin("Papadum Soldier has been defeated.\n\n", 2);
                 cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-                system("pause");
+                PressEnter();
             }
             }
             
@@ -2213,14 +2532,14 @@ void TrainingGroundsQuest(Player &Player, Enemy &Enemy){
             DrawDialog_Margin("Now I can bring this moment up whenever they start slacking off.\n\n", 2);
             DrawDialog_Margin("Have you ever considered joining the Papadum Army?\n\n", 2);
             cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-            system("pause");
+            PressEnter();
 
             system("cls");
             printMidCharacter(neutralYahoo,YahooLines);
             cout << string(50, ' '); cout << "Commander Yahoo" << endl << endl;
             DrawDialog_Margin("Oh wait, you were looking for a way home, right? \n\n", 2);
             cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-            system("pause");
+            PressEnter();
 
             system("cls");
             string option7[3] = {"It's not in this world.","I don't know.","Not here."};
@@ -2232,14 +2551,14 @@ void TrainingGroundsQuest(Player &Player, Enemy &Enemy){
             DrawDialog_Margin("Gee, I can't give you directions without an address. \n\n", 2);
             DrawDialog_Margin("Maybe this could help you out instead. \n\n", 2);
             cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-            system("pause");
+            PressEnter();
 
             system("cls");
             printMidCharacter(Stick,StickLines);
             cout << endl;
             DrawDialog_Margin("Obtained [Cool Stick]! \n\n", 2);
             cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-            system("pause");
+            PressEnter();
 
             system("cls");
             printMidCharacter(neutralYahoo,YahooLines);
@@ -2248,7 +2567,7 @@ void TrainingGroundsQuest(Player &Player, Enemy &Enemy){
             DrawDialog_Margin("Maybe you could use the teleporter at the Potato Palace. \n\n", 2);
             DrawDialog_Margin("Not sure if it works for otherworldly destinations though. \n\n", 2);
             cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-            system("pause");
+            PressEnter();
             //}
 
             if (choice == "I'll think about it."){
@@ -2257,7 +2576,7 @@ void TrainingGroundsQuest(Player &Player, Enemy &Enemy){
                 cout << string(50, ' '); cout << "Commander Yahoo" << endl << endl;
                 DrawDialog_Margin("Coward.\n\n", 2);
                 cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-                system("pause");
+                PressEnter();
             }
         }
         }
@@ -2271,7 +2590,7 @@ void TrainingGroundsQuest(Player &Player, Enemy &Enemy){
             cout << endl;
             DrawDialog_Margin("You leave the training grounds.\n\n", 1);
             cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-            system("pause");
+            PressEnter();
         }
         if  (choice == "Leave the training grounds" && TGQ_Complete == true){
             system("cls");
@@ -2279,7 +2598,7 @@ void TrainingGroundsQuest(Player &Player, Enemy &Enemy){
             cout << endl;
             DrawDialog_Margin("Yahoo nods his head in respect as you leave.\n\n", 1);
             cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-            system("pause");
+            PressEnter();
         }
     }
     if (TGQ_Complete == true){
@@ -2307,7 +2626,7 @@ void TrainingGrounds(Player &Player){
             DrawDialog_Margin("We never had the chance to actually fight a war \n\n", 2);
             DrawDialog_Margin("since the Potato Kingdom has always been peaceful. \n\n", 2);
             cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-            system("pause");
+            PressEnter();
 
             system("cls");
             printMidCharacter(neutralYahoo,YahooLines);
@@ -2324,7 +2643,7 @@ void TrainingGrounds(Player &Player){
             DrawDialog_Margin("The public likes to join us whenever we train so we prefer training here.\n\n", 2);
             DrawDialog_Margin("Plus, maybe we could recruit potential soldiers from the civilians. \n\n", 2);
             cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-            system("pause");
+            PressEnter();
 
             system("cls");
             printMidCharacter(neutralYahoo,YahooLines);
@@ -2332,7 +2651,7 @@ void TrainingGrounds(Player &Player){
             DrawDialog_Margin("The soldiers being beaten by regular civilians is pretty humbling too,\n\n", 2);
             DrawDialog_Margin("it becomes great motivation for them to train harder. \n\n", 2);
             cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-            system("pause");
+            PressEnter();
 
             system("cls");
             printMidCharacter(neutralYahoo,YahooLines);
@@ -2346,7 +2665,7 @@ void TrainingGrounds(Player &Player){
             cout << string(50, ' '); cout << "Commander Yahoo" << endl << endl;
             DrawDialog_Margin("The Potato Queen likes to teleport from place to place in the kingdom. \n\n", 2);
             cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-            system("pause");
+            PressEnter();
 
             system("cls");
             printMidCharacter(neutralYahoo,YahooLines);
@@ -2354,7 +2673,7 @@ void TrainingGrounds(Player &Player){
             DrawDialog_Margin("She could walk, \n\n", 2);
             DrawDialog_Margin("but 'a potato can only walk so far' she says. \n\n", 2);
             cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-            system("pause");
+            PressEnter();
 
             system("cls");
             printMidCharacter(neutralYahoo,YahooLines);
@@ -2369,7 +2688,7 @@ void TrainingGrounds(Player &Player){
             DrawDialog_Margin("Good luck finding your way. \n\n", 2);
             cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
         }
-        system("pause");
+        PressEnter();
         }while (choice != "Goodbye!");
         }
 
@@ -2379,7 +2698,7 @@ void TrainingGrounds(Player &Player){
             cout << endl;
             DrawDialog_Margin("You walk over to the fainted Papadum Soldier. \n\n", 1);
             cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-            system("pause");
+            PressEnter();
 
             system("cls");
             printMidCharacter(Empty,EmptyLines);
@@ -2387,14 +2706,14 @@ void TrainingGrounds(Player &Player){
             DrawDialog_Margin("A few of the other Papadum Soldiers surround the Papadum Soldier you defeated, \n\n", 1);
             DrawDialog_Margin("who is now fainted on the ground. \n\n", 1);
             cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-            system("pause");
+            PressEnter();
 
             system("cls");
             printMidCharacter(Empty,EmptyLines);
             cout << endl;
             DrawDialog_Margin("Surely, he's fine. \n\n", 1);
             cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-            system("pause");
+            PressEnter();
         }
     }while (choice != "Leave the Training Grounds");
 
@@ -2404,7 +2723,7 @@ void TrainingGrounds(Player &Player){
     cout << endl;
     DrawDialog_Margin("Yahoo nods his head in respect as you leave.\n\n", 1);
     cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-    system("pause");
+    PressEnter();
 }
 
 bool MQ_Complete = false; 
@@ -2413,14 +2732,14 @@ void MarketQuest(Player &Player, Enemy &Enemy){
                 "\nSome are selling clothing, some are selling food, some are selling items, \nand some others are selling nick-nacks that might not make any sense to you.", 1);
     DrawDialog("\n\nIt seems they are of use to the people of this world, \nso you probably shouldn't ponder on it too much.", 1);
     DrawDialog("\n\nJust as you were walking around, suddenly a shout was heard from afar.\n\n", 1);
-    system("pause");
+    PressEnter();
 
     system("cls");
     printMidCharacter(panicPinkery,PinkeryLines);
     cout << string(50, ' '); cout << "???" << endl << endl;
     DrawDialog_Margin("THIEF! SOMEONE STOP THAT THIEF! \n\n", 2);
     cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-    system("pause");
+    PressEnter();
 
     system("cls");
     printMidCharacter(panicPinkery,PinkeryLines);
@@ -2428,7 +2747,7 @@ void MarketQuest(Player &Player, Enemy &Enemy){
     DrawDialog_Margin("A pink cow is shouting for someone to catch the thief they're chasing. \n\n", 1);
     DrawDialog_Margin("The thief is running in your direction. \n\n", 1);
     cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-    system("pause");
+    PressEnter();
 
     system("cls");
     printMidCharacter(panicPinkery,PinkeryLines);
@@ -2436,7 +2755,7 @@ void MarketQuest(Player &Player, Enemy &Enemy){
     DrawDialog_Margin("You can't help but feel obligated to help catch this thief, \n\n", 1);
     DrawDialog_Margin("even if it means spending energy on fighting them.\n\n", 1);
     cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-    system("pause");
+    PressEnter();
 
     //Battle happens here
     system("cls");
@@ -2464,21 +2783,21 @@ void MarketQuest(Player &Player, Enemy &Enemy){
     cout << string(50, ' '); cout << "???" << endl << endl;
     DrawDialog_Margin("Thank you! Thank you so much!\n\n", 2);
     cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-    system("pause");
+    PressEnter();
 
     system("cls");
     printMidCharacter(panicPinkery,PinkeryLines);
     cout << endl;
     DrawDialog_Margin("The pink cow rummages through the thief's belongings and pulls out...\n\n", 1);
     cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-    system("pause");
+    PressEnter();
 
     system("cls");
     printMidCharacter(joyPinkery,PinkeryLines);
     cout << string(50, ' '); cout << "???" << endl << endl;
     DrawDialog_Margin("MY HOAGIE!!!\n\n", 2);
     cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-    system("pause");
+    PressEnter();
 
     system("cls");
     printMidCharacter(joyPinkery,PinkeryLines);
@@ -2486,7 +2805,7 @@ void MarketQuest(Player &Player, Enemy &Enemy){
     DrawDialog_Margin("... A hoagie? \n\n", 2);
     DrawDialog_Margin("THAT'S what the thief stole??? \n\n", 1);
     cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-    system("pause");
+    PressEnter();
 
     system("cls");
     printMidCharacter(neutralPinkery,PinkeryLines);
@@ -2494,7 +2813,7 @@ void MarketQuest(Player &Player, Enemy &Enemy){
     DrawDialog_Margin("Now I can enjoy eating my hoagie! \n\n", 2);
     DrawDialog_Margin("That thief stole it from me when I put it on the table. \n\n", 2);
     cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-    system("pause");
+    PressEnter();
 
     system("cls");
     printMidCharacter(joyPinkery,PinkeryLines);
@@ -2502,14 +2821,14 @@ void MarketQuest(Player &Player, Enemy &Enemy){
     DrawDialog_Margin("I owe you one! \n\n", 2);
     DrawDialog_Margin("My name is Pinkery, I sell milk at that stall! \n\n", 2);
     cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-    system("pause");
+    PressEnter();
 
     system("cls");
     printMidCharacter(neutralPinkery,PinkeryLines);
     cout << endl;
     DrawDialog_Margin("Pinkery points to her stall. \n\n", 2);
     cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-    system("pause");
+    PressEnter();
 
     system("cls");
     string option1[1] = {"I'm " + Player.name + "."};
@@ -2522,7 +2841,7 @@ void MarketQuest(Player &Player, Enemy &Enemy){
     DrawDialog_Margin("just come to me! I know everyone here, \n\n", 2);
     DrawDialog_Margin("so I can get you the highest quality products for the lowest prices! \n\n", 2);
     cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-    system("pause");
+    PressEnter();
 
     system("cls");
     string option2[1] = {"Do you know how I can get home?"};
@@ -2534,28 +2853,28 @@ void MarketQuest(Player &Player, Enemy &Enemy){
     DrawDialog_Margin("Home? You're going to need to be more specific than that. \n\n", 2);
     DrawDialog_Margin("I don't think I can give you directions, but this will definitely help! \n\n", 2);
     cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-    system("pause");
+    PressEnter();
 
     system("cls");
     printMidCharacter(Milk,MilkLines);
     cout << endl;
     DrawDialog_Margin("Obtained [Special Strawberry Milk]! \n\n", 1);
     cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-    system("pause");
+    PressEnter();
 
     system("cls");
     printMidCharacter(joyPinkery,PinkeryLines);
     cout << string(50, ' '); cout << "Pinkery" << endl << endl;
     DrawDialog_Margin("It's special strawberry milk! \n\n", 1);
     cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-    system("pause");
+    PressEnter();
 
     system("cls");
     printMidCharacter(neutralPinkery,PinkeryLines);
     cout << endl;
     DrawDialog_Margin("Pinkery leans in as if to tell you a secret. \n\n", 1);
     cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-    system("pause");
+    PressEnter();
 
     system("cls");
     printMidCharacter(neutralPinkery,PinkeryLines);
@@ -2563,14 +2882,14 @@ void MarketQuest(Player &Player, Enemy &Enemy){
     DrawDialog_Margin("It's special because it helps you grow. \n\n", 1);
     DrawDialog_Margin("You'll probably get home faster.\n\n", 1);
     cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-    system("pause");
+    PressEnter();
 
     system("cls");
     printMidCharacter(joyPinkery,PinkeryLines);
     cout << string(50, ' '); cout << "Pinkery" << endl << endl;
     DrawDialog_Margin("Anyway, I'm going back to my stall. Stop by anytime! \n\n", 1);
     cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-    system("pause");
+    PressEnter();
 
     Market();
     }
@@ -2595,7 +2914,7 @@ void Market(){
             DrawDialog_Margin("I sell all types of milk flavors! \n\n", 2);
             DrawDialog_Margin("I have strawberry milk, banana milk, grape milk, mango milk, coconut milk, and many more! \n\n", 2);
             cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-            system("pause");
+            PressEnter();
 
             system("cls");
             printMidCharacter(neutralPinkery,PinkeryLines);
@@ -2611,7 +2930,7 @@ void Market(){
             DrawDialog_Margin("Where do I get these milks? Well, how else? \n\n", 2);
             DrawDialog_Margin("I get it based on what flavor it is of course! \n\n", 2);
             cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-            system("pause");
+            PressEnter();
 
             system("cls");
             printMidCharacter(joyPinkery,PinkeryLines);
@@ -2627,7 +2946,7 @@ void Market(){
             DrawDialog_Margin("I'm here from noon to evening!\n\n", 2);
             DrawDialog_Margin("I come here every day.\n\n", 2);
             cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-            system("pause");
+            PressEnter();
 
             system("cls");
             printMidCharacter(joyPinkery,PinkeryLines);
@@ -2642,7 +2961,7 @@ void Market(){
             DrawDialog_Margin("Pleasure doing business with moo! \n\n", 2);
             cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
         }
-        system("pause");
+        PressEnter();
         }while (choice != "Goodbye!");
         }
 
@@ -2652,7 +2971,7 @@ void Market(){
             cout << endl;
             DrawDialog_Margin("You check on the fainted thief. \n\n", 1);
             cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-            system("pause");
+            PressEnter();
 
             system("cls");
             printMidCharacter(Empty,EmptyLines);
@@ -2660,14 +2979,14 @@ void Market(){
             DrawDialog_Margin("He doesn't seem to be moving. \n\n", 1);
             DrawDialog_Margin("You try poking him. \n\n", 1);
             cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-            system("pause");
+            PressEnter();
 
             system("cls");
             printMidCharacter(Empty,EmptyLines);
             cout << endl;
             DrawDialog_Margin("No response. \n\n", 1);
             cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-            system("pause");
+            PressEnter();
 
             system("cls");
             printMidCharacter(Empty,EmptyLines);
@@ -2675,14 +2994,14 @@ void Market(){
             DrawDialog_Margin("He should've thought twice before stealing someone else's lunch. \n\n", 1);
             DrawDialog_Margin("He'll live. \n\n", 1);
             cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-            system("pause");
+            PressEnter();
 
             system("cls");
             printMidCharacter(Empty,EmptyLines);
             cout << endl;
             DrawDialog_Margin("Probably.\n\n", 1);
             cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-            system("pause");
+            PressEnter();
         }
     }while (choice != "Leave the Market");
 
@@ -2692,7 +3011,7 @@ void Market(){
     cout << endl;
     DrawDialog_Margin("Pinkery moos at you, it seems like that's her way of saying goodbye.\n\n", 1);
     cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-    system("pause");
+    PressEnter();
 }
 
 bool BG_Complete=false;
@@ -2703,7 +3022,7 @@ void BerryGarden(Player &Player, Enemy &Enemy){
                "\n\nThe air is filled with a sweet aroma, ", 1);
     DrawDialog("\nits scent changing depending on which section of berries you'd wander into. ", 1);
     DrawDialog("\n\nYou could probably get lost in this garden, but maybe that wouldn't be such a bad thing.\n\n", 1);
-    system("pause");
+    PressEnter();
 
     system("cls");
     string option1[2] = {"Pick berries","Leave the Berry Garden"};
@@ -2715,7 +3034,7 @@ void BerryGarden(Player &Player, Enemy &Enemy){
     cout << endl;
     DrawDialog_Margin("You find a basket on the ground, perfect to put the berries in.\n\n", 1);
     cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-    system("pause");
+    PressEnter();
 
     if (choice == "Pick berries"){
     system("cls");
@@ -2725,35 +3044,35 @@ void BerryGarden(Player &Player, Enemy &Enemy){
     DrawDialog_Margin("There are some berries you can't identify, \n\n", 1);
     DrawDialog_Margin("so you decide to leave them as you don't know what could or couldn't be eaten in this world. \n\n", 1);
     cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-    system("pause");
+    PressEnter();
 
     system("cls");
     printMidCharacter(BasketBerries,BasketLines);
     cout << endl;
     DrawDialog_Margin("Obtained [Basket full of berries]!\n\n", 1);
     cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-    system("pause");
+    PressEnter();
 
     system("cls");
     printMidCharacter(BasketBerries,BasketLines);
     cout << endl;
     DrawDialog_Margin("A basket full should be enough for Cream to prepare dinner with.\n\n", 1);
     cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-    system("pause");
+    PressEnter();
 
     system("cls");
     printMidCharacter(Empty,EmptyLines);
     cout << endl;
     DrawDialog_Margin("As you were about to leave the garden, you hear loud rustling from a distance.\n\n", 1);
     cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-    system("pause");
+    PressEnter();
 
     system("cls");
     printMidCharacter(Empty,EmptyLines);
     cout << endl;
     DrawDialog_Margin("You find it suspicious, maybe it's a wild Prunicus that Cream mentioned? \n\n", 1);
     cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-    system("pause");
+    PressEnter();
 
     system("cls");
     printMidCharacter(Empty,EmptyLines);
@@ -2761,7 +3080,7 @@ void BerryGarden(Player &Player, Enemy &Enemy){
     DrawDialog_Margin("You probably shouldn't stay to find out. You're pretty deep into the garden, \n\n", 1);
     DrawDialog_Margin("so you should start speed-walking in the other direction. \n\n", 1);
     cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-    system("pause");
+    PressEnter();
 
     system("cls");
     printMidCharacter(Empty,EmptyLines);
@@ -2769,14 +3088,14 @@ void BerryGarden(Player &Player, Enemy &Enemy){
     DrawDialog_Margin("You try to retrace your steps back to the entrance of the garden, \n\n", 1);
     DrawDialog_Margin("but it seems you've forgotten where you came from.\n\n", 1);
     cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-    system("pause");
+    PressEnter();
 
     system("cls");
     printMidCharacter(Empty,EmptyLines);
     cout << endl;
     DrawDialog_Margin("There's no one else in the garden to help you. \n\n", 1);
     cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-    system("pause");
+    PressEnter();
 
     system("cls");
     printMidCharacter(Empty,EmptyLines);
@@ -2784,7 +3103,7 @@ void BerryGarden(Player &Player, Enemy &Enemy){
     DrawDialog_Margin("You hear louder rustling... and a deep whisper, \n\n", 1);
     DrawDialog_Margin("as if it's right behind you. \n\n", 1);
     cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-    system("pause");
+    PressEnter();
 
     system("cls");
     printMidCharacter(DrawEnemy3,DrawEnemy3_Lines);
@@ -2792,7 +3111,7 @@ void BerryGarden(Player &Player, Enemy &Enemy){
     DrawDialog_Margin("You turn around and see a decaying tree towering over you. \n\n", 1);
     DrawDialog_Margin("It bears plum fruit, but even the fruit it holds have gone bad. \n\n", 1);
     cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-    system("pause");
+    PressEnter();
 
     system("cls");
     printMidCharacter(DrawEnemy3,DrawEnemy3_Lines);
@@ -2800,7 +3119,7 @@ void BerryGarden(Player &Player, Enemy &Enemy){
     DrawDialog_Margin("It tries to swing at you with its branch, but you duck just in the nick of time. \n\n", 1);
     DrawDialog_Margin("You must fight to leave. \n\n", 1);
     cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-    system("pause");
+    PressEnter();
 
     //Battle happens here
     system("cls");
@@ -2826,21 +3145,21 @@ void BerryGarden(Player &Player, Enemy &Enemy){
         cout << endl;
         DrawDialog_Margin("Wild Prunicus has been defeated\n\n", 1);
         cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-        system("pause");
+        PressEnter();
 
         system("cls");
         printMidCharacter(neutralBrownie,BrownieLines);
         cout << string(50, ' '); cout << "???" << endl << endl;
         DrawDialog_Margin("Woah, you did a number on that Prunicus.\n\n", 2);
         cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-        system("pause");
+        PressEnter();
 
         system("cls");
         printMidCharacter(neutralBrownie,BrownieLines);
         cout << endl;
         DrawDialog_Margin("A bear stands behind you, he looks oddly familiar.\n\n", 1);
         cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-        system("pause");
+        PressEnter();
 
         system("cls");
         string option1[3] = {"How long were you standing there?","Why didn't you help me?", "Were you just watching me fight the whole time?!"};
@@ -2852,7 +3171,7 @@ void BerryGarden(Player &Player, Enemy &Enemy){
             cout << string(50, ' '); cout << "???" << endl << endl;
             DrawDialog_Margin("Around 3 minutes.\n\n", 2);
             cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-            system("pause");
+            PressEnter();
         }
         else if (choice == "Why didn't you help me?"){
             system("cls");
@@ -2860,7 +3179,7 @@ void BerryGarden(Player &Player, Enemy &Enemy){
             cout << string(50, ' '); cout << "???" << endl << endl;
             DrawDialog_Margin("Eh, you looked like you had it covered. \n\n", 2);
             cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-            system("pause");
+            PressEnter();
         }
         else if (choice == "Were you just watching me fight the whole time?!"){
             system("cls");
@@ -2868,7 +3187,7 @@ void BerryGarden(Player &Player, Enemy &Enemy){
             cout << string(50, ' '); cout << "???" << endl << endl;
             DrawDialog_Margin("Yeah, it looked fun to spectate instead of fighting the Prunicus for once. \n\n", 2);
             cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-            system("pause");
+            PressEnter();
         }
 
         system("cls");
@@ -2876,7 +3195,7 @@ void BerryGarden(Player &Player, Enemy &Enemy){
         cout << string(50, ' '); cout << "Brownie" << endl << endl;
         DrawDialog_Margin("I'm Brownie. Thanks for dealing with this Prunicus for me. \n\n", 2);
         cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-        system("pause");
+        PressEnter();
 
         system("cls");
         printMidCharacter(neutralBrownie,BrownieLines);
@@ -2885,7 +3204,7 @@ void BerryGarden(Player &Player, Enemy &Enemy){
         DrawDialog_Margin("He rummages the leaves and branches and pulls out a plum. \n\n", 1);
         DrawDialog_Margin("It doesn't look rotten at all. It might actually be edible.\n\n", 1);
         cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-        system("pause");
+        PressEnter();
 
         system("cls");
         printMidCharacter(frustBrownie,BrownieLines);
@@ -2893,7 +3212,7 @@ void BerryGarden(Player &Player, Enemy &Enemy){
         DrawDialog_Margin("Some people really can't hold their tongue from talking smack about the plum trees. \n\n", 2);
         DrawDialog_Margin("Don't they know that plants have feelings too?\n\n", 2);
         cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-        system("pause");
+        PressEnter();
 
         system("cls");
         printMidCharacter(neutralBrownie,BrownieLines);
@@ -2901,7 +3220,7 @@ void BerryGarden(Player &Player, Enemy &Enemy){
         DrawDialog_Margin("Brownie walks over to a vacant area of soil and opens the plum fruit. \n\n", 1);
         DrawDialog_Margin("He extracts the pit and places it in the soil. \n\n", 1);
         cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-        system("pause");
+        PressEnter();
 
         system("cls");
         printMidCharacter(frustBrownie,BrownieLines);
@@ -2909,7 +3228,7 @@ void BerryGarden(Player &Player, Enemy &Enemy){
         DrawDialog_Margin("Every time someone insults a plum tree; \n\n", 2);
         DrawDialog_Margin("it turns into a Prunicus and eats the other berries.\n\n", 2);
         cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-        system("pause");
+        PressEnter();
 
         system("cls");
         printMidCharacter(frustBrownie,BrownieLines);
@@ -2917,14 +3236,14 @@ void BerryGarden(Player &Player, Enemy &Enemy){
         DrawDialog_Margin("And every time a plum tree turns into a Prunicus, \n\n", 2);
         DrawDialog_Margin("someone else has to deal with it. \n\n", 2);
         cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-        system("pause");
+        PressEnter();
 
         system("cls");
         printMidCharacter(frustBrownie,BrownieLines);
         cout << string(50, ' '); cout << "Brownie" << endl << endl;
         DrawDialog_Margin("They're lucky I'm around to keep them in check once in a while. \n\n", 2);
         cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-        system("pause");
+        PressEnter();
 
         system("cls");
         printMidCharacter(frustBrownie,BrownieLines);
@@ -2932,14 +3251,14 @@ void BerryGarden(Player &Player, Enemy &Enemy){
         DrawDialog_Margin("My parents frequently pluck berries from this garden,\n\n", 2);
         DrawDialog_Margin("so I can't help but worry that a plum tree turns again. \n\n", 2);
         cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-        system("pause");
+        PressEnter();
 
         system("cls");
         printMidCharacter(frustBrownie,BrownieLines);
         cout << string(50, ' '); cout << "Brownie" << endl << endl;
         DrawDialog_Margin("Why do people want to badmouth these plants anyway? \n\n", 2);
         cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-        system("pause");
+        PressEnter();
 
         system("cls");
         printMidCharacter(frustBrownie,BrownieLines);
@@ -2947,21 +3266,21 @@ void BerryGarden(Player &Player, Enemy &Enemy){
         DrawDialog_Margin("It would be much better if they complimented them instead, \n\n", 2);
         DrawDialog_Margin("then the plants would grow faster. \n\n", 2);
         cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-        system("pause");
+        PressEnter();
 
         system("cls");
         printMidCharacter(frustBrownie,BrownieLines);
         cout << string(50, ' '); cout << "Brownie" << endl << endl;
         DrawDialog_Margin("They could have at least kept their mouth shut if they didn't have anything nice to say.\n\n", 2);
         cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-        system("pause");
+        PressEnter();
 
         system("cls");
         printMidCharacter(frustBrownie,BrownieLines);
         cout << string(50, ' '); cout << "Brownie" << endl << endl;
         DrawDialog_Margin("Hey. Are you still listening?\n\n", 2);
         cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-        system("pause");
+        PressEnter();
 
         system("cls");
         string option2[4] = {"Yes.","No.", "Sorry, what were you saying?","(snore)"};
@@ -2974,7 +3293,7 @@ void BerryGarden(Player &Player, Enemy &Enemy){
         DrawDialog_Margin("You have a whole basket full of berries. \n\n", 2);
         DrawDialog_Margin("Are you making a feast or something? \n\n", 2);
         cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-        system("pause");
+        PressEnter();
 
         system("cls");
         string option3[1] = {"Cream's favor"};
@@ -2986,21 +3305,21 @@ void BerryGarden(Player &Player, Enemy &Enemy){
         DrawDialog_Margin("She asked you to get more berries? \n\n", 2);
         DrawDialog_Margin("Looks like we're eating good tonight.\n\n", 2);
         cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-        system("pause");
+        PressEnter();
 
         system("cls");
         printMidCharacter(neutralBrownie,BrownieLines);
         cout << endl;
         DrawDialog_Margin("Brownie's eyes light up.\n\n", 2);
         cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-        system("pause");
+        PressEnter();
 
         system("cls");
         printMidCharacter(neutralBrownie,BrownieLines);
         cout << string(50, ' '); cout << "Brownie" << endl << endl;
         DrawDialog_Margin("What are you doing after this?\n\n", 2);
         cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-        system("pause");
+        PressEnter();
 
         system("cls");
         string option4[1] = {"I need to get home."};
@@ -3013,14 +3332,14 @@ void BerryGarden(Player &Player, Enemy &Enemy){
         DrawDialog_Margin("You can be on your way home now. \n\n", 2);
         DrawDialog_Margin("Thanks for helping my mama with the errand. \n\n", 2);
         cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-        system("pause");
+        PressEnter();
 
         system("cls");
         printMidCharacter(BasketBerries,BasketLines);
         cout << endl;
         DrawDialog_Margin("You gave Brownie [basket full of berries]. \n\n", 1);
         cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-        system("pause");
+        PressEnter();
 
         system("cls");
         string option5[2] = {"I'm not from here.","I don't know how to get home."};
@@ -3031,35 +3350,35 @@ void BerryGarden(Player &Player, Enemy &Enemy){
         cout << string(50, ' '); cout << "Brownie" << endl << endl;
         DrawDialog_Margin("You don't? Hmm... \n\n", 2);
         cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-        system("pause");
+        PressEnter();
 
         system("cls");
         printMidCharacter(neutralBrownie,BrownieLines);
         cout << endl;
         DrawDialog_Margin("Brownie ponders for a moment, looking at you up at down. \n\n", 1);
         cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-        system("pause");
+        PressEnter();
 
         system("cls");
         printMidCharacter(neutralBrownie,BrownieLines);
         cout << string(50, ' '); cout << "Brownie" << endl << endl;
         DrawDialog_Margin("I guess you don't look like you're from anywhere here.\n\n", 2);
         cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-        system("pause");
+        PressEnter();
 
         system("cls");
         printMidCharacter(neutralBrownie,BrownieLines);
         cout << string(50, ' '); cout << "Brownie" << endl << endl;
         DrawDialog_Margin("You'll need this.\n\n", 2);
         cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-        system("pause");
+        PressEnter();
 
         system("cls");
         printMidCharacter(neutralBeary,BearyLines);
         cout << endl;
         DrawDialog_Margin("Obtained [Beary]!\n\n", 1);
         cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-        system("pause");
+        PressEnter();
 
         system("cls");
         printMidCharacter(neutralBrownie,BrownieLines);
@@ -3067,7 +3386,7 @@ void BerryGarden(Player &Player, Enemy &Enemy){
         DrawDialog_Margin("I'll guide you out of the garden. \n\n", 2);
         DrawDialog_Margin("Don't worry about the Prunicus, it'll sort itself out.\n\n", 2);
         cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-        system("pause");
+        PressEnter();
 
         system("cls");
         printMidCharacter(Empty,EmptyLines);
@@ -3075,7 +3394,7 @@ void BerryGarden(Player &Player, Enemy &Enemy){
         DrawDialog_Margin("Brownie guides you through the maze of berries. \n\n", 1);
         DrawDialog_Margin("You realize you were pretty close to the exit had you just made another right turn.\n\n", 1);
         cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-        system("pause");
+        PressEnter();
 
         system("cls");
         printMidCharacter(neutralBrownie,BrownieLines);
@@ -3083,7 +3402,7 @@ void BerryGarden(Player &Player, Enemy &Enemy){
         DrawDialog_Margin("Alright, this is where we part ways. \n\n", 2);
         DrawDialog_Margin("Don't worry about the Prunicus, it'll sort itself out.\n\n", 2);
         cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-        system("pause");
+        PressEnter();
 
         system("cls");
         printMidCharacter(Empty,EmptyLines);
@@ -3091,19 +3410,44 @@ void BerryGarden(Player &Player, Enemy &Enemy){
         DrawDialog_Margin("Brownie walks away. \n\n", 2);
         DrawDialog_Margin("You never want to go back into that berry maze.\n\n", 2);
         cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-        system("pause");
+        PressEnter();
     }
     }
     }
 
 }
 
+void MainGameLoop(int startAt){
+    Player p1("Player",100,DrawPlayer,DrawPlayer_Lines);
+    Enemy e1("Soldier",200,DrawEnemy1, DrawEnemy1_Lines);
+    Enemy e2("Thief",75,DrawEnemy2, DrawEnemy2_Lines);
 
+    switch(startAt){
+        case 1:
+            Bedroom(p1);
+            DiningRoom(p1);
+            House();
+        case 2:
+            Outside(p1);
+            TrainingGroundsQuest(p1,e1);
+            TrainingGrounds(p1);
+            break;
+        case 3:
+            MarketQuest(p1, e2);
+            Market();
+        default:
+            break;
+    }
+}
 
 
 int main(){
 
     srand(time(0));
+
+    //MainMenu();
+
+    //return 0;
 
     Player p1("Player",100,DrawPlayer,DrawPlayer_Lines);
     Player p2("Beary",1000,DrawBeary,DrawBeary_Lines);
