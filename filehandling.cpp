@@ -564,14 +564,14 @@ void MainMenu(){
                 system("cls");
                 y_n = optionselect("This will overwrite the save file, Are you sure?", confirm, 2);
                 if (y_n == "Yes"){
-                    loop = false;
+                    loop = false; //continue game
                 }
                 else{
-                    break;
+                    break; //exit do-while loop, not proceeding game
                 }
             }
             else{
-                loop = false;
+                loop = false; //continue game
             }
         }
         if (menuchoice == "Load Game"){
