@@ -184,12 +184,12 @@ string optionselect(string text, string array[], int arraysize, string *characte
 // Story functions
 void Bedroom(Player &Player);
 void House();
-void TrainingGroundsQuest(Player &Player, Enemy &Enemy);
+bool TrainingGroundsQuest(Player &Player, Enemy &Enemy);
 void TrainingGrounds(Player &Player);
-void MarketQuest(Player &Player, Enemy &Enemy);
+bool MarketQuest(Player &Player, Enemy &Enemy);
 void Market();
-void BerryGarden(Player &Player, Enemy &Enemy);
-void PotatoPalace(Player &Player, Enemy &Enemy);
+bool BerryGarden(Player &Player, Enemy &Enemy);
+bool PotatoPalace(Player &Player, Enemy &Enemy);
 
 // Misc
 void MainGameLoop(int startAt);
@@ -837,8 +837,8 @@ string DrawEnemy3[DrawEnemy3_Lines]= {
 "     \\\\//   /do;UP",
 "      ;\\\\ ////(#)",
 "     (#)\\x|x//" ,
-"        /|0|/" ,
-"        ||||\\" ,
+"        /|M|/" ,
+"        ||W|\\" ,
 "   ....//||||\\...."
 };
 
@@ -1206,6 +1206,19 @@ string BasketBerries[BasketLines] = {
 ":\"====^^===='",
 " \\|---------|",
 "  '''''''''''"
+};
+
+const int SaladLines = 9;
+string BerrySalad[SaladLines] = {
+"  +   +  __,.-------..__+   +",
+"+  _,-'''_- _(_)((_) _,_`'--._+",
+" ,'  _./(_),_(_(*)(_(*(_)---_,`.  +",
+"( ,/(_(*)/(*)_)_(`(*)./(_),(_)\\_)",
+" :.*/(_)`_-((_)_)(*),(_)(*)_)*,;",
+" `.`--.(_))*)\\(*)(_),_)_.--' ,'",
+"   `.     ``-------''      ,'",
+"     `.                  ,`",
+"       `-.____________.-'"
 };
 
 const int MirrorLines = 19;
@@ -2307,7 +2320,7 @@ void House(){
 int outside_counter = 0;
 bool TGQ_Complete = false;
 bool MQ_Complete = false;
-bool BG_Complete=false;
+bool BG_Complete = false;
 void Outside(Player &Player, Enemy &Enemy){
     system("cls");
 
@@ -2369,10 +2382,16 @@ void Outside(Player &Player, Enemy &Enemy){
     cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
     PressEnter();
     }
-
+    if (BG_Complete == false){
     system("cls");
     string option2[4] = {"Training Ground","Market","Berry Garden","Cream and Teddy's House"};
     choice = optionselect("Where would you like to go?", option2, 4, Empty, EmptyLines);
+    }
+    if (BG_Complete == true){
+    system("cls");
+    string option3[4] = {"Training Ground","Market","Potato Palace"};
+    choice = optionselect("Where would you like to go?", option3, 4, Empty, EmptyLines);
+    }
     if (choice == "Training Ground"){
         if (TGQ_Complete == false){
             TrainingGroundsQuest(Player,Enemy);
@@ -2396,11 +2415,10 @@ void Outside(Player &Player, Enemy &Enemy){
     else if (choice == "Cream and Teddy's House"){
         House();
     }
-
 }
 
 int TGQ_Counter = 0;
-void TrainingGroundsQuest(Player &Player, Enemy &Enemy){
+bool TrainingGroundsQuest(Player &Player, Enemy &Enemy){
         DrawDialog("The training ground is a wide, open area. \nArchery targets and climbing scaffolds are set up on one side. "
                    "\nTraining weapons and equipment are provided on their respective racks, waiting to be used. ", 1);
         DrawDialog("\n\nThis place seems to have more people than the gymnasium at home. \nSome are training together while some are training amongst themselves.", 1);
@@ -2500,6 +2518,13 @@ void TrainingGroundsQuest(Player &Player, Enemy &Enemy){
             PlaceDialog(Player, Enemy, "Enemy", " lost!");
             gameloop = false;
             TGQ_Complete = true;
+
+            system("cls");
+            printMidCharacter(Empty,EmptyLines);
+            cout << endl;
+            DrawDialog_Margin("Papadum Soldier has been defeated.\n\n", 2);
+            cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+            PressEnter();
         }
         }
 
@@ -2639,6 +2664,7 @@ void TrainingGroundsQuest(Player &Player, Enemy &Enemy){
     if (TGQ_Complete == true){
         TrainingGrounds(Player);
     }
+return TGQ_Complete;
 }
 
 void TrainingGrounds(Player &Player){
@@ -2761,7 +2787,7 @@ void TrainingGrounds(Player &Player){
     PressEnter();
 }
 
-void MarketQuest(Player &Player, Enemy &Enemy){
+bool MarketQuest(Player &Player, Enemy &Enemy){
     DrawDialog("The market is bustling with people. \nMany stalls sell a variety of products. "
                 "\nSome are selling clothing, some are selling food, some are selling items, \nand some others are selling nick-nacks that might not make any sense to you.", 1);
     DrawDialog("\n\nIt seems they are of use to the people of this world, \nso you probably shouldn't ponder on it too much.", 1);
@@ -2806,6 +2832,13 @@ void MarketQuest(Player &Player, Enemy &Enemy){
             PlaceDialog(Player, Enemy, "Enemy", " lost!");
             gameloop = false;
             MQ_Complete = true;
+
+            system("cls");
+            printMidCharacter(Empty,EmptyLines);
+            cout << endl;
+            DrawDialog_Margin("Thief has been defeated.\n\n", 2);
+            cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+            PressEnter();
             
         }
     }
@@ -2927,6 +2960,7 @@ void MarketQuest(Player &Player, Enemy &Enemy){
 
     Market();
     }
+return MQ_Complete;
 }
 
 void Market(){
@@ -3048,7 +3082,7 @@ void Market(){
     PressEnter();
 }
 
-void BerryGarden(Player &Player, Enemy &Enemy){
+bool BerryGarden(Player &Player, Enemy &Enemy){
 
     DrawDialog("The garden is lush and vibrant with all the berries there could ever exist grown."
                "\nThe berry bushes and trees are stretched far, their colors naturally beautifying the garden. "
@@ -3169,6 +3203,13 @@ void BerryGarden(Player &Player, Enemy &Enemy){
             PlaceDialog(Player, Enemy, "Enemy", " lost!");
             gameloop = false;
             BG_Complete = true;
+
+            system("cls");
+            printMidCharacter(Empty,EmptyLines);
+            cout << endl;
+            DrawDialog_Margin("Prunicus has been defeated.\n\n", 2);
+            cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+            PressEnter();
         }
     }
     //Story continues after wnning the battle
@@ -3447,34 +3488,10 @@ void BerryGarden(Player &Player, Enemy &Enemy){
     }
     }
     }
-
+return BG_Complete;
 }
 
-void MainGameLoop(int startAt){
-    Player p1("Player",100,DrawPlayer,DrawPlayer_Lines);
-    Enemy e1("Soldier",200,DrawEnemy1, DrawEnemy1_Lines);
-    Enemy e2("Thief",75,DrawEnemy2, DrawEnemy2_Lines);
-
-    switch(startAt){
-        case 1:
-            Bedroom(p1);
-            DiningRoom(p1);
-            House();
-        case 2:
-            Outside(p1,e1);
-            TrainingGroundsQuest(p1,e1);
-            TrainingGrounds(p1);
-            break;
-        case 3:
-            MarketQuest(p1, e2);
-            Market();
-        default:
-            break;
-    }
-}
-
-
-void PotatoPalace(Player &Player, Enemy &Enemy){
+void PotatoPalace1(Player &Player, Enemy &Enemy){
     system("cls");
     DrawDialog("You arrive at the Potato Palace. Surprisingly, no one tried to stop you from entering the palace. \n\n", 1);
     DrawDialog("You'd think a royal palace would be more heavily guarded than simply letting a stranger enter \n\n", 1);
@@ -3499,13 +3516,402 @@ void PotatoPalace(Player &Player, Enemy &Enemy){
 
     system("cls");
     printMidCharacter(Empty,EmptyLines);
-    cout << string(50, ' '); cout << "Pinkery" << endl << endl;
+    cout << string(50, ' '); cout << "???" << endl << endl;
     DrawDialog_Margin("Hey hey! What are you looking for? :D \n\n", 1);
     cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
     PressEnter();
 
+    system("cls");
+    printMidCharacter(Empty,EmptyLines);
+    cout << endl;
+    DrawDialog_Margin("You turn around and see what seems to be a hologram of a potato. \n\n", 1);
+    cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+    PressEnter();
+
+    system("cls");
+    printMidCharacter(Potato_bruhsmile,PotatoLines);
+    cout << string(50, ' '); cout << "???" << endl << endl;
+    DrawDialog_Margin("Ya know, you won't be able to find what you're looking for if you keep  \n\n", 2);
+    DrawDialog_Margin("looking for it without any help. After all, you've never been here before, right? =v=  \n\n", 2);
+    cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+    PressEnter();
+
+    system("cls");
+    string option1[3] = {"I don't need help.","Who are you?","A POTATO?!"};
+    choice = optionselect("", option1, 3, Potato_OvO, PotatoLines);
+
+    if (choice == "I don't need help."){
+        system("cls");
+        printMidCharacter(Potato_bruhsmile,PotatoLines);
+        cout << string(50, ' '); cout << "???" << endl << endl;
+        DrawDialog_Margin("Sure, you don't~ =v= \n\n", 2);
+        cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+        PressEnter();
+    }
+    else if (choice == "A POTATO?!"){
+        system("cls");
+        printMidCharacter(Potato_O_o,PotatoLines);
+        cout << string(50, ' '); cout << "???" << endl << endl;
+        DrawDialog_Margin("You say it as if you've never seen a talking potato before. O_o \n\n", 2);
+        cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+        PressEnter();
+    }
+    system("cls");
+    printMidCharacter(Potato_nervous,PotatoLines);
+    cout << string(50, ' '); cout << "Potato Queen" << endl << endl;
+    DrawDialog_Margin("I'm the Potato Queen! This palace you're roaming right now, \n\n", 2);
+    DrawDialog_Margin("I live here! I know where everything is… probably. (._. ;)\n\n", 2);
+    cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+    PressEnter();
+    
+    system("cls");
+    printMidCharacter(Potato_OvO,PotatoLines);
+    cout << string(50, ' '); cout << "Potato Queen" << endl << endl;
+    DrawDialog_Margin("I told the Potato Knights to take a break before you came here.\n\n", 2);
+    DrawDialog_Margin("That's why you got in here so easily! :D\n\n", 2);
+    cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+    PressEnter();
+
+    system("cls");
+    printMidCharacter(Potato_OvO,PotatoLines);
+    cout << string(50, ' '); cout << "Potato Queen" << endl << endl;
+    DrawDialog_Margin("So, what are you looking for?\n\n", 2);
+    cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+    PressEnter();
+
+    system("cls");
+    string option2[1] = {"A way back home"};
+    choice = optionselect("So, what are you looking for?", option2, 1, Potato_OvO, PotatoLines);
+
+    system("cls");
+    printMidCharacter(Potato_OvO,PotatoLines);
+    cout << string(50, ' '); cout << "Potato Queen" << endl << endl;
+    DrawDialog_Margin("A way back home? Uuuuh maybe my teleporter would be best for that.\n\n", 2);
+    DrawDialog_Margin("It should be down the hall, take a left and the second door to your right \n\n", 2);
+    DrawDialog_Margin("should be the Teleporter Room. Let me guide you the way! :D\n\n", 2);
+    cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+    PressEnter();
+
+    system("cls");
+    printMidCharacter(Potato_OvO,PotatoLines);
+    cout << endl;
+    DrawDialog_Margin("The potato leads you to the Teleporter Room.\n\n", 1);
+    DrawDialog_Margin("After everything you've went through today, \n\n", 1);
+    DrawDialog_Margin("strangely a talking potato isn't something all that weird to witness. \n\n", 1);
+    cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+    PressEnter();
+
+    system("cls");
+    printMidCharacter(Potato_XD,PotatoLines);
+    cout << string(50, ' '); cout << "Potato Queen" << endl << endl;
+    DrawDialog_Margin("Here it is, the Teleporter Room! I'll let you borrow it so that \n\n", 2);
+    DrawDialog_Margin("you can get home! I'm such an amazing potato hyuk hyuk hyuk. XD \n\n", 2);
+    cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+    PressEnter();
+
+    system("cls");
+    printMidCharacter(Potato_OvO,PotatoLines);
+    cout << endl;
+    DrawDialog_Margin("The potato opens the door to the Teleporter Room.\n\n", 1);
+    DrawDialog_Margin("To both of your surprise, something odd was in the room. \n\n", 1);
+    DrawDialog_Margin("It was... \n\n", 1);
+    cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+    PressEnter();
+
+    system("cls");
+    printMidCharacter(Dragon_head,DragonLines);
+    cout << endl;
+    DrawDialog_Margin("A DRAGON?!\n\n", 1);
+    cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+    PressEnter();
+
+    system("cls");
+    printMidCharacter(Potato_cry,PotatoLines);
+    cout << string(50, ' '); cout << "Potato Queen" << endl << endl;
+    DrawDialog_Margin("HEY! WHY IS THERE A DRAGON IN THE TELEPORTER ROOM??? ;-;\n\n", 1);
+    cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+    PressEnter();
+
+    system("cls");
+    printMidCharacter(Dragon_head,DragonLines);
+    cout << endl;
+    DrawDialog_Margin("The dragon growls in aggression. It seems to be targeting you.\n\n", 1);
+    cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+    PressEnter();
+
+    system("cls");
+    printMidCharacter(Potato_crysmile,PotatoLines);
+    cout << string(50, ' '); cout << "Potato Queen" << endl << endl;
+    DrawDialog_Margin("Hey, I'm just a hologram, so I'm not actually here. \n\n", 1);
+    DrawDialog_Margin("So uuuh... \n\n", 1);
+    cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+    PressEnter();
+
+    system("cls");
+    printMidCharacter(Potato_crysmile,PotatoLines);
+    cout << string(50, ' '); cout << "Potato Queen" << endl << endl;
+    DrawDialog_Margin("Good luck with the dragon! ;v; \n\n", 1);
+    cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+    PressEnter();
+
+    system("cls");
+    printMidCharacter(Empty,EmptyLines);
+    cout << endl;
+    DrawDialog_Margin("You ready yourself to fight.\n\n", 1);
+    cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+    PressEnter();
+
+    //Battle happens here
+    system("cls");
+    bool gameloop = true;
+    while (gameloop){
+        KeySwitch(Player,Enemy);
+        if (Player.health <= 0){
+            DrawChacters_AND_HealthBar(Player, Enemy);
+            PlaceDialog(Player, Enemy, "Player", " lost!");
+            gameloop = false;
+        }
+        if (Enemy.health <= 0){
+            DrawChacters_AND_HealthBar(Player, Enemy);
+            PlaceDialog(Player, Enemy, "Enemy", " lost!");
+            gameloop = false;
+        }
+    }
+
+    system("cls");
+    printMidCharacter(Dragon_head,DragonLines);
+    cout << endl;
+    DrawDialog_Margin("You manage to fend off against the dragon, but it doesn't seem to be backing down \n\n", 1);
+    DrawDialog_Margin("anytime soon. You're not exactly sure how to get past the dragon to get to \n\n", 1);
+    DrawDialog_Margin("the teleporter. Trying to defeat the dragon sems like wishful thinking. \n\n", 1);
+    cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+    PressEnter();
+    
 }
 
+bool PP_Complete = false;
+bool PotatoPalace2(Player &Player, Enemy &Enemy){
+
+    system("cls");
+    printMidCharacter(neutralBeary,BearyLines);
+    cout << endl;
+    DrawDialog_Margin("Just as you were thinking of a plan, [Beary] jumps out of your inventory. \n\n", 1);
+    cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+    PressEnter();
+
+    system("cls");
+    printMidCharacter(DrawBeary,BearyLines);
+    cout << endl;
+    DrawDialog_Margin("He's holding the [cool stick] and [special strawberry milk]. \n\n", 1);
+    DrawDialog_Margin("He chugs down the [special strawberry milk] and starts growing! \n\n", 1);
+    DrawDialog_Margin("Somehow, the [cool stick] also grew when he pours the [special strawberry milk] over it. \n\n", 1);
+    cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+    PressEnter();
+
+    system("cls");
+    printMidCharacter(DrawBeary,BearyLines);
+    cout << endl;
+    DrawDialog_Margin("Beary is now as big as the dragon! \n\n", 1);
+    cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+    PressEnter();
+
+    system("cls");
+    printMidCharacter(DrawBeary,BearyLines);
+    cout << endl;
+    DrawDialog_Margin("As if an epic battle is unfolding right in front of your eyes, \n\n", 1);
+    DrawDialog_Margin("Beary takes on the dragon with nothing but a cool stick.\n\n", 1);
+    cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+    PressEnter();
+
+    //Battle happens here
+    system("cls");
+    bool gameloop = true;
+    while (gameloop){
+        KeySwitch(Player,Enemy);
+        if (Player.health <= 0){
+            DrawChacters_AND_HealthBar(Player, Enemy);
+            PlaceDialog(Player, Enemy, "Player", " lost!");
+            gameloop = false;
+        }
+        if (Enemy.health <= 0){
+            DrawChacters_AND_HealthBar(Player, Enemy);
+            PlaceDialog(Player, Enemy, "Enemy", " lost!");
+            gameloop = false;
+            PP_Complete = true;
+
+            
+        }
+    }
+
+    if (PP_Complete == true){
+
+        system("cls");
+        printMidCharacter(Empty,EmptyLines);
+        cout << endl;
+        DrawDialog_Margin("After exchanging blows, the dragon Is now weakened. \n\n", 1);
+        DrawDialog_Margin("Beary launches himself into the air. \n\n", 1);
+        cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+        PressEnter();
+
+        system("cls");
+        printMidCharacter(DrawBeary,BearyLines);
+        cout << string(50, ' '); cout << "Beary" << endl << endl;
+        DrawDialog_Margin("It's over, dragon. I have the high ground! \n\n", 2);
+        cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+        PressEnter();
+        
+        system("cls");
+        printMidCharacter(DrawBeary,BearyLines);
+        cout << endl;
+        DrawDialog_Margin("Beary delivers one final thwack on the dragon \n\n", 2);
+        cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+        PressEnter();
+        
+        system("cls");
+        printMidCharacter(Empty,EmptyLines);
+        cout << endl;
+        DrawDialog_Margin("Dragon has been defeated.\n\n", 2);
+        cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+        PressEnter();
+
+        system("cls");
+        printMidCharacter(Empty,EmptyLines);
+        cout << endl;
+        DrawDialog_Margin("You breathe a sigh of relief at the battle finally being over, \n\n", 2);
+        DrawDialog_Margin("and you're now standing in front of the teleporter.\n\n", 2);
+        cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+        PressEnter();
+
+        system("cls");
+        printMidCharacter(Potato_OvO,PotatoLines);
+        cout << string(50, ' '); cout << "Potato Queen" << endl << endl;
+        DrawDialog_Margin("Wow!!! You actually defeated the dragon! Congrats! :D \n\n", 2);
+        cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+        PressEnter();
+
+        system("cls");
+        printMidCharacter(Potato_OvO,PotatoLines);
+        cout << string(50, ' '); cout << "Potato Queen" << endl << endl;
+        DrawDialog_Margin("Cream, Teddy and Brownie wanted to send you off before you left. \n\n", 2);
+        cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+        PressEnter();
+
+        system("cls");
+        printMidCharacter(happyTeddy,TeddyLines);
+        cout << string(50, ' '); cout << "Teddy" << endl << endl;
+        DrawDialog_Margin("Well, I'll be! You defeated a dragon! \n\n", 2);
+        DrawDialog_Margin("That's the first I've seen it! HARHARHAR \n\n", 2);
+        cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+        PressEnter();
+
+        system("cls");
+        printMidCharacter(neutralBrownie,BrownieLines);
+        cout << string(50, ' '); cout << "Brownie" << endl << endl;
+        DrawDialog_Margin("You did it… You crazy son of a gun, you did it. \n\n", 2);
+        cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+        PressEnter();
+
+        system("cls");
+        printMidCharacter(happyCream,CreamLines);
+        cout << string(50, ' '); cout << "Cream" << endl << endl;
+        DrawDialog_Margin("I brought you a berry salad for the road! I hope you enjoy it. \n\n", 2);
+        cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+        PressEnter();
+
+        system("cls");
+        printMidCharacter(BerrySalad,SaladLines);
+        cout << endl;
+        DrawDialog_Margin("Obtained [Berry Salad]! \n\n", 1);
+        cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+        PressEnter();
+
+        system("cls");
+        printMidCharacter(Potato_OvO,PotatoLines);
+        cout << string(50, ' '); cout << "Potato Queen" << endl << endl;
+        DrawDialog_Margin("Well, looks like this is goodbye. \n\n", 2);
+        cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+        PressEnter();
+
+        system("cls");
+        printMidCharacter(happyCream,CreamLines);
+        cout << string(50, ' '); cout << "Cream" << endl << endl;
+        DrawDialog_Margin("Safe travels, child!\n\n", 2);
+        cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+        PressEnter();
+
+        system("cls");
+        printMidCharacter(happyTeddy,TeddyLines);
+        cout << string(50, ' '); cout << "Teddy" << endl << endl;
+        DrawDialog_Margin("Have a safe trip, kiddo! \n\n", 2);
+        cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+        PressEnter();
+
+        system("cls");
+        printMidCharacter(neutralBrownie,BrownieLines);
+        cout << string(50, ' '); cout << "Brownie" << endl << endl;
+        DrawDialog_Margin("Take care.\n\n", 2);
+        cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+        PressEnter();
+
+        system("cls");
+        printMidCharacter(neutralBeary,BearyLines);
+        cout << endl;
+        DrawDialog_Margin("As Beary shrinks, he walks towards Brownie and climbs onto his shoulder, \n\n", 2);
+        DrawDialog_Margin("waving at you farewell. \n\n", 2);
+       cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+        PressEnter();
+
+        system("cls");
+        string option1[1] = {"Goodbye, everyone."};
+        choice = optionselect("", option1, 1, Empty, EmptyLines);
+
+        system("cls");
+        printMidCharacter(Empty,EmptyLines);
+        cout << endl;
+        DrawDialog_Margin("As you step into the teleporter, everyone is waving at you as one final goodbye.\n\n", 2);
+       cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+        PressEnter();
+    }
+return PP_Complete;
+}
+
+void Home(){
+    system("cls");
+    DrawDialog("You wake up on your desk. It seems you fell asleep while you were doing work. \n", 1);
+    DrawDialog("You feel like you had the most bizarre dream.  \n\n", 1);
+    DrawDialog("Despite that, it felt somewhat comforting as well, \n",1);
+    DrawDialog("like a nostalgic sensation you missed feeling from your childhood.\n\n",1);
+    DrawDialog("Perhaps you should go to sleep now. Your stomach growls. \n",1);
+    DrawDialog("A midnight snack sounds nice. You notice that a berry salad is on your table. \n",1);
+    DrawDialog("Well, that saves you the trip to the fridge. \n\n",1);
+    DrawDialog("You eat the juicy berry salad and head to bed. \n\n\n",1);
+    
+    for (int i = 0; i < SaladLines; i++){
+        cout << string(MID_CHAR_POS, ' ') << BerrySalad[i] << endl;
+    }
+}
+
+
+void MainGameLoop(int startAt){
+    Player p1("Player",100,DrawPlayer,DrawPlayer_Lines);
+    Enemy e1("Soldier",200,DrawEnemy1, DrawEnemy1_Lines);
+    Enemy e2("Thief",75,DrawEnemy2, DrawEnemy2_Lines);
+
+    switch(startAt){
+        case 1:
+            Bedroom(p1);
+            DiningRoom(p1);
+        case 2:
+            Outside(p1,e1);
+            TrainingGroundsQuest(p1,e1);
+            TrainingGrounds(p1);
+            break;
+        case 3:
+            MarketQuest(p1, e2);
+        default:
+            break;
+    }
+}
 
 
 
@@ -3534,7 +3940,11 @@ int main(){
     Enemy e4("Dragon",999,DrawEnemy4, DrawEnemy4_Lines);
     //TrainingGroundsQuest(p1,e1);
     //MarketQuest(p1,e2);
-    BerryGarden(p1,e3);
+    //BerryGarden(p1,e3);
+    //PotatoPalace1(p1,e4);
+    //PotatoPalace2(p2,e4);
+
+    Home();
 
 /*
     bool gameloop = true;
