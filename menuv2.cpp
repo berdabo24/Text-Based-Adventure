@@ -1187,17 +1187,18 @@ string BasketBerries[BasketLines] = {
 "  '''''''''''"
 };
 
-const int SaladLines = 9;
+const int SaladLines = 10;
 string BerrySalad[SaladLines] = {
-"  +   +  __,.-------..__+   +",
-"+  _,-'''_- _(_)((_) _,_`'--._+",
-" ,'  _./(_),_(_(*)(_(*(_)---_,`.  +",
-"( ,/(_(*)/(*)_)_(`(*)./(_),(_)\\_)",
-" :.*/(_)`_-((_)_)(*),(_)(*)_)*,;",
-" `.`--.(_))*)\\(*)(_),_)_.--' ,'",
-"   `.     ``-------''      ,'",
-"     `.                  ,`",
-"       `-.____________.-'"
+" +    ___   _(\\/)_  ______,/)__",
+"  +  /*  \\,()(_)(_)/******\\/__/   +   +",
+"+   (\\/)_/  (_)(_)/********|\\_\\-.",
+", (=)(=)(=)/ * \\ (____   _(\\/)_  `. ",
+"( (=)(=)(=)\\___/_/__ *\\ (_)(_)(_)  )  +",
+" :. (=)(=)(*********\\/)__()(_)() ,;",
+"  `.---,   \\********/___/     ,---`",
+"   `.   ``````````(/\\__\\``````  ,`",
+"     `.                       ,`",
+"        `--._____________.--'"
 };
 
 const int ThankLines = 9;
@@ -1786,7 +1787,7 @@ void Bedroom(Player &Player){
 bool TGQ_Complete = true;
 bool MQ_Complete = true;
 bool BG_Complete = true;
-bool PP_Complete = false;
+bool PP_Complete = true;
 
 void DiningRoom(Player &Player){
     
@@ -2608,15 +2609,15 @@ bool TrainingGroundsQuest(Player &Player, Enemy &Enemy, bool TGQ_Complete){
 
         system("cls");
         printMidCharacter(neutralYahoo,YahooLines);
-        cout << string(50, ' '); cout << "Commander Yahoo" << endl << endl;
-        DrawDialog_Margin("I'm Commander Yahoo. \n\n", 2);
+        cout << string(50, ' '); cout << "General Yahoo" << endl << endl;
+        DrawDialog_Margin("I'm General Yahoo. \n\n", 2);
         DrawDialog_Margin("Me and my soldiers came here to sharpen our skills wherever we lacked. \n\n", 2);
         cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
         PressEnter();
 
         system("cls");
         printMidCharacter(neutralYahoo,YahooLines);
-        cout << string(50, ' '); cout << "Commander Yahoo" << endl << endl;
+        cout << string(50, ' '); cout << "General Yahoo" << endl << endl;
         DrawDialog_Margin("Surely, you're here to train too. \n\n", 2);
         DrawDialog_Margin("These training grounds are open to everyone, after all, Papadum Army or not. \n\n", 2);
         cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
@@ -2628,21 +2629,21 @@ bool TrainingGroundsQuest(Player &Player, Enemy &Enemy, bool TGQ_Complete){
 
         system("cls");
         printMidCharacter(neutralYahoo,YahooLines);
-        cout << string(50, ' '); cout << "Commander Yahoo" << endl << endl;
+        cout << string(50, ' '); cout << "General Yahoo" << endl << endl;
         DrawDialog_Margin("A way home? What an odd thing to ask a stranger. \n\n", 2);
         cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
         PressEnter();
 
         system("cls");
         printMidCharacter(neutralYahoo,YahooLines);
-        cout << string(50, ' '); cout << "Commander Yahoo" << endl << endl;
+        cout << string(50, ' '); cout << "General Yahoo" << endl << endl;
         DrawDialog_Margin("Hmmm... But I have to keep an eye on my troops to make sure they aren't slacking off.\n\n", 2);
         cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
         PressEnter();
 
         system("cls");
         printMidCharacter(neutralYahoo,YahooLines);
-        cout << string(50, ' '); cout << "Commander Yahoo" << endl << endl;
+        cout << string(50, ' '); cout << "General Yahoo" << endl << endl;
         DrawDialog_Margin("Do you know how to fight? How about you go and spar with one of my soldiers \n\n", 2);
         DrawDialog_Margin("and motivate them to train harder?\n\n", 2);
         cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
@@ -2656,7 +2657,7 @@ bool TrainingGroundsQuest(Player &Player, Enemy &Enemy, bool TGQ_Complete){
         if (choice == "Sure! I'll fight them right now!"){
             system("cls");
             printMidCharacter(neutralYahoo,YahooLines);
-            cout << string(50, ' '); cout << "Commander Yahoo" << endl << endl;
+            cout << string(50, ' '); cout << "General Yahoo" << endl << endl;
             DrawDialog_Margin("Alright everyone! I need someone to spar with. \n\n", 2);
             DrawDialog_Margin("Show me if you can beat this random person.\n\n", 2);
             cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
@@ -2690,7 +2691,7 @@ bool TrainingGroundsQuest(Player &Player, Enemy &Enemy, bool TGQ_Complete){
         if (choice == "I'll think about it."){
             system("cls");
             printMidCharacter(neutralYahoo,YahooLines);
-            cout << string(50, ' '); cout << "Commander Yahoo" << endl << endl;
+            cout << string(50, ' '); cout << "General Yahoo" << endl << endl;
             DrawDialog_Margin("Coward.\n\n", 2);
             cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
             PressEnter();
@@ -2699,10 +2700,10 @@ bool TrainingGroundsQuest(Player &Player, Enemy &Enemy, bool TGQ_Complete){
 
     if  (TGQ_Complete == false && TGQ_Counter > 0){
         do{
-        string option6[2] = {"Talk to Commander Yahoo","Leave the training grounds"};
+        string option6[2] = {"Talk to General Yahoo","Leave the training grounds"};
         choice = optionselect("What do you want to do?", option6, 2, Empty, EmptyLines);
 
-        if (choice == "Talk to Commander Yahoo"){
+        if (choice == "Talk to General Yahoo"){
             system("cls");
             string option5[2] = {"Sure! I'll fight them right now!","I'll think about it."};
             choice = optionselect("Wanna spar with my soldiers?", option5, 2, neutralYahoo, YahooLines);
@@ -2711,7 +2712,7 @@ bool TrainingGroundsQuest(Player &Player, Enemy &Enemy, bool TGQ_Complete){
             if (choice == "Sure! I'll fight them right now!"){
                 system("cls");
                 printMidCharacter(neutralYahoo,YahooLines);
-                cout << string(50, ' '); cout << "Commander Yahoo" << endl << endl;
+                cout << string(50, ' '); cout << "General Yahoo" << endl << endl;
                 DrawDialog_Margin("Alright everyone! I need someone to spar with. \n\n", 2);
                 DrawDialog_Margin("Show me if you can beat this random person.\n\n", 2);
                 cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
@@ -2745,7 +2746,7 @@ bool TrainingGroundsQuest(Player &Player, Enemy &Enemy, bool TGQ_Complete){
             //if (TGQ_Complete == true){
             system("cls");
             printMidCharacter(neutralYahoo,YahooLines);
-            cout << string(50, ' '); cout << "Commander Yahoo" << endl << endl;
+            cout << string(50, ' '); cout << "General Yahoo" << endl << endl;
             DrawDialog_Margin("Well, you're a far better fighter than I thought! \n\n", 2);
             DrawDialog_Margin("Now I can bring this moment up whenever they start slacking off.\n\n", 2);
             DrawDialog_Margin("Have you ever considered joining the Papadum Army?\n\n", 2);
@@ -2754,7 +2755,7 @@ bool TrainingGroundsQuest(Player &Player, Enemy &Enemy, bool TGQ_Complete){
 
             system("cls");
             printMidCharacter(neutralYahoo,YahooLines);
-            cout << string(50, ' '); cout << "Commander Yahoo" << endl << endl;
+            cout << string(50, ' '); cout << "General Yahoo" << endl << endl;
             DrawDialog_Margin("Oh wait, you were looking for a way home, right? \n\n", 2);
             cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
             PressEnter();
@@ -2765,7 +2766,7 @@ bool TrainingGroundsQuest(Player &Player, Enemy &Enemy, bool TGQ_Complete){
 
             system("cls");
             printMidCharacter(neutralYahoo,YahooLines);
-            cout << string(50, ' '); cout << "Commander Yahoo" << endl << endl;
+            cout << string(50, ' '); cout << "General Yahoo" << endl << endl;
             DrawDialog_Margin("Gee, I can't give you directions without an address. \n\n", 2);
             DrawDialog_Margin("Maybe this could help you out instead. \n\n", 2);
             cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
@@ -2780,7 +2781,7 @@ bool TrainingGroundsQuest(Player &Player, Enemy &Enemy, bool TGQ_Complete){
 
             system("cls");
             printMidCharacter(neutralYahoo,YahooLines);
-            cout << string(50, ' '); cout << "Commander Yahoo" << endl << endl;
+            cout << string(50, ' '); cout << "General Yahoo" << endl << endl;
             DrawDialog_Margin("That's all the help I can give you. \n\n", 2);
             DrawDialog_Margin("Maybe you could use the teleporter at the Potato Palace. \n\n", 2);
             DrawDialog_Margin("Not sure if it works for otherworldly destinations though. \n\n", 2);
@@ -2791,7 +2792,7 @@ bool TrainingGroundsQuest(Player &Player, Enemy &Enemy, bool TGQ_Complete){
             if (choice == "I'll think about it."){
                 system("cls");
                 printMidCharacter(neutralYahoo,YahooLines);
-                cout << string(50, ' '); cout << "Commander Yahoo" << endl << endl;
+                cout << string(50, ' '); cout << "General Yahoo" << endl << endl;
                 DrawDialog_Margin("Coward.\n\n", 2);
                 cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
                 PressEnter();
@@ -2829,10 +2830,10 @@ void TrainingGrounds(Player &Player){
     
     do{
     system("cls");
-    string option1[3] = {"Talk to Commander Yahoo","Check on the fainted Papadum Soldier", "Leave the Training Grounds"};
+    string option1[3] = {"Talk to General Yahoo","Check on the fainted Papadum Soldier", "Leave the Training Grounds"};
     choice = optionselect("What would you like to do?", option1, 3, Empty, EmptyLines);
 
-        if (choice == "Talk to Commander Yahoo"){
+        if (choice == "Talk to General Yahoo"){
         //What do you want to talk about with Yahoo?
         do{
         system("cls");
@@ -2842,7 +2843,7 @@ void TrainingGrounds(Player &Player){
         if (choice == "The Papadum Army"){
             system("cls");
             printMidCharacter(neutralYahoo,YahooLines);
-            cout << string(50, ' '); cout << "Commander Yahoo" << endl << endl;
+            cout << string(50, ' '); cout << "General Yahoo" << endl << endl;
             DrawDialog_Margin("The Papadum Army serves to protect the Potato Kingdom. \n\n", 2);
             DrawDialog_Margin("We never had the chance to actually fight a war \n\n", 2);
             DrawDialog_Margin("since the Potato Kingdom has always been peaceful. \n\n", 2);
@@ -2851,7 +2852,7 @@ void TrainingGrounds(Player &Player){
 
             system("cls");
             printMidCharacter(neutralYahoo,YahooLines);
-            cout << string(50, ' '); cout << "Commander Yahoo" << endl << endl;
+            cout << string(50, ' '); cout << "General Yahoo" << endl << endl;
             DrawDialog_Margin("We mostly goof around and make jokes. \n\n", 2);
             DrawDialog_Margin("Training is serious though. \n\n", 2);
             cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
@@ -2859,7 +2860,7 @@ void TrainingGrounds(Player &Player){
         else if (choice == "Training"){
             system("cls");
             printMidCharacter(neutralYahoo,YahooLines);
-            cout << string(50, ' '); cout << "Commander Yahoo" << endl << endl;
+            cout << string(50, ' '); cout << "General Yahoo" << endl << endl;
             DrawDialog_Margin("We train whenever we can. \n\n", 2);
             DrawDialog_Margin("The public likes to join us whenever we train so we prefer training here.\n\n", 2);
             DrawDialog_Margin("Plus, maybe we could recruit potential soldiers from the civilians. \n\n", 2);
@@ -2868,7 +2869,7 @@ void TrainingGrounds(Player &Player){
 
             system("cls");
             printMidCharacter(neutralYahoo,YahooLines);
-            cout << string(50, ' '); cout << "Commander Yahoo" << endl << endl;
+            cout << string(50, ' '); cout << "General Yahoo" << endl << endl;
             DrawDialog_Margin("The soldiers being beaten by regular civilians is pretty humbling too,\n\n", 2);
             DrawDialog_Margin("it becomes great motivation for them to train harder. \n\n", 2);
             cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
@@ -2876,21 +2877,21 @@ void TrainingGrounds(Player &Player){
 
             system("cls");
             printMidCharacter(neutralYahoo,YahooLines);
-            cout << string(50, ' '); cout << "Commander Yahoo" << endl << endl;
+            cout << string(50, ' '); cout << "General Yahoo" << endl << endl;
             DrawDialog_Margin("Pride and ego could be great motivators if you know how to use them right. \n\n", 2);
             cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
         }
         else if (choice == "Teleporter"){
             system("cls");
             printMidCharacter(neutralYahoo,YahooLines);
-            cout << string(50, ' '); cout << "Commander Yahoo" << endl << endl;
+            cout << string(50, ' '); cout << "General Yahoo" << endl << endl;
             DrawDialog_Margin("The Potato Queen likes to teleport from place to place in the kingdom. \n\n", 2);
             cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
             PressEnter();
 
             system("cls");
             printMidCharacter(neutralYahoo,YahooLines);
-            cout << string(50, ' '); cout << "Commander Yahoo" << endl << endl;
+            cout << string(50, ' '); cout << "General Yahoo" << endl << endl;
             DrawDialog_Margin("She could walk, \n\n", 2);
             DrawDialog_Margin("but 'a potato can only walk so far' she says. \n\n", 2);
             cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
@@ -2898,14 +2899,14 @@ void TrainingGrounds(Player &Player){
 
             system("cls");
             printMidCharacter(neutralYahoo,YahooLines);
-            cout << string(50, ' '); cout << "Commander Yahoo" << endl << endl;
+            cout << string(50, ' '); cout << "General Yahoo" << endl << endl;
             DrawDialog_Margin("She's probably just lazy. \n\n", 2);
             cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
         }
         else if (choice == "Goodbye!"){
             system("cls");
             printMidCharacter(neutralYahoo,YahooLines);
-            cout << string(50, ' '); cout << "Commander Yahoo" << endl << endl;
+            cout << string(50, ' '); cout << "General Yahoo" << endl << endl;
             DrawDialog_Margin("Good luck finding your way. \n\n", 2);
             cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
         }
@@ -4088,7 +4089,7 @@ int main(){
 
     Player p1("Player",100,DrawPlayer,DrawPlayer_Lines);
     Player p2("Beary",1000,DrawBeary,DrawBeary_Lines);
-    Bedroom(p1);
+    //Bedroom(p1);
     //DiningRoom(p1);
     //House(BG_Complete);
     //TrainingGrounds(p1);
