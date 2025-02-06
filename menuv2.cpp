@@ -148,10 +148,11 @@ void readFile(const string& filename);
 void viewwithUserInput();
 void searchinFile (const string& filename, const string& searchLine);
 bool bool_searchinFile (const string& filename, const string& searchLine);
-void searchwithUserInput();
+void searchinFilewithUserInput();
 void deleteFile(const string& filename);
 bool FileExists(const string& filename);
 int loadsave(const string& filename);
+void encyclopedia();
 
 // Battle functions
 static int randomiser (int chance, int min, int max);
@@ -285,8 +286,9 @@ void searchinFile (const string& filename, const string& searchLine)
 
     if (file.fail())
     {
-        cout << "Error. File '" << filename << "' does not exist! Exiting...\n";
-        exit(1);
+        cout << "\nError. File '" << filename << "' does not exist! Exiting...\n";
+        system("pause");
+        return;
     }
 
     string tmpOri;
@@ -356,7 +358,7 @@ bool bool_searchinFile (const string& filename, const string& searchLine)
 
 }
 
-void searchwithUserInput()
+void searchinFilewithUserInput()
 {
     string filename, searchLine;
     cout << "\nEnter the file name to search: ";
@@ -366,6 +368,7 @@ void searchwithUserInput()
 
     // Call the searchinFile function with user input
     searchinFile(filename, searchLine);
+
 }
 
 void deleteFile(const string& filename)
@@ -634,7 +637,7 @@ void DrawOptions(string SLOT[]){
 // Draws the dialog
 void DrawDialog(string text , int typeSpeed){
 
-    for (int i = 0; i < text.length(); i++){
+    for (int i = 0; i < static_cast<int>(text.length()); i++){
         cout << text[i] << flush;
         Sleep(typeSpeed);
     }
@@ -646,7 +649,7 @@ const int MARGIN = 10;
 void DrawDialog_Margin(string text , int typeSpeed){
 
     cout << string(MARGIN, ' ');
-    for (int i = 0; i < text.length(); i++){
+    for (int i = 0; i < static_cast<int>(text.length()); i++){
         cout << text[i] << flush;
         Sleep(typeSpeed);
     }
@@ -1590,8 +1593,54 @@ int loadsave(const string& filename){
 }
 
 
+void encyclopedia(){
+    string pediamenu[4] = {"Enemy", "Character", "Search in file", "Exit to Main"};
+    string choice;
+
+        choice = optionselect("Encyclopedia", pediamenu, 4, Empty, EmptyLines);
+        if (choice == "Enemy"){
+
+            FileExists("enemy.txt");
+            if (FileExists("enemy.txt")){
+                system("cls");
+                readFile("enemy.txt");
+                viewwithUserInput();
+            }
+            else
+            {
+                cout << "Error. File not found. Please defeat at least one enemy first.\n";
+                system("pause");
+            }
+            encyclopedia();
+        }
+        else if (choice == "Character"){
+
+            FileExists("character.txt");
+            if (FileExists("character.txt")){
+                system("cls");
+                readFile("character.txt");
+                viewwithUserInput();
+            }
+            else {
+                cout << "Error. File not found. Please play the game first.\n";
+                system("pause");
+            }
+            encyclopedia();
+        }
+        else if (choice == "Search in file"){
+            readFile("enemy.txt"); //display available files for users to search
+            readFile("character.txt");
+            searchinFilewithUserInput();
+            encyclopedia();
+        }
+        else {
+            MainMenu();
+        }
+}
+
+
 void MainMenu(){
-    
+
     string mainmenu[4] = {"New Game", "Load Game", "Encyclopedia", "Exit"};
     string confirm[2] = {"Yes", "No"};
     string menuchoice;
@@ -1605,42 +1654,46 @@ void MainMenu(){
                 system("cls");
                 y_n = optionselect("This will overwrite the save file, Are you sure?", confirm, 2, Empty, EmptyLines);
                 if (y_n == "Yes"){
-                    loop = false;
+                    loop = false; //proceed to new game
                 }
                 else{
-                    break;
+                    break; //exit do-while loop, proceed with saved progress
                 }
             }
             else{
-                loop = false;
+                loop = false; //continue game
             }
         }
         if (menuchoice == "Load Game"){
             if (FileExists("savefile")){
-                loop = false;
+                loop = false;//proceed with saved progress
             }
             else{
                 system("cls");
                 cout << "No existing save file!" << endl;
-                system("pause");
+                PressEnter();
             }
         }
+        if (menuchoice == "Encyclopedia")
+        {
+            encyclopedia();
+        }
         if (menuchoice == "Exit"){
-            exit(1);
+            exit(1); //exit program
         }
     }while(loop == true);
 
     if (menuchoice == "New Game"){
-        system("cls");
         deleteFile("savefile");
-        autocreateFile("savefile","Bedroom");
+        deleteFile("enemy.txt"); //prevent user from seeing previous game records as new game progress
+        deleteFile("character.txt"); //same as above
+        autocreateFile("savefile", "outside");
         MainGameLoop(1);
     }
     if (menuchoice == "Load Game"){
         MainGameLoop(loadsave("savefile"));
     }
 }
-
 string choice;
 
 void Bedroom(Player &Player){
@@ -3911,13 +3964,15 @@ void MainGameLoop(int startAt){
         case 1:
             Bedroom(p1);
             DiningRoom(p1);
+            [[fallthrough]];
         case 2:
             Outside(p1,e1);
             TrainingGroundsQuest(p1,e1);
             TrainingGrounds(p1);
-            break;
+            [[fallthrough]];
         case 3:
             MarketQuest(p1, e2);
+            [[fallthrough]];
         default:
             break;
     }
@@ -3929,7 +3984,7 @@ int main(){
 
     srand(time(0));
 
-    //MainMenu();
+    MainMenu();
 
     //return 0;
 
@@ -3954,7 +4009,7 @@ int main(){
     //PotatoPalace1(p1,e4);
     //PotatoPalace2(p2,e4);
 
-    Home();
+    //Home();
 
 /*
     bool gameloop = true;
