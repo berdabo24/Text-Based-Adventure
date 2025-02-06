@@ -1782,6 +1782,7 @@ void Bedroom(){
         cout << endl;
         DrawDialog_Margin("You decided to lie down for a few more minutes. \n\n", 1);
         cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+        PressEnter();
     }
     else if (choice == "Check the mirror"){
         system("cls");
@@ -1790,6 +1791,7 @@ void Bedroom(){
         DrawDialog_Margin("You look like your normal self, just a bit more well-rested than usual.\n\n", 1);
         DrawDialog_Margin("Perhaps you needed that sleep more than anything.\n\n", 1);
         cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+        PressEnter();
     }
     else if (choice == "Use the bathroom"){
         system("cls");
@@ -1797,6 +1799,7 @@ void Bedroom(){
         cout << endl;
         DrawDialog_Margin("You feel refreshed.\n\n", 1);
         cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+        PressEnter();
     }
     else if (choice == "Go downstairs"){
         system("cls");
@@ -1813,10 +1816,10 @@ void Bedroom(){
 
 }
 
-bool TGQ_Complete = true;
-bool MQ_Complete = true;
-bool BG_Complete = true;
-bool PP_Complete = true;
+bool TGQ_Complete = false;
+bool MQ_Complete = false;
+bool BG_Complete = false;
+bool PP_Complete = false;
 int outside_counter = 0;
 int TGQ_Counter = 0;
 
@@ -2137,6 +2140,7 @@ int Outside(int outside_counter, bool TGQ_Complete, bool MQ_Complete, bool BG_Co
     printMidCharacter(neutralCream,CreamLines);
     cout << string(50, ' '); cout << "Cream" << endl << endl;
     DrawDialog_Margin("", 1); cout << p1.name; DrawDialog("! Before you go, could you do me a favor? \n\n", 2);
+    DrawDialog_Margin("", 1); cout << p1.name; DrawDialog("Could you get more berries for me, please? \n\n", 2);
     cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
     PressEnter();
 
@@ -2189,7 +2193,6 @@ int Outside(int outside_counter, bool TGQ_Complete, bool MQ_Complete, bool BG_Co
     choice = optionselect("Where would you like to go?", option2, 4, Empty, EmptyLines);
     }
     if (BG_Complete == true){
-    do{
         system("cls");
         string option3[4] = {"Training Ground","Market","Cream and Teddy's House","Potato Palace"};
         choice = optionselect("Where would you like to go?", option3, 4, Empty, EmptyLines);
@@ -2245,7 +2248,7 @@ int Outside(int outside_counter, bool TGQ_Complete, bool MQ_Complete, bool BG_Co
                 PressEnter();
             }
         }
-    }while(BG_Complete);
+
     } 
     
 return outside_counter;
@@ -2605,6 +2608,7 @@ void House(bool BG_Complete){
     DrawDialog_Margin("Teddy and Cream wave at you goodbye.\n\n", 1);
     cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
     PressEnter();
+    Outside(outside_counter, TGQ_Complete, MQ_Complete, BG_Complete, PP_Complete);
 
 }
 
@@ -2820,6 +2824,7 @@ bool TrainingGroundsQuest(bool TGQ_Complete){
             cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
             PressEnter();
         }
+        Outside(outside_counter, TGQ_Complete, MQ_Complete, BG_Complete, PP_Complete);
     }
     if (TGQ_Complete == true){
         TrainingGrounds();
@@ -2947,6 +2952,7 @@ void TrainingGrounds(){
     DrawDialog_Margin("Yahoo nods his head in respect as you leave.\n\n", 1);
     cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
     PressEnter();
+    Outside(outside_counter, TGQ_Complete, MQ_Complete, BG_Complete, PP_Complete);
 }
 
 bool MarketQuest(bool MQ_Complete){
@@ -3228,6 +3234,8 @@ void Market(){
     DrawDialog_Margin("Pinkery moos at you, it seems like that's her way of saying goodbye.\n\n", 1);
     cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
     PressEnter();
+    Outside(outside_counter, TGQ_Complete, MQ_Complete, BG_Complete, PP_Complete);
+    
 }
 
 bool BerryGarden(bool BG_Complete){
@@ -3619,6 +3627,7 @@ bool BerryGarden(bool BG_Complete){
         PressEnter();
     }
     }
+    Outside(outside_counter, TGQ_Complete, MQ_Complete, BG_Complete, PP_Complete);
     }
 return BG_Complete;
 }
