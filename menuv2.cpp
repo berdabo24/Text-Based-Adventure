@@ -184,7 +184,7 @@ string optionselect(string text, string array[], int arraysize, string *characte
 
 // Story functions
 void Bedroom(Player &Player);
-void House();
+void House(bool BG_Complete);
 bool TrainingGroundsQuest(Player &Player, Enemy &Enemy);
 void TrainingGrounds(Player &Player);
 bool MarketQuest(Player &Player, Enemy &Enemy);
@@ -1788,6 +1788,10 @@ void Bedroom(Player &Player){
 
 }
 
+bool TGQ_Complete = false;
+bool MQ_Complete = false;
+bool BG_Complete = true;
+
 void DiningRoom(Player &Player){
     
     system("cls");
@@ -2077,7 +2081,7 @@ void DiningRoom(Player &Player){
         DrawDialog_Margin("You look around Cream and Teddy's house a little longer.\n\n", 2);
         cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
         PressEnter();
-        House();
+        House(BG_Complete);
     }
     else if (choice == "Leave the house"){
         system("cls");
@@ -2091,10 +2095,107 @@ void DiningRoom(Player &Player){
 
 }
 
+int outside_counter = 0;
+void Outside(Player &Player, Enemy &Enemy){
+    system("cls");
 
-void House(){
+    if (outside_counter == 0){
+    printMidCharacter(Empty,EmptyLines);
+    cout << endl;
+    DrawDialog_Margin("You step outside and are met with a wave of cool, clean air.  \n\n", 1);
+    DrawDialog_Margin("The sun is shining brightly and the birds are chirping in songs. \n\n", 1);
+    DrawDialog_Margin("You feel a sense of peace and tranquility. \n\n", 1);
+    cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+    PressEnter();
+
+    system("cls");
+    printMidCharacter(neutralCream,CreamLines);
+    cout << string(50, ' '); cout << "Cream" << endl << endl;
+    DrawDialog_Margin("", 1); cout << Player.name; DrawDialog("! Before you go, could you do me a favor? \n\n", 2);
+    cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+    PressEnter();
+
+    system("cls");
+    printMidCharacter(happyCream,CreamLines);
+    cout << string(50, ' '); cout << "Cream" << endl << endl;
+    DrawDialog_Margin("Here's a map of the Potato Kingdom. \n\n", 2);
+    DrawDialog_Margin("I labeled them for you so that you know where to go. \n\n", 2);
+    DrawDialog_Margin("You can get berries at the Berry Garden.  \n\n", 2);
+    cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+    PressEnter();
+
+    system("cls");
+    printMidCharacter(neutralCream,CreamLines);
+    cout << string(50, ' '); cout << "Cream" << endl << endl;
+    DrawDialog_Margin("But be careful, wild Prunicus are lurking around there sometimes. \n\n", 2);
+    DrawDialog_Margin("You can try asking around the kingdom for any clues on how you can get home.  \n\n", 2);
+    cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+    PressEnter();
+
+    system("cls");
+    printMidCharacter(happyCream,CreamLines);
+    cout << string(50, ' '); cout << "Cream" << endl << endl;
+    DrawDialog_Margin("I marked where our home is too so that you can come back anytime! \n\n", 2);
+    cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+    PressEnter();
+
+    system("cls");
+    string option1[1] = {"Thank you."};
+    choice = optionselect(" ", option1, 1, neutralCream, CreamLines);
+
+    system("cls");
+    printMidCharacter(happyCream,CreamLines);
+    cout << string(50, ' '); cout << "Cream" << endl << endl;
+    DrawDialog_Margin("Take care on your journey! \n\n", 2);
+    cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+    PressEnter();
+
+    system("cls");
+    printMidCharacter(Empty,EmptyLines);
+    cout << endl;
+    DrawDialog_Margin("Cream hops back into her humble home. \n\n", 2);
+    cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+    PressEnter();
+    }
+    if (BG_Complete == false){
+    system("cls");
+    string option2[4] = {"Training Ground","Market","Berry Garden","Cream and Teddy's House"};
+    choice = optionselect("Where would you like to go?", option2, 4, Empty, EmptyLines);
+    }
+    if (BG_Complete == true){
+    system("cls");
+    string option3[4] = {"Training Ground","Market","Potato Palace"};
+    choice = optionselect("Where would you like to go?", option3, 4, Empty, EmptyLines);
+    }
+    if (choice == "Training Ground"){
+        if (TGQ_Complete == false){
+            TrainingGroundsQuest(Player,Enemy);
+        }else{
+            DrawDialog("The training ground is a wide, open area. \nArchery targets and climbing scaffolds are set up on one side. "
+                       "\nTraining weapons and equipment are provided on their respective racks, waiting to be used. ", 1);
+            DrawDialog("\n\nThis place seems to have more people than the gymnasium at home. \nSome are training together while some are training amongst themselves.", 1);
+            TrainingGrounds(Player);
+        }
+    }
+    else if (choice == "Market"){
+        if (MQ_Complete == false){
+            MarketQuest(Player,Enemy);
+        }
+        else
+        Market();
+    }
+    else if (choice == "Berry Garden"){
+        BerryGarden(Player,Enemy);
+    }
+    else if (choice == "Cream and Teddy's House"){
+        House(BG_Complete);
+    }
+}
+
+void House(bool BG_Complete){
     //What do you want to do in the house?
     do{
+    system("cls");
     string option1[4] = {"Talk to Teddy","Talk to Cream", "Upstairs", "Leave the house"};
     choice = optionselect("What would you like to do?", option1, 4, Empty, EmptyLines);
 
@@ -2308,11 +2409,19 @@ void House(){
         cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
         PressEnter();
 
-        //What do you want to talk about with Cream?
+        //What do you want to do in the room?
         do{
         system("cls");
-        string option1[4] = {"Take a nap", "Check the mirror", "Use the bathroom", "Go downstairs"};
-        choice = optionselect("What would you like to do?", option1, 4, Door, DoorLines);
+
+        if (BG_Complete == false){
+            string option2[4] = {"Take a nap", "Check the mirror", "Use the bathroom", "Go downstairs"};
+            choice = optionselect("What would you like to do?", option2, 4, Door, DoorLines);
+        }
+        else if (BG_Complete == true){
+            string option2[4] = {"Talk to Brownie", "Check the mirror", "Use the bathroom", "Go downstairs"};
+            choice = optionselect("What would you like to do?", option2, 4, Door, DoorLines);
+        }
+
 
         if (choice == "Take a nap"){
             system("cls");
@@ -2342,6 +2451,87 @@ void House(){
             DrawDialog_Margin("You exited the room. \n\n", 1);
             cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
         }
+        else if (choice == "Talk to Brownie"){
+            system("cls");
+            printMidCharacter(neutralBrownie,BrownieLines);
+            cout << string(50, ' '); cout << "Brownie" << endl << endl;
+            DrawDialog_Margin("Wanna talk? \n\n", 2);
+            cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+            PressEnter();
+
+            do{
+            system("cls");
+            string option3[4] = {"Your parents","Your room", "Independent", "Goodbye!"};
+            choice = optionselect("Wanna talk?", option3, 4, neutralBrownie, BrownieLines);
+            cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+
+            if (choice == "Your parents"){
+                system("cls");
+                printMidCharacter(neutralBrownie,BrownieLines);
+                cout << string(50, ' '); cout << "Brownie" << endl << endl;
+                DrawDialog_Margin("My parents are awesome. My mama makes the best meals and my papa is \n\n", 2);
+                DrawDialog_Margin("always making jokes of everything to  bring a smile to people's faces. \n\n", 2);
+                DrawDialog_Margin("That's better than what so many people can do. \n\n", 2);
+                cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+                PressEnter();
+
+                system("cls");
+                printMidCharacter(neutralBrownie,BrownieLines);
+                cout << string(50, ' '); cout << "Brownie" << endl << endl;
+                DrawDialog_Margin("I'm proud to be their son, but I'm not sure if I measure up to their skills. \n\n", 2);
+                DrawDialog_Margin("I know they’d be proud of me no matter what though. \n\n", 2);
+                cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+                PressEnter();
+            }
+            else if (choice == "Your room"){
+                system("cls");
+                printMidCharacter(neutralBrownie,BrownieLines);
+                cout << string(50, ' '); cout << "Brownie" << endl << endl;
+                DrawDialog_Margin("My mama told me that you borrowed my room when they brought you here. \n\n", 2);
+                cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+                PressEnter();
+
+                system("cls");
+                printMidCharacter(frustBrownie,BrownieLines);
+                cout << string(50, ' '); cout << "Brownie" << endl << endl;
+                DrawDialog_Margin("I don't mind it much, but the least you could have done was \n\n", 2);
+                DrawDialog_Margin("make the bed after you got out of it.\n\n", 2);
+                cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+                PressEnter();
+            }
+            else if (choice == "Independent"){
+                system("cls");
+                printMidCharacter(neutralBrownie,BrownieLines);
+                cout << string(50, ' '); cout << "Brownie" << endl << endl;
+                DrawDialog_Margin("I go around the kingdom dealing with certain issues, \n\n", 2);
+                DrawDialog_Margin("particularly jobs that involve 'cleaning up'. \n\n", 2);
+                cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+                PressEnter();
+
+                system("cls");
+                printMidCharacter(neutralBrownie,BrownieLines);
+                cout << string(50, ' '); cout << "Brownie" << endl << endl;
+                DrawDialog_Margin("I have to travel frequently, which is why I don't come home very often. \n\n", 2);
+                DrawDialog_Margin("But I still come home from time to time. \n\n", 2);
+                cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+                PressEnter();
+
+                system("cls");
+                printMidCharacter(neutralBrownie,BrownieLines);
+                cout << string(50, ' '); cout << "Brownie" << endl << endl;
+                DrawDialog_Margin("Nothing feels like home, ya know.\n\n", 2);
+                cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+                PressEnter();
+            }
+            else if (choice == "Goodbye!"){
+                system("cls");
+                printMidCharacter(neutralBrownie,BrownieLines);
+                cout << string(50, ' '); cout << "Brownie" << endl << endl;
+                DrawDialog_Margin("See ya. \n\n", 2);
+                cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+            }
+            }while (choice != "Goodbye!");
+        }
         PressEnter();
         }while (choice != "Go downstairs");
     }
@@ -2357,106 +2547,6 @@ void House(){
     cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
     PressEnter();
 
-}
-
-int outside_counter = 0;
-bool TGQ_Complete = false;
-bool MQ_Complete = false;
-bool BG_Complete = false;
-void Outside(Player &Player, Enemy &Enemy){
-    system("cls");
-
-    if (outside_counter == 0){
-    printMidCharacter(Empty,EmptyLines);
-    cout << endl;
-    DrawDialog_Margin("You step outside and are met with a wave of cool, clean air.  \n\n", 1);
-    DrawDialog_Margin("The sun is shining brightly and the birds are chirping in songs. \n\n", 1);
-    DrawDialog_Margin("You feel a sense of peace and tranquility. \n\n", 1);
-    cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-    PressEnter();
-
-    system("cls");
-    printMidCharacter(neutralCream,CreamLines);
-    cout << string(50, ' '); cout << "Cream" << endl << endl;
-    DrawDialog_Margin("", 1); cout << Player.name; DrawDialog("! Before you go, could you do me a favor? \n\n", 2);
-    cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-    PressEnter();
-
-    system("cls");
-    printMidCharacter(happyCream,CreamLines);
-    cout << string(50, ' '); cout << "Cream" << endl << endl;
-    DrawDialog_Margin("Here's a map of the Potato Kingdom. \n\n", 2);
-    DrawDialog_Margin("I labeled them for you so that you know where to go. \n\n", 2);
-    DrawDialog_Margin("You can get berries at the Berry Garden.  \n\n", 2);
-    cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-    PressEnter();
-
-    system("cls");
-    printMidCharacter(neutralCream,CreamLines);
-    cout << string(50, ' '); cout << "Cream" << endl << endl;
-    DrawDialog_Margin("But be careful, wild Prunicus are lurking around there sometimes. \n\n", 2);
-    DrawDialog_Margin("You can try asking around the kingdom for any clues on how you can get home.  \n\n", 2);
-    cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-    PressEnter();
-
-    system("cls");
-    printMidCharacter(happyCream,CreamLines);
-    cout << string(50, ' '); cout << "Cream" << endl << endl;
-    DrawDialog_Margin("I marked where our home is too so that you can come back anytime! \n\n", 2);
-    cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-    PressEnter();
-
-    system("cls");
-    string option1[1] = {"Thank you."};
-    choice = optionselect(" ", option1, 1, neutralCream, CreamLines);
-
-    system("cls");
-    printMidCharacter(happyCream,CreamLines);
-    cout << string(50, ' '); cout << "Cream" << endl << endl;
-    DrawDialog_Margin("Take care on your journey! \n\n", 2);
-    cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-    PressEnter();
-
-    system("cls");
-    printMidCharacter(Empty,EmptyLines);
-    cout << endl;
-    DrawDialog_Margin("Cream hops back into her humble home. \n\n", 2);
-    cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
-    PressEnter();
-    }
-    if (BG_Complete == false){
-    system("cls");
-    string option2[4] = {"Training Ground","Market","Berry Garden","Cream and Teddy's House"};
-    choice = optionselect("Where would you like to go?", option2, 4, Empty, EmptyLines);
-    }
-    if (BG_Complete == true){
-    system("cls");
-    string option3[4] = {"Training Ground","Market","Potato Palace"};
-    choice = optionselect("Where would you like to go?", option3, 4, Empty, EmptyLines);
-    }
-    if (choice == "Training Ground"){
-        if (TGQ_Complete == false){
-            TrainingGroundsQuest(Player,Enemy);
-        }else{
-            DrawDialog("The training ground is a wide, open area. \nArchery targets and climbing scaffolds are set up on one side. "
-                       "\nTraining weapons and equipment are provided on their respective racks, waiting to be used. ", 1);
-            DrawDialog("\n\nThis place seems to have more people than the gymnasium at home. \nSome are training together while some are training amongst themselves.", 1);
-            TrainingGrounds(Player);
-        }
-    }
-    else if (choice == "Market"){
-        if (MQ_Complete == false){
-            MarketQuest(Player,Enemy);
-        }
-        else
-        Market();
-    }
-    else if (choice == "Berry Garden"){
-        BerryGarden(Player,Enemy);
-    }
-    else if (choice == "Cream and Teddy's House"){
-        House();
-    }
 }
 
 int TGQ_Counter = 0;
@@ -3970,7 +4060,7 @@ int main(){
     Player p2("Beary",1000,DrawBeary,DrawBeary_Lines);
     //Bedroom(p1);
     //DiningRoom(p1);
-    //House();
+    House(BG_Complete);
     //Outside(p1);
     //TrainingGrounds(p1);
     //Market();
@@ -3989,22 +4079,6 @@ int main(){
 
     //Home();
 
-/*
-    bool gameloop = true;
 
-    while (gameloop){
-    KeySwitch(p1,e1);
-        if (p1.health <= 0){
-            DrawChacters_AND_HealthBar(p1,e1);
-            PlaceDialog(p1, e1, "Player", " lost!");
-            gameloop = false;
-        }
-        if (e1.health <= 0){
-            DrawChacters_AND_HealthBar(p1,e1);
-            PlaceDialog(p1, e1, "Enemy", " lost!");
-            gameloop = false;
-        }
-    }
-*/
     return 0;
 }
