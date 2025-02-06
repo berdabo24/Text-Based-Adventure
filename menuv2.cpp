@@ -76,8 +76,8 @@ class Character {
         string Block(){
             return "Block";
         }
-        string Dodge(){
-            return "Dodge";
+        string Charge(){
+            return "Charge";
         }
         string Heal(){
             return "Heal";
@@ -402,39 +402,27 @@ bool FileExists(const string& filename)
     }
 }
 
+int PlayerCharge = 1;
+int EnemyCharge = 1;
+
 // Battle function
 void Battle(Player &Player, Enemy &Enemy, string Action, string FirstMove){
 
     if (FirstMove == "Player"){
         if (Action == "Attack"){
-            int attack_dmg = randomiser(50, 0, 100);
+            int attack_dmg = randomiser(50, 10, Player.health) * PlayerCharge;
             if (Enemy.state == "Blocking"){
-                int block_dmg = randomiser(50, 0, attack_dmg);
-                attack_dmg -= block_dmg;
+                int block_dmg = attack_dmg / 2;
+                attack_dmg = attack_dmg - block_dmg;
 
                 DrawChacters_AND_HealthBar(Player,Enemy);
                 PlaceDialog(Player, Enemy, "Enemy", " blocked ", block_dmg, "!");
-            }
-            if (Enemy.state == "Dodging"){
-                int dodge_chance = randomiser(70, 0, 100);
-                if (dodge_chance > 30){
-                    attack_dmg = 0;
-
-                    DrawChacters_AND_HealthBar(Player,Enemy);
-                    PlaceDialog(Player, Enemy, "Enemy", " Dodged!");
-                }
-                else{
-                    int boost_dmg = randomiser(20, 0, attack_dmg);
-                    attack_dmg += boost_dmg;
-
-                    DrawChacters_AND_HealthBar(Player,Enemy);
-                    PlaceDialog(Player, Enemy, "Enemy", " Got hit!");
-                }
             }
             Enemy.takeDamage(attack_dmg);
 
             DrawChacters_AND_HealthBar(Player,Enemy,0,attack_dmg, "-");
             PlaceDialog(Player, Enemy, "Player", " deals ", attack_dmg, "!");
+            PlayerCharge = 1;
         }
 
         if (Action == "Block"){
@@ -442,17 +430,22 @@ void Battle(Player &Player, Enemy &Enemy, string Action, string FirstMove){
 
             DrawChacters_AND_HealthBar(Player,Enemy);
             PlaceDialog(Player, Enemy, "Player", " is blocking!");
+
         }
+        
+        if (Action == "Charge"){
+            Player.SetState("Charging");
 
-        if (Action == "Dodge"){
-            Player.SetState("Dodging");
-
+            if (PlayerCharge < 5){
+                PlayerCharge += 1;
+            }
             DrawChacters_AND_HealthBar(Player,Enemy);
-            PlaceDialog(Player, Enemy, "Player", " is dodging!");
+            PlaceDialog(Player, Enemy, "Player", " is charging attack! x", PlayerCharge, " ");
+
         }
 
         if (Action == "Heal"){
-            int Heal_amount = randomiser(50, 10 , Player.health);
+            int Heal_amount = randomiser(50, 10 , 50);
             if (Player.health > 0){
                 Player.useHeal(Heal_amount);
 
@@ -465,34 +458,19 @@ void Battle(Player &Player, Enemy &Enemy, string Action, string FirstMove){
 
     if (FirstMove == "Enemy"){
         if (Action == "Attack"){
-            int attack_dmg = randomiser(50, 0, 100);
+            int attack_dmg = randomiser(50, 10, Enemy.health) * EnemyCharge;
             if (Player.state == "Blocking"){
-                int block_dmg = randomiser(50, 0, attack_dmg);
-                attack_dmg -= block_dmg;
+                int block_dmg = attack_dmg / 2;
+                attack_dmg = attack_dmg - block_dmg;
 
                 DrawChacters_AND_HealthBar(Player,Enemy);
                 PlaceDialog(Player, Enemy, "Player", " blocked ", block_dmg, "!");
-            }
-            if (Player.state == "Dodging"){
-                int dodge_chance = randomiser(70, 0, 100);
-                if (dodge_chance > 30){
-                    attack_dmg = 0;
-
-                    DrawChacters_AND_HealthBar(Player,Enemy);
-                    PlaceDialog(Player, Enemy, "Player", " Dodged!");
-                }
-                else{
-                    int boost_dmg = randomiser(20, 0, attack_dmg);
-                    attack_dmg += boost_dmg;
-
-                    DrawChacters_AND_HealthBar(Player,Enemy);
-                    PlaceDialog(Player, Enemy, "Player", " Got hit!");
-                }
             }
             Player.takeDamage(attack_dmg);
 
             DrawChacters_AND_HealthBar(Player,Enemy,attack_dmg,0,"-");
             PlaceDialog(Player, Enemy, "Enemy", " deals ", attack_dmg, "!");
+            EnemyCharge = 1;
         }
 
         if (Action == "Block"){
@@ -502,15 +480,18 @@ void Battle(Player &Player, Enemy &Enemy, string Action, string FirstMove){
             PlaceDialog(Player, Enemy, "Enemy", " is blocking!");
         }
 
-        if (Action == "Dodge"){
-            Enemy.SetState("Dodging");
+        if (Action == "Charge"){
+            Enemy.SetState("Charging");
+            if (EnemyCharge < 5){
+                EnemyCharge += 1;
+            }
 
             DrawChacters_AND_HealthBar(Player,Enemy);
-            PlaceDialog(Player, Enemy, "Enemy", " is dodging!");
+            PlaceDialog(Player, Enemy, "Enemy", " is charging attack! x", EnemyCharge, " ");
         }
 
         if (Action == "Heal"){
-            int Heal_amount = randomiser(50, 10 , Player.health);
+            int Heal_amount = randomiser(50, 10 , 50);
             if (Enemy.health > 0){
                 Enemy.useHeal(Heal_amount);
 
@@ -523,17 +504,17 @@ void Battle(Player &Player, Enemy &Enemy, string Action, string FirstMove){
 
 }
 
-// Decides whether player or enemy goes first, Dodge and Block first, attack second, heal last
+// Decides whether player or enemy goes first, Charge and Block first, attack second, heal last
 void WhoFirst(Player &Player, Enemy &Enemy, string PlayerTurn, string EnemyTurn){
 
     int Player_priority = 0;
     int Enemy_priority = 0;
 
-    if (PlayerTurn == "Block" || PlayerTurn == "Dodge"){
+    if (PlayerTurn == "Block" || PlayerTurn == "Charge"){
         Player_priority = 1;
     }
 
-    if (EnemyTurn == "Block" || EnemyTurn == "Dodge"){
+    if (EnemyTurn == "Block" || EnemyTurn == "Charge"){
         Enemy_priority = 1;
     }
 
@@ -1320,7 +1301,7 @@ void DrawMenu(string move,  Player &Player, Enemy &Enemy){
 
     SLOT[0] = " Attack";
     SLOT[1] = " Block";
-    SLOT[2] = " Dodge";
+    SLOT[2] = " Charge";
     SLOT[3] = " Heal";
 
     // Increase/decrease y or x based on input
@@ -1345,7 +1326,7 @@ void DrawMenu(string move,  Player &Player, Enemy &Enemy){
         SLOT[1] = ">Block";
     }
     if(x == 0 && y == 0){
-        SLOT[2] = ">Dodge";
+        SLOT[2] = ">Charge";
     }
     if(x == 1 && y == 0){
         SLOT[3] = ">Heal";
@@ -1369,7 +1350,7 @@ string MoveSelect(int x, int y, Player &Player){
        move = Player.Block();
     }
     if(x == 0 && y == 0){
-       move = Player.Dodge();
+       move = Player.Charge();
     }
     if(x == 1 && y == 0){
        move = Player.Heal();
@@ -1389,7 +1370,7 @@ void InitiateBattle(string PlayerTurn, Player &Player, Enemy &Enemy){
         EnemyTurn = Enemy.Block();
     }
     if (EnemyAI == 3){
-        EnemyTurn = Enemy.Dodge();
+        EnemyTurn = Enemy.Charge();
     }
     if (EnemyAI == 4){
         EnemyTurn = Enemy.Heal();
@@ -3964,28 +3945,24 @@ void MainGameLoop(int startAt){
     switch(startAt){
         case 1:
             Bedroom(p1);
-            DiningRoom(p1);
-            [[fallthrough]];
+            break;
         case 2:
             Outside(p1,e1);
-            TrainingGroundsQuest(p1,e1);
-            TrainingGrounds(p1);
-            [[fallthrough]];
+            break;
         case 3:
             MarketQuest(p1, e2);
-            [[fallthrough]];
+            break;
         default:
             break;
     }
 }
 
 
-
 int main(){
 
     srand(time(0));
 
-    MainMenu();
+    //MainMenu();
 
     //return 0;
 
