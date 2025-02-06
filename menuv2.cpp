@@ -1636,10 +1636,10 @@ void encyclopedia(){
         choice = optionselect("Encyclopedia", pediamenu, 4, Empty, EmptyLines);
         if (choice == "Enemy"){
 
-            FileExists("enemy.txt");
-            if (FileExists("enemy.txt")){
+            FileExists("enemy");
+            if (FileExists("enemy")){
                 system("cls");
-                readFile("enemy.txt");
+                readFile("enemy");
                 viewwithUserInput();
                 system("pause");
             }
@@ -1652,10 +1652,10 @@ void encyclopedia(){
         }
         else if (choice == "Character"){
 
-            FileExists("character.txt");
-            if (FileExists("character.txt")){
+            FileExists("character");
+            if (FileExists("character")){
                 system("cls");
-                readFile("character.txt");
+                readFile("character");
                 viewwithUserInput();
                 system("pause");
             }
@@ -1666,9 +1666,9 @@ void encyclopedia(){
             encyclopedia();
         }
         else if (choice == "Search in file"){
-            if (FileExists("enemy.txt") == true && FileExists("character.txt") == true){
-                readFile("enemy.txt"); //display available files for users to search
-                readFile("character.txt");
+            if (FileExists("enemy") == true && FileExists("character") == true){
+                readFile("enemy"); //display available files for users to search
+                readFile("character");
                 viewwithUserInput();
             }
             else{
@@ -1734,12 +1734,12 @@ void MainMenu(){
 
     if (menuchoice == "New Game"){
         deleteFile("savefile");
-        deleteFile("enemy.txt"); //prevent user from seeing previous game records as new game progress
-        deleteFile("character.txt"); //same as above
-        deleteFile("name.txt");
+        deleteFile("enemy"); //prevent user from seeing previous game records as new game progress
+        deleteFile("character"); //same as above
+        deleteFile("name");
         autocreateFile("savefile", "Bedroom");
-        createEmptyFile("enemy.txt");
-        createEmptyFile("character.txt");
+        createEmptyFile("enemy");
+        createEmptyFile("character");
         MainGameLoop(1);
     }
 }
@@ -1763,8 +1763,8 @@ void Bedroom(){
     DrawDialog("\n\nIn your state of confusion, a soft-looking bunny comes into the room. \n\n", 1);
     PressEnter();
 
-    if(bool_searchinFile("character.txt","Cream") == false){
-        autoappendFile("character.txt","Cream");
+    if(bool_searchinFile("character","Cream") == false){
+        autoappendFile("character","Cream");
     }
 
     system("cls");
@@ -1796,7 +1796,7 @@ void Bedroom(){
     DrawDialog_Margin("Your name: ", 2);
     getline (cin, p1.name);
 
-    autocreateFile("name.txt", p1.name);
+    autocreateFile("name", p1.name);
 
     system("cls");
     printMidCharacter(happyCream,CreamLines);
@@ -1893,8 +1893,8 @@ void DiningRoom(){
     cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
     PressEnter();
 
-    if(bool_searchinFile("character.txt","Teddy") == false){
-        autoappendFile("character.txt","Teddy");
+    if(bool_searchinFile("character","Teddy") == false){
+        autoappendFile("character","Teddy");
     }
 
     system("cls");
@@ -2699,8 +2699,8 @@ void TrainingGroundsQuest(){
 
         PressEnter();
 
-        if(bool_searchinFile("character.txt","General Yahoo") == false){
-        autoappendFile("character.txt","General Yahoo");
+        if(bool_searchinFile("character","General Yahoo") == false){
+        autoappendFile("character","General Yahoo");
         }
 
         system("cls");
@@ -2777,8 +2777,8 @@ void TrainingGroundsQuest(){
             cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
             PressEnter();
     
-            if(bool_searchinFile("enemy.txt","Papadum Soldier") == false){
-                autoappendFile("enemy.txt","Papadum Soldier");
+            if(bool_searchinFile("enemy","Papadum Soldier") == false){
+                autoappendFile("enemy","Papadum Soldier");
             }
         //Battle happens here
             if (StartBattle(p1,e1) == "Player"){
@@ -2820,8 +2820,8 @@ void TrainingGroundsQuest(){
                 PressEnter();
     
             //Battle happens here
-            if(bool_searchinFile("enemy.txt","Papadum Soldier") == false){
-                autoappendFile("enemy.txt","Papadum Soldier");
+            if(bool_searchinFile("enemy","Papadum Soldier") == false){
+                autoappendFile("enemy","Papadum Soldier");
             }
             if (StartBattle(p1,e1) == "Player"){
                 TGQ_Complete = true;
@@ -3074,8 +3074,8 @@ void MarketQuest(){
     cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
     PressEnter();
 
-    if(bool_searchinFile("enemy.txt","Theif") == false){
-        autoappendFile("enemy.txt","Theif");
+    if(bool_searchinFile("enemy","Theif") == false){
+        autoappendFile("enemy","Theif");
     }
 
     //Battle happens here
@@ -3126,8 +3126,8 @@ void MarketQuest(){
     cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
     PressEnter();
 
-    if(bool_searchinFile("character.txt","Pinkery") == false){
-        autoappendFile("character.txt","Pinkery");
+    if(bool_searchinFile("character","Pinkery") == false){
+        autoappendFile("character","Pinkery");
     }
 
     system("cls");
@@ -3442,8 +3442,8 @@ void BerryGarden(){
     cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
     PressEnter();
 
-    if(bool_searchinFile("enemy.txt","Prunicus") == false){
-        autoappendFile("enemy.txt","Prunicus");
+    if(bool_searchinFile("enemy","Prunicus") == false){
+        autoappendFile("enemy","Prunicus");
     }
     //Battle happens here
     if (StartBattle(p1,e3) == "Player"){
@@ -3505,8 +3505,8 @@ void BerryGarden(){
             PressEnter();
         }
 
-        if(bool_searchinFile("character.txt","Brownie") == false){
-            autoappendFile("character.txt","Brownie");
+        if(bool_searchinFile("character","Brownie") == false){
+            autoappendFile("character","Brownie");
         }
         system("cls");
         printMidCharacter(neutralBrownie,BrownieLines);
@@ -3806,8 +3806,8 @@ void PotatoPalace1(){
         PressEnter();
     }
 
-    if(bool_searchinFile("character.txt","Potato Queen") == false){
-        autoappendFile("character.txt","Potato Queen");
+    if(bool_searchinFile("character","Potato Queen") == false){
+        autoappendFile("character","Potato Queen");
     }
     system("cls");
     printMidCharacter(Potato_nervous,PotatoLines);
@@ -3914,8 +3914,8 @@ void PotatoPalace1(){
     cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
     PressEnter();
 
-    if(bool_searchinFile("enemy.txt","Dragon") == false){
-        autoappendFile("enemy.txt","Dragon");
+    if(bool_searchinFile("enemy","Dragon") == false){
+        autoappendFile("enemy","Dragon");
     }
     //Battle happens here
     RIGHT_CHAR_POS = 35;
@@ -3971,8 +3971,8 @@ void PotatoPalace2(){
     cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
     PressEnter();
 
-    if(bool_searchinFile("character.txt","Beary") == false){
-        autoappendFile("character.txt","Beary");
+    if(bool_searchinFile("character","Beary") == false){
+        autoappendFile("character","Beary");
     }
     //Battle happens here
     RIGHT_CHAR_POS = 35;
@@ -4144,8 +4144,8 @@ void Home(){
 
 void MainGameLoop(int startAt){
 
-    if (FileExists("name.txt")){
-        p1.name = stringreadFile("name.txt");
+    if (FileExists("name")){
+        p1.name = stringreadFile("name");
     }
 
     switch(startAt){
