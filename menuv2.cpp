@@ -184,13 +184,17 @@ string optionselect(string text, string array[], int arraysize, string *characte
 
 // Story functions
 void Bedroom(Player &Player);
+void DiningRoom(Player &Player);
+int Outside(Player &Player, Enemy &Enemy, int outside_counter, bool TGQ_Complete, bool MQ_Complete, bool BG_Complete, bool PP_Complete);
 void House(bool BG_Complete);
-bool TrainingGroundsQuest(Player &Player, Enemy &Enemy);
+bool TrainingGroundsQuest(Player &Player, Enemy &Enemy, bool TGQ_Complete);
 void TrainingGrounds(Player &Player);
-bool MarketQuest(Player &Player, Enemy &Enemy);
+bool MarketQuest(Player &Player, Enemy &Enemy, bool MQ_Complete);
 void Market();
-bool BerryGarden(Player &Player, Enemy &Enemy);
-bool PotatoPalace(Player &Player, Enemy &Enemy);
+bool BerryGarden(Player &Player, Enemy &Enemy, bool BG_Complete);
+void PotatoPalace1(Player &Player, Enemy &Enemy);
+bool PotatoPalace2(Player &Player, Enemy &Enemy, bool PP_Complete);
+void Home();
 
 // Misc
 void MainGameLoop(int startAt);
@@ -935,7 +939,6 @@ string neutralBrownie[BrownieLines] = {
 "( |    (         )",
 " \\|     '-------' "
 };
-
 string frustBrownie[BrownieLines] = {
 "  __         __",
 " / )`------./ )\\ ",
@@ -979,7 +982,6 @@ string neutralPinkery[PinkeryLines] = {
 " /   \\~'  (     /   \\",
 "(     )| | \\| |(     ) "
 };
-
 string panicPinkery[PinkeryLines] = {
 "        /)  (\\",
 "   .~._((===.))_.~. ",
@@ -993,7 +995,6 @@ string panicPinkery[PinkeryLines] = {
 " /   \\~'  (     /   \\",
 "(     )| | \\| |(     ) "
 };
-
 string joyPinkery[PinkeryLines] = {
 "        /)  (\\",
 "   .~._((===.))_.~. ",
@@ -1036,7 +1037,6 @@ string Potato_OvO[PotatoLines] = {
 "\\         / ",
 " \\_______/ "
 };
-
 string Potato_XD[PotatoLines] = {
 "_          _",
 "\\\\/\\/\\/\\/\\// ",
@@ -1049,7 +1049,6 @@ string Potato_XD[PotatoLines] = {
 "\\         / ",
 " \\_______/ "
 };
-
 string Potato_O_o[PotatoLines] = {
 "_          _",
 "\\\\/\\/\\/\\/\\// ",
@@ -1062,7 +1061,6 @@ string Potato_O_o[PotatoLines] = {
 "\\         / ",
 " \\_______/ "
 };
-
 string Potato_cry[PotatoLines] = {
 "_          _",
 "\\\\/\\/\\/\\/\\// ",
@@ -1075,7 +1073,6 @@ string Potato_cry[PotatoLines] = {
 "\\         / ",
 " \\_______/ "
 };
-
 string Potato_crysmile[PotatoLines] = {
 "_          _",
 "\\\\/\\/\\/\\/\\// ",
@@ -1088,7 +1085,6 @@ string Potato_crysmile[PotatoLines] = {
 "\\         / ",
 " \\_______/ "
 };
-
 string Potato_nervous[PotatoLines] = {
 "_          _",
 "\\\\/\\/\\/\\/\\// ",
@@ -1101,7 +1097,6 @@ string Potato_nervous[PotatoLines] = {
 "\\         / ",
 " \\_______/ "
 };
-
 string Potato_bruhsmile[PotatoLines] = {
 "_          _",
 "\\\\/\\/\\/\\/\\// ",
@@ -1788,9 +1783,10 @@ void Bedroom(Player &Player){
 
 }
 
-bool TGQ_Complete = false;
-bool MQ_Complete = false;
+bool TGQ_Complete = true;
+bool MQ_Complete = true;
 bool BG_Complete = true;
+bool PP_Complete = false;
 
 void DiningRoom(Player &Player){
     
@@ -2096,18 +2092,15 @@ void DiningRoom(Player &Player){
 }
 
 int outside_counter = 0;
-void Outside(Player &Player, Enemy &Enemy){
+int Outside(Player &Player, Enemy &Enemy, int outside_counter, bool TGQ_Complete, bool MQ_Complete, bool BG_Complete, bool PP_Complete){
+    
     system("cls");
-
-    if (outside_counter == 0){
-    printMidCharacter(Empty,EmptyLines);
-    cout << endl;
-    DrawDialog_Margin("You step outside and are met with a wave of cool, clean air.  \n\n", 1);
-    DrawDialog_Margin("The sun is shining brightly and the birds are chirping in songs. \n\n", 1);
-    DrawDialog_Margin("You feel a sense of peace and tranquility. \n\n", 1);
-    cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+    DrawDialog("You step outside and are met with a wave of cool, clean air.  \n\n", 1);
+    DrawDialog("The sun is shining brightly and the birds are chirping in songs. \n\n", 1);
+    DrawDialog("You feel a sense of peace and tranquility. \n\n", 1);
     PressEnter();
 
+    if (outside_counter == 0){
     system("cls");
     printMidCharacter(neutralCream,CreamLines);
     cout << string(50, ' '); cout << "Cream" << endl << endl;
@@ -2157,6 +2150,7 @@ void Outside(Player &Player, Enemy &Enemy){
     cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
     PressEnter();
     }
+    outside_counter++;
     if (BG_Complete == false){
     system("cls");
     string option2[4] = {"Training Ground","Market","Berry Garden","Cream and Teddy's House"};
@@ -2164,32 +2158,63 @@ void Outside(Player &Player, Enemy &Enemy){
     }
     if (BG_Complete == true){
     system("cls");
-    string option3[4] = {"Training Ground","Market","Potato Palace"};
+    string option3[4] = {"Training Ground","Market","Cream and Teddy's House","Potato Palace"};
     choice = optionselect("Where would you like to go?", option3, 4, Empty, EmptyLines);
     }
     if (choice == "Training Ground"){
         if (TGQ_Complete == false){
-            TrainingGroundsQuest(Player,Enemy);
+            TGQ_Complete = TrainingGroundsQuest(Player,Enemy, TGQ_Complete);
         }else{
+            system("cls");
             DrawDialog("The training ground is a wide, open area. \nArchery targets and climbing scaffolds are set up on one side. "
                        "\nTraining weapons and equipment are provided on their respective racks, waiting to be used. ", 1);
             DrawDialog("\n\nThis place seems to have more people than the gymnasium at home. \nSome are training together while some are training amongst themselves.", 1);
+            PressEnter();
             TrainingGrounds(Player);
         }
     }
     else if (choice == "Market"){
         if (MQ_Complete == false){
-            MarketQuest(Player,Enemy);
+            MQ_Complete = MarketQuest(Player,Enemy, MQ_Complete); 
+        }else{
+            system("cls");
+            DrawDialog("The market is bustling with people. \nMany stalls sell a variety of products. "
+                       "\nSome are selling clothing, some are selling food, some are selling items, \nand some others are selling nick-nacks that might not make any sense to you.", 1);
+            DrawDialog("\n\nIt seems they are of use to the people of this world, \nso you probably shouldn't ponder on it too much.", 1);
+            PressEnter();
+            Market();
         }
-        else
-        Market();
     }
     else if (choice == "Berry Garden"){
-        BerryGarden(Player,Enemy);
+        BG_Complete = BerryGarden(Player,Enemy, BG_Complete);
     }
     else if (choice == "Cream and Teddy's House"){
+        system("cls");
+        DrawDialog("The interior of the house looks cozy. \nEverything in this house is clean, tidy and cute. \n"
+                   "\nThere's a living room, dining room, kitchen, and a couple of bedrooms upstairs. ", 1);
+        DrawDialog("\nThe house is small, but it's big enough for a family to live comfortably. ", 1);
+        DrawDialog("\nIt's not a single bit stuffy here either. ", 1);
+        DrawDialog("\n\nLiving in this house must be peaceful.", 1);
+        PressEnter();
         House(BG_Complete);
     }
+    else if (choice == "Potato Palace"){
+        system("cls");
+        if (TGQ_Complete == true && MQ_Complete == true && BG_Complete == true){
+        PotatoPalace1(Player, Enemy);
+        PP_Complete = PotatoPalace2(Player, Enemy, PP_Complete);
+        }else{
+        printMidCharacter(Empty,EmptyLines);
+        cout << endl;
+        DrawDialog_Margin("The Potato Palace is guarded by several knights.\n\n", 1);
+        DrawDialog_Margin("They don't seem to be allowing visitors.\n\n", 1);
+        DrawDialog_Margin("Maybe you should come back later.\n\n", 1);
+        cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
+        PressEnter();
+        }
+    }
+    
+return outside_counter;
 }
 
 void House(bool BG_Complete){
@@ -2479,7 +2504,7 @@ void House(bool BG_Complete){
                 printMidCharacter(neutralBrownie,BrownieLines);
                 cout << string(50, ' '); cout << "Brownie" << endl << endl;
                 DrawDialog_Margin("I'm proud to be their son, but I'm not sure if I measure up to their skills. \n\n", 2);
-                DrawDialog_Margin("I know they’d be proud of me no matter what though. \n\n", 2);
+                DrawDialog_Margin("I know they'd be proud of me no matter what though. \n\n", 2);
                 cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
                 PressEnter();
             }
@@ -2550,10 +2575,11 @@ void House(bool BG_Complete){
 }
 
 int TGQ_Counter = 0;
-bool TrainingGroundsQuest(Player &Player, Enemy &Enemy){
-        DrawDialog("The training ground is a wide, open area. \nArchery targets and climbing scaffolds are set up on one side. "
-                   "\nTraining weapons and equipment are provided on their respective racks, waiting to be used. ", 1);
-        DrawDialog("\n\nThis place seems to have more people than the gymnasium at home. \nSome are training together while some are training amongst themselves.", 1);
+bool TrainingGroundsQuest(Player &Player, Enemy &Enemy, bool TGQ_Complete){
+    system("cls");
+    DrawDialog("The training ground is a wide, open area. \nArchery targets and climbing scaffolds are set up on one side. "
+                "\nTraining weapons and equipment are provided on their respective racks, waiting to be used. ", 1);
+    DrawDialog("\n\nThis place seems to have more people than the gymnasium at home. \nSome are training together while some are training amongst themselves.", 1);
     
     if (TGQ_Counter == 0){
         DrawDialog("\n\nA lemur overseeing the bunch who are together stands out to you.", 1);
@@ -2800,7 +2826,9 @@ return TGQ_Complete;
 }
 
 void TrainingGrounds(Player &Player){
+    
     do{
+    system("cls");
     string option1[3] = {"Talk to Commander Yahoo","Check on the fainted Papadum Soldier", "Leave the Training Grounds"};
     choice = optionselect("What would you like to do?", option1, 3, Empty, EmptyLines);
 
@@ -2919,7 +2947,8 @@ void TrainingGrounds(Player &Player){
     PressEnter();
 }
 
-bool MarketQuest(Player &Player, Enemy &Enemy){
+bool MarketQuest(Player &Player, Enemy &Enemy, bool MQ_Complete){
+    system("cls");
     DrawDialog("The market is bustling with people. \nMany stalls sell a variety of products. "
                 "\nSome are selling clothing, some are selling food, some are selling items, \nand some others are selling nick-nacks that might not make any sense to you.", 1);
     DrawDialog("\n\nIt seems they are of use to the people of this world, \nso you probably shouldn't ponder on it too much.", 1);
@@ -3096,7 +3125,9 @@ return MQ_Complete;
 }
 
 void Market(){
+    
     do{
+    system("cls");
     string option1[3] = {"Talk to Pinkery","Check on the thief", "Leave the Market"};
     choice = optionselect("What would you like to do?", option1, 3, Empty, EmptyLines);
 
@@ -3214,8 +3245,8 @@ void Market(){
     PressEnter();
 }
 
-bool BerryGarden(Player &Player, Enemy &Enemy){
-
+bool BerryGarden(Player &Player, Enemy &Enemy, bool BG_Complete){
+    system("cls");
     DrawDialog("The garden is lush and vibrant with all the berries there could ever exist grown."
                "\nThe berry bushes and trees are stretched far, their colors naturally beautifying the garden. "
                "\n\nThe air is filled with a sweet aroma, ", 1);
@@ -3631,7 +3662,7 @@ void PotatoPalace1(Player &Player, Enemy &Enemy){
     PressEnter();
 
     system("cls");
-    DrawDialog("The ivory walls of the Potato Palace are adorned with gold décor accents, complimenting the \n\n", 1);
+    DrawDialog("The ivory walls of the Potato Palace are adorned with gold decor accents, complimenting the \n\n", 1);
     DrawDialog("color and architecture of the palace.  There aren't any statues of people in the palace, just \n\n", 1);
     DrawDialog("sculptures of shapes and interactive art that serves its own functionalities and interesting \n\n",1);
     DrawDialog("twist to its symbolism. It seems like this palace was built off hopes and dreams, albeit \n\n",1);
@@ -3692,7 +3723,7 @@ void PotatoPalace1(Player &Player, Enemy &Enemy){
     printMidCharacter(Potato_nervous,PotatoLines);
     cout << string(50, ' '); cout << "Potato Queen" << endl << endl;
     DrawDialog_Margin("I'm the Potato Queen! This palace you're roaming right now, \n\n", 2);
-    DrawDialog_Margin("I live here! I know where everything is… probably. (._. ;)\n\n", 2);
+    DrawDialog_Margin("I live here! I know where everything is... probably. (._. ;)\n\n", 2);
     cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
     PressEnter();
     
@@ -3821,8 +3852,7 @@ void PotatoPalace1(Player &Player, Enemy &Enemy){
     
 }
 
-bool PP_Complete = false;
-bool PotatoPalace2(Player &Player, Enemy &Enemy){
+bool PotatoPalace2(Player &Player, Enemy &Enemy, bool PP_Complete){
 
     system("cls");
     printMidCharacter(neutralBeary,BearyLines);
@@ -4037,10 +4067,10 @@ void MainGameLoop(int startAt){
             Bedroom(p1);
             break;
         case 2:
-            Outside(p1,e1);
+            Outside(p1,e1, outside_counter, TGQ_Complete, MQ_Complete, BG_Complete, PP_Complete);
             break;
         case 3:
-            MarketQuest(p1, e2);
+            MarketQuest(p1, e2, MQ_Complete);
             break;
         default:
             break;
@@ -4058,10 +4088,9 @@ int main(){
 
     Player p1("Player",100,DrawPlayer,DrawPlayer_Lines);
     Player p2("Beary",1000,DrawBeary,DrawBeary_Lines);
-    //Bedroom(p1);
+    Bedroom(p1);
     //DiningRoom(p1);
-    House(BG_Complete);
-    //Outside(p1);
+    //House(BG_Complete);
     //TrainingGrounds(p1);
     //Market();
 
@@ -4071,13 +4100,19 @@ int main(){
     Enemy e2("Thief",100,DrawEnemy2, DrawEnemy2_Lines);
     Enemy e3("Prunicus",400,DrawEnemy3, DrawEnemy3_Lines);
     Enemy e4("Dragon",999,DrawEnemy4, DrawEnemy4_Lines);
+
+    if (PP_Complete == false){
+    do{
+        outside_counter = Outside(p1,e1, outside_counter, TGQ_Complete, MQ_Complete, BG_Complete, PP_Complete);
+    }while(PP_Complete == false);
+    }
     //TrainingGroundsQuest(p1,e1);
     //MarketQuest(p1,e2);
     //BerryGarden(p1,e3);
     //PotatoPalace1(p1,e4);
     //PotatoPalace2(p2,e4);
 
-    //Home();
+    Home();
 
 
     return 0;
