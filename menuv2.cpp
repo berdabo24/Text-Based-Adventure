@@ -1697,6 +1697,7 @@ void MainMenu(){
 string choice;
 
 void Bedroom(Player &Player){
+    system("cls");
 
     DrawDialog("You wake up in an unfamiliar room. \nIt's filled with a lot of cute furniture and decorations. "
                "\nThe bed you're on feels very soft and comfortable as if made of fluff. ", 1);
