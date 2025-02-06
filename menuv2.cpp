@@ -145,6 +145,7 @@ void autocreateFile(const string& filename, const string& content);
 void createEmptyFile(const string& filename);
 void autoappendFile(const string& filename, const string& content);
 void readFile(const string& filename);
+string stringreadFile(const string& filename);
 void viewwithUserInput();
 void searchinFile (const string& filename, const string& searchLine);
 bool bool_searchinFile (const string& filename, const string& searchLine);
@@ -185,15 +186,15 @@ string optionselect(string text, string array[], int arraysize, string *characte
 // Story functions
 void Bedroom();
 void DiningRoom();
-int Outside(int outside_counter, bool TGQ_Complete, bool MQ_Complete, bool BG_Complete, bool PP_Complete);
-void House(bool BG_Complete);
-bool TrainingGroundsQuest(bool TGQ_Complete);
+void Outside();
+void House();
+void TrainingGroundsQuest();
 void TrainingGrounds();
-bool MarketQuest(bool MQ_Complete);
+void MarketQuest();
 void Market();
-bool BerryGarden(bool BG_Complete);
+void BerryGarden();
 void PotatoPalace1();
-bool PotatoPalace2(bool PP_Complete);
+void PotatoPalace2();
 void Home();
 
 // Misc
@@ -228,7 +229,7 @@ void createEmptyFile(const string& filename){
     else //file.fail()
     {
         cout << "Error. Unable to add '" << filename << "'! Exiting...\n";
-        exit(1);
+        return;
     }
 }
 
@@ -238,7 +239,7 @@ void autoappendFile(const string& filename, const string& content)//for create/u
     if (file.fail())
     {
         cout << "Error. Unable to append file '" << filename << "'! Exiting...\n" << endl;
-        exit(1);
+        return;
     }
 
     file << "\n" << content;
@@ -264,7 +265,7 @@ void readFile(const string& filename)
     if (file.fail())
     {
         cout << "Error. File not found! \n";
-        exit(1);
+        return;
     }
     cout << "\nContents of '" << filename << "': \n";
     while (getline(file, tmp))
@@ -273,6 +274,23 @@ void readFile(const string& filename)
     }
     file.close();
 }
+
+string stringreadFile(const string& filename)
+{
+    string tmp;
+    fstream file(filename); //declare read/write file
+    if (file.fail())
+    {
+        cout << "Error. File not found! \n";
+    }
+    while (getline(file, tmp))
+    {
+        return tmp;
+    }
+    file.close();
+    return tmp;
+}
+
 
 void viewwithUserInput()
 {
@@ -334,7 +352,7 @@ bool bool_searchinFile (const string& filename, const string& searchLine)
     if (file.fail())
     {
         cout << "Error. File '" << filename << "' does not exist! Exiting...\n";
-        exit(1);
+        return false;
     }
 
     string tmpOri;
@@ -672,7 +690,7 @@ void PlaceDialog(Player &Player, Enemy &Enemy, string character, string text, in
 // Character art initialization
 const int CHARACTERS_BORDER = 105;
 const int LEFT_CHAR_POS = 0;
-const int RIGHT_CHAR_POS = 86;
+int RIGHT_CHAR_POS = 86;
 
 // Draws the characters
 void printCharacters(string char1[], int char1_size, string char2[], int char2_size){
@@ -751,7 +769,7 @@ void printCharacters(string char1[], int char1_size, string char2[], int char2_s
     cout << endl;
 }
 
-const int MID_CHAR_POS = 45;
+int MID_CHAR_POS = 45;
 
 void printMidCharacter(string char1[], int char1_size){
     for (int i = 0; i < char1_size; i++){
@@ -1236,6 +1254,21 @@ string Empty[EmptyLines] = {
 " "
 };
 
+const int TitleLines = 11;
+string Title[TitleLines] = {
+" ",
+" ",
+" ",
+" ",
+" ",
+" ",
+"\t  __  ____       _        _           ___                  _    __  ",
+"\t / / |  _ \\ ___ | |_ __ _| |_ ___    / _ \\ _   _  ___  ___| |_  \\ \\ ",
+"\t/ /  | |_) / _ \\| __/ _` | __/ _ \\  | | | | | | |/ _ \\/ __| __|  \\ \\",
+"\t\\ \\  |  __/ (_) | || (_| | || (_) | | |_| | |_| |  __/\\__ \\ |_   / /",
+"\t \\_\\ |_|   \\___/ \\__\\__,_|\\__\\___/   \\__\\_ \\__,_|\\___||___/\\__| /_/ "
+};
+
 
 void DrawChacters_AND_HealthBar(Player &Player, Enemy &Enemy){
     system("cls");
@@ -1407,6 +1440,11 @@ void KeySwitch(Player &Player, Enemy &Enemy){
 
 string StartBattle(Player &Player, Enemy &Enemy){
 
+    PlayerCharge = 1;
+    EnemyCharge = 1;
+    Player.health = Player.maxHealth;
+    Enemy.health = Enemy.maxHealth;
+
     string win;
     //Battle happens here
     bool gameloop = true;
@@ -1416,13 +1454,13 @@ string StartBattle(Player &Player, Enemy &Enemy){
             DrawChacters_AND_HealthBar(Player,Enemy);
             PlaceDialog(Player,Enemy, Player.name, " lost!");
             gameloop = false;
-            win = "Player";
+            win = "Enemy";
         }
         if (Enemy.health <= 0){
             DrawChacters_AND_HealthBar(Player,Enemy);
             PlaceDialog(Player,Enemy, Enemy.name, " has been defeated.");
             gameloop = false;
-            win = "Enemy";
+            win = "Player";
         }
     }
 
@@ -1453,7 +1491,7 @@ bool PressEnter(){
     return true;
 }
 
-int const MID_MARGIN = 40;
+int MID_MARGIN = 40;
 
 void menuselectionbox(string slot[], int slotsize){
 
@@ -1530,11 +1568,13 @@ void DrawStoryMenu(string move, string* options, int optionCount, string *charac
 
 string optionselect(string text, string* options, int optionCount, string *character, int charsize){
 
+
     printMidCharacter(character,charsize);
     cout << string(MID_MARGIN - (text.length() / 3), ' ') << text << endl;
     DrawStoryMenu(" ", options, optionCount, character, charsize, text);
 
-    int selected;
+    int selected = 0;
+
 
     while (true) {
         switch (getch()) {
@@ -1554,7 +1594,7 @@ string optionselect(string text, string* options, int optionCount, string *chara
     }
 }
 
-const int numofsaves = 5;
+const int numofsaves = 7;
 
 int loadsave(const string& filename){
     int n = 0;
@@ -1586,7 +1626,6 @@ int loadsave(const string& filename){
         if (areaName == " ") return 9;
     }
 
-
 }
 
 
@@ -1597,11 +1636,12 @@ void encyclopedia(){
         choice = optionselect("Encyclopedia", pediamenu, 4, Empty, EmptyLines);
         if (choice == "Enemy"){
 
-            FileExists("enemy.txt");
-            if (FileExists("enemy.txt")){
+            FileExists("enemy");
+            if (FileExists("enemy")){
                 system("cls");
-                readFile("enemy.txt");
+                readFile("enemy");
                 viewwithUserInput();
+                system("pause");
             }
             else
             {
@@ -1612,11 +1652,12 @@ void encyclopedia(){
         }
         else if (choice == "Character"){
 
-            FileExists("character.txt");
-            if (FileExists("character.txt")){
+            FileExists("character");
+            if (FileExists("character")){
                 system("cls");
-                readFile("character.txt");
+                readFile("character");
                 viewwithUserInput();
+                system("pause");
             }
             else {
                 cout << "Error. File not found. Please play the game first.\n";
@@ -1625,9 +1666,15 @@ void encyclopedia(){
             encyclopedia();
         }
         else if (choice == "Search in file"){
-            readFile("enemy.txt"); //display available files for users to search
-            readFile("character.txt");
-            searchinFilewithUserInput();
+            if (FileExists("enemy") == true && FileExists("character") == true){
+                readFile("enemy"); //display available files for users to search
+                readFile("character");
+                viewwithUserInput();
+            }
+            else{
+                cout << "Error. File not found. Please play the game first.\n";
+            }
+            system("pause");
             encyclopedia();
         }
         else {
@@ -1644,9 +1691,12 @@ void MainMenu(){
     string y_n;
     int tmp;
 
+
     bool loop = true;
     do{
-        menuchoice = optionselect("Main Menu", mainmenu, 4, Empty, EmptyLines);
+        MID_CHAR_POS = 10;
+        menuchoice = optionselect("Use the Arrow keys and ENTER key to select:", mainmenu, 4, Title, TitleLines);
+        MID_CHAR_POS = 45;
         if (menuchoice == "New Game"){
             if (FileExists("savefile")){
                 system("cls");
@@ -1684,9 +1734,12 @@ void MainMenu(){
 
     if (menuchoice == "New Game"){
         deleteFile("savefile");
-        deleteFile("enemy.txt"); //prevent user from seeing previous game records as new game progress
-        deleteFile("character.txt"); //same as above
-        autocreateFile("savefile", "outside");
+        deleteFile("enemy"); //prevent user from seeing previous game records as new game progress
+        deleteFile("character"); //same as above
+        deleteFile("name");
+        autocreateFile("savefile", "Bedroom");
+        createEmptyFile("enemy");
+        createEmptyFile("character");
         MainGameLoop(1);
     }
 }
@@ -1695,9 +1748,9 @@ string choice;
 Player p1("Player",100,DrawPlayer,DrawPlayer_Lines);
 Player p2("Beary",1000,DrawBeary,DrawBeary_Lines);
 
-Enemy e1("Soldier",200,DrawEnemy1, DrawEnemy1_Lines);
-Enemy e2("Thief",100,DrawEnemy2, DrawEnemy2_Lines);
-Enemy e3("Prunicus",400,DrawEnemy3, DrawEnemy3_Lines);
+Enemy e1("Papadum Soldier",100,DrawEnemy1, DrawEnemy1_Lines);
+Enemy e2("Thief",75,DrawEnemy2, DrawEnemy2_Lines);
+Enemy e3("Prunicus",200,DrawEnemy3, DrawEnemy3_Lines);
 Enemy e4("Dragon",999,DrawEnemy4, DrawEnemy4_Lines);
 
 
@@ -1710,6 +1763,10 @@ void Bedroom(){
     DrawDialog("\n\nIn your state of confusion, a soft-looking bunny comes into the room. \n\n", 1);
     PressEnter();
 
+    if(bool_searchinFile("character","Cream") == false){
+        autoappendFile("character","Cream");
+    }
+
     system("cls");
     printMidCharacter(happyCream,CreamLines);
     cout << string(50, ' '); cout << "???" << endl << endl;
@@ -1717,7 +1774,7 @@ void Bedroom(){
     cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
     PressEnter();
 
-        system("cls");
+    system("cls");
     printMidCharacter(happyCream,CreamLines);
     cout << endl;
     DrawDialog_Margin("The bunny said, hopping excitedly towards you.\n\n", 1);
@@ -1738,6 +1795,8 @@ void Bedroom(){
     DrawDialog_Margin("What's your name, child?\n\n", 2);
     DrawDialog_Margin("Your name: ", 2);
     getline (cin, p1.name);
+
+    autocreateFile("name", p1.name);
 
     system("cls");
     printMidCharacter(happyCream,CreamLines);
@@ -1834,6 +1893,10 @@ void DiningRoom(){
     cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
     PressEnter();
 
+    if(bool_searchinFile("character","Teddy") == false){
+        autoappendFile("character","Teddy");
+    }
+
     system("cls");
     printMidCharacter(happyTeddy,TeddyLines);
     cout << string(50, ' '); cout << "???" << endl;
@@ -1843,6 +1906,7 @@ void DiningRoom(){
     cout << endl << endl;
     cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
     PressEnter();
+
 
     system("cls");
     printMidCharacter(happyTeddy,TeddyLines);
@@ -2112,7 +2176,7 @@ void DiningRoom(){
         DrawDialog_Margin("You look around Cream and Teddy's house a little longer.\n\n", 2);
         cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
         PressEnter();
-        House(BG_Complete);
+        House();
     }
     else if (choice == "Leave the house"){
         system("cls");
@@ -2122,13 +2186,17 @@ void DiningRoom(){
         DrawDialog_Margin("Teddy and Cream wave at you goodbye.\n\n", 1);
         cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
         PressEnter();
-        Outside(outside_counter, TGQ_Complete, MQ_Complete, BG_Complete, PP_Complete);
+        Outside();
     }
 
 }
 
-int Outside(int outside_counter, bool TGQ_Complete, bool MQ_Complete, bool BG_Complete, bool PP_Complete){
-    
+void Outside(){
+
+    if(bool_searchinFile("savefile","Outside") == false){
+        autoappendFile("savefile", "Outside");
+    }
+
     system("cls");
     DrawDialog("You step outside and are met with a wave of cool, clean air.  \n\n", 1);
     DrawDialog("The sun is shining brightly and the birds are chirping in songs. \n\n", 1);
@@ -2187,18 +2255,22 @@ int Outside(int outside_counter, bool TGQ_Complete, bool MQ_Complete, bool BG_Co
     PressEnter();
     }
     outside_counter++;
+    
     if (BG_Complete == false){
     system("cls");
     string option2[4] = {"Training Ground","Market","Berry Garden","Cream and Teddy's House"};
     choice = optionselect("Where would you like to go?", option2, 4, Empty, EmptyLines);
     }
+
     if (BG_Complete == true){
         system("cls");
         string option3[4] = {"Training Ground","Market","Cream and Teddy's House","Potato Palace"};
         choice = optionselect("Where would you like to go?", option3, 4, Empty, EmptyLines);
+    }
+
         if (choice == "Training Ground"){
             if (TGQ_Complete == false){
-                TGQ_Complete = TrainingGroundsQuest(TGQ_Complete);
+                TrainingGroundsQuest();
             }else{
                 system("cls");
                 DrawDialog("The training ground is a wide, open area. \nArchery targets and climbing scaffolds are set up on one side. "
@@ -2210,7 +2282,7 @@ int Outside(int outside_counter, bool TGQ_Complete, bool MQ_Complete, bool BG_Co
         }
         else if (choice == "Market"){
             if (MQ_Complete == false){
-                MQ_Complete = MarketQuest(MQ_Complete); 
+                MarketQuest(); 
             }else{
                 system("cls");
                 DrawDialog("The market is bustling with people. \nMany stalls sell a variety of products. "
@@ -2221,7 +2293,7 @@ int Outside(int outside_counter, bool TGQ_Complete, bool MQ_Complete, bool BG_Co
             }
         }
         else if (choice == "Berry Garden"){
-            BG_Complete = BerryGarden(BG_Complete);
+            BerryGarden();
         }
         else if (choice == "Cream and Teddy's House"){
             system("cls");
@@ -2231,13 +2303,12 @@ int Outside(int outside_counter, bool TGQ_Complete, bool MQ_Complete, bool BG_Co
             DrawDialog("\nIt's not a single bit stuffy here either. ", 1);
             DrawDialog("\n\nLiving in this house must be peaceful.", 1);
             PressEnter();
-            House(BG_Complete);
+            House();
         }
         else if (choice == "Potato Palace"){
             system("cls");
             if (TGQ_Complete == true && MQ_Complete == true && BG_Complete == true){
                 PotatoPalace1();
-                PP_Complete = PotatoPalace2(PP_Complete);
             }else{
                 printMidCharacter(Empty,EmptyLines);
                 cout << endl;
@@ -2246,15 +2317,13 @@ int Outside(int outside_counter, bool TGQ_Complete, bool MQ_Complete, bool BG_Co
                 DrawDialog_Margin("Maybe you should come back later.\n\n", 1);
                 cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
                 PressEnter();
+                Outside();
             }
         }
-
-    } 
+} 
     
-return outside_counter;
-}
+void House(){
 
-void House(bool BG_Complete){
     //What do you want to do in the house?
     do{
     system("cls");
@@ -2608,11 +2677,16 @@ void House(bool BG_Complete){
     DrawDialog_Margin("Teddy and Cream wave at you goodbye.\n\n", 1);
     cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
     PressEnter();
-    Outside(outside_counter, TGQ_Complete, MQ_Complete, BG_Complete, PP_Complete);
+    Outside();
 
 }
 
-bool TrainingGroundsQuest(bool TGQ_Complete){
+void TrainingGroundsQuest(){
+
+    if(bool_searchinFile("savefile","Training Ground") == false){
+        autoappendFile("savefile", "Training Ground");
+    }
+
     system("cls");
     DrawDialog("The training ground is a wide, open area. \nArchery targets and climbing scaffolds are set up on one side. "
                 "\nTraining weapons and equipment are provided on their respective racks, waiting to be used. ", 1);
@@ -2624,6 +2698,10 @@ bool TrainingGroundsQuest(bool TGQ_Complete){
         TGQ_Counter++;
 
         PressEnter();
+
+        if(bool_searchinFile("character","General Yahoo") == false){
+        autoappendFile("character","General Yahoo");
+        }
 
         system("cls");
         string option1[1] = {"Excuse me."};
@@ -2699,12 +2777,15 @@ bool TrainingGroundsQuest(bool TGQ_Complete){
             cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
             PressEnter();
     
+            if(bool_searchinFile("enemy","Papadum Soldier") == false){
+                autoappendFile("enemy","Papadum Soldier");
+            }
         //Battle happens here
             if (StartBattle(p1,e1) == "Player"){
                 TGQ_Complete = true;
             }
             else{
-                TrainingGroundsQuest(false);
+                TrainingGroundsQuest();
             }
 
         }
@@ -2739,12 +2820,14 @@ bool TrainingGroundsQuest(bool TGQ_Complete){
                 PressEnter();
     
             //Battle happens here
-
+            if(bool_searchinFile("enemy","Papadum Soldier") == false){
+                autoappendFile("enemy","Papadum Soldier");
+            }
             if (StartBattle(p1,e1) == "Player"){
                 TGQ_Complete = true;
             }
             else{
-                TrainingGroundsQuest(false);
+                TrainingGroundsQuest();
             }
             
             //Battle ends
@@ -2824,12 +2907,12 @@ bool TrainingGroundsQuest(bool TGQ_Complete){
             cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
             PressEnter();
         }
-        Outside(outside_counter, TGQ_Complete, MQ_Complete, BG_Complete, PP_Complete);
+        Outside();
     }
     if (TGQ_Complete == true){
         TrainingGrounds();
     }
-return TGQ_Complete;
+
 }
 
 void TrainingGrounds(){
@@ -2952,10 +3035,15 @@ void TrainingGrounds(){
     DrawDialog_Margin("Yahoo nods his head in respect as you leave.\n\n", 1);
     cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
     PressEnter();
-    Outside(outside_counter, TGQ_Complete, MQ_Complete, BG_Complete, PP_Complete);
+    Outside();
 }
 
-bool MarketQuest(bool MQ_Complete){
+void MarketQuest(){
+
+    if(bool_searchinFile("savefile","Market") == false){
+        autoappendFile("savefile", "Market");
+    }
+
     system("cls");
     DrawDialog("The market is bustling with people. \nMany stalls sell a variety of products. "
                 "\nSome are selling clothing, some are selling food, some are selling items, \nand some others are selling nick-nacks that might not make any sense to you.", 1);
@@ -2986,12 +3074,16 @@ bool MarketQuest(bool MQ_Complete){
     cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
     PressEnter();
 
+    if(bool_searchinFile("enemy","Theif") == false){
+        autoappendFile("enemy","Theif");
+    }
+
     //Battle happens here
     if (StartBattle(p1,e2) == "Player"){
         MQ_Complete = true;
     }
     else{
-        MarketQuest(false);
+        MarketQuest();
     }
     
    //End of battle
@@ -3033,6 +3125,10 @@ bool MarketQuest(bool MQ_Complete){
     DrawDialog_Margin("That thief stole it from me when I put it on the table. \n\n", 2);
     cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
     PressEnter();
+
+    if(bool_searchinFile("character","Pinkery") == false){
+        autoappendFile("character","Pinkery");
+    }
 
     system("cls");
     printMidCharacter(joyPinkery,PinkeryLines);
@@ -3109,10 +3205,8 @@ bool MarketQuest(bool MQ_Complete){
     DrawDialog_Margin("Anyway, I'm going back to my stall. Stop by anytime! \n\n", 1);
     cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
     PressEnter();
-
     Market();
     }
-return MQ_Complete;
 }
 
 void Market(){
@@ -3234,11 +3328,15 @@ void Market(){
     DrawDialog_Margin("Pinkery moos at you, it seems like that's her way of saying goodbye.\n\n", 1);
     cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
     PressEnter();
-    Outside(outside_counter, TGQ_Complete, MQ_Complete, BG_Complete, PP_Complete);
-    
+    Outside();
 }
 
-bool BerryGarden(bool BG_Complete){
+void BerryGarden(){
+
+    if(bool_searchinFile("savefile","Berry Garden") == false){
+        autoappendFile("savefile", "Berry Garden");
+    }
+
     system("cls");
     DrawDialog("The garden is lush and vibrant with all the berries there could ever exist grown."
                "\nThe berry bushes and trees are stretched far, their colors naturally beautifying the garden. "
@@ -3344,12 +3442,15 @@ bool BerryGarden(bool BG_Complete){
     cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
     PressEnter();
 
+    if(bool_searchinFile("enemy","Prunicus") == false){
+        autoappendFile("enemy","Prunicus");
+    }
     //Battle happens here
     if (StartBattle(p1,e3) == "Player"){
         BG_Complete = true;
     }
     else{
-        BerryGarden(false);
+        BerryGarden();
     }
 
     //Story continues after wnning the battle
@@ -3404,6 +3505,9 @@ bool BerryGarden(bool BG_Complete){
             PressEnter();
         }
 
+        if(bool_searchinFile("character","Brownie") == false){
+            autoappendFile("character","Brownie");
+        }
         system("cls");
         printMidCharacter(neutralBrownie,BrownieLines);
         cout << string(50, ' '); cout << "Brownie" << endl << endl;
@@ -3627,12 +3731,16 @@ bool BerryGarden(bool BG_Complete){
         PressEnter();
     }
     }
-    Outside(outside_counter, TGQ_Complete, MQ_Complete, BG_Complete, PP_Complete);
+    Outside();
     }
-return BG_Complete;
 }
 
 void PotatoPalace1(){
+
+    if(bool_searchinFile("savefile","Potato Palace (Dragon)") == false){
+        autoappendFile("savefile", "Potato Palace (Dragon)");
+    }    
+
     system("cls");
     DrawDialog("You arrive at the Potato Palace. Surprisingly, no one tried to stop you from entering the palace. \n\n", 1);
     DrawDialog("You'd think a royal palace would be more heavily guarded than simply letting a stranger enter \n\n", 1);
@@ -3696,6 +3804,10 @@ void PotatoPalace1(){
         DrawDialog_Margin("You say it as if you've never seen a talking potato before. O_o \n\n", 2);
         cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
         PressEnter();
+    }
+
+    if(bool_searchinFile("character","Potato Queen") == false){
+        autoappendFile("character","Potato Queen");
     }
     system("cls");
     printMidCharacter(Potato_nervous,PotatoLines);
@@ -3802,8 +3914,13 @@ void PotatoPalace1(){
     cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
     PressEnter();
 
+    if(bool_searchinFile("enemy","Dragon") == false){
+        autoappendFile("enemy","Dragon");
+    }
     //Battle happens here
+    RIGHT_CHAR_POS = 35;
     StartBattle(p1,e4);
+    RIGHT_CHAR_POS = 86;
 
     system("cls");
     printMidCharacter(Dragon_head,DragonLines);
@@ -3814,9 +3931,14 @@ void PotatoPalace1(){
     cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
     PressEnter();
     
+    PotatoPalace2();
 }
 
-bool PotatoPalace2(bool PP_Complete){
+void PotatoPalace2(){
+
+    if(bool_searchinFile("savefile","Potato Palace (Berry)") == false){
+        autoappendFile("savefile", "Potato Palace (Berry)");
+    }    
 
     system("cls");
     printMidCharacter(neutralBeary,BearyLines);
@@ -3849,13 +3971,18 @@ bool PotatoPalace2(bool PP_Complete){
     cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
     PressEnter();
 
+    if(bool_searchinFile("character","Beary") == false){
+        autoappendFile("character","Beary");
+    }
     //Battle happens here
+    RIGHT_CHAR_POS = 35;
     if (StartBattle(p2,e4) == "Player"){
         PP_Complete = true;
     }
     else{
-        PotatoPalace2(false);
+        PotatoPalace2();
     }
+    RIGHT_CHAR_POS = 86;
 
     if (PP_Complete == true){
 
@@ -3921,7 +4048,7 @@ bool PotatoPalace2(bool PP_Complete){
         system("cls");
         printMidCharacter(neutralBrownie,BrownieLines);
         cout << string(50, ' '); cout << "Brownie" << endl << endl;
-        DrawDialog_Margin("You did it… You crazy son of a gun, you did it. \n\n", 2);
+        DrawDialog_Margin("You did it... You crazy son of a gun, you did it. \n\n", 2);
         cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
         PressEnter();
 
@@ -3987,7 +4114,6 @@ bool PotatoPalace2(bool PP_Complete){
         PressEnter();
         Home();
     }
-return PP_Complete;
 }
 
 void Home(){
@@ -4007,31 +4133,56 @@ void Home(){
     for (int i = 0; i < ThankLines; i++){
         cout << string(MID_CHAR_POS, ' ') << ThankYou[i] << endl;
     }
+    cout << endl;
+    
+    system("pause");
+
+    MainMenu();
+
 }
 
+
 void MainGameLoop(int startAt){
+
+    if (FileExists("name")){
+        p1.name = stringreadFile("name");
+    }
 
     switch(startAt){
         case 1:
             Bedroom();
             break;
         case 2:
-            Outside(outside_counter, TGQ_Complete, MQ_Complete, BG_Complete, PP_Complete);
+            TGQ_Complete = false;
+            MQ_Complete = false;
+            BG_Complete = false;
+            PP_Complete = false;
+            outside_counter = 1;
+            TGQ_Counter = 0;
+            Outside();
             break;
         case 3:
-            TrainingGroundsQuest(TGQ_Complete);
+            TGQ_Counter = 0;
+            TGQ_Complete = false;
+            TrainingGroundsQuest();
             break;
         case 4: 
-            MarketQuest(MQ_Complete);
+            MQ_Complete = false;
+            outside_counter = 1;
+            MarketQuest();
             break;
         case 5:
-            BerryGarden(BG_Complete);
+            BG_Complete = false;
+            outside_counter = 1;
+            BerryGarden();
             break;
         case 6:
+            outside_counter = 1;
             PotatoPalace1();
             break;
         case 7:
-            PotatoPalace2(PP_Complete);
+            outside_counter = 1;
+            PotatoPalace2();
         default:
             break;
     }
