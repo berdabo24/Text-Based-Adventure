@@ -2208,7 +2208,7 @@ void Outside(){
     printMidCharacter(neutralCream,CreamLines);
     cout << string(50, ' '); cout << "Cream" << endl << endl;
     DrawDialog_Margin("", 1); cout << p1.name; DrawDialog("! Before you go, could you do me a favor? \n\n", 2);
-    DrawDialog_Margin("", 1); cout << p1.name; DrawDialog("Could you get more berries for me, please? \n\n", 2);
+    DrawDialog("Could you get more berries for me, please? \n\n", 2);
     cout << "+" << string(BORDER_WIDTH, '-') << "+" << endl;
     PressEnter();
 
